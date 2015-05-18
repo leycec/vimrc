@@ -1,0 +1,28 @@
+# ====================[ .gitignore                         ]====================
+#
+# --------------------( SYNOPSIS                           )--------------------
+# Whitelist all files and subdirectories of the current directory matching the
+# following git-specific glob expressions.
+#
+# --------------------( SEE ALSO                           )--------------------
+# For further details, see:
+#
+# * "man gitignore" for high-level commentary.
+# * "man 7 glob" for low-level commentary on glob syntax. Note, in particular,
+#   that glob() and hence ".gitignore" files support only a proper subset of
+#   bash- and zsh-style glob syntax.
+
+# ....................{ BLACKLIST                          }....................
+# Blacklist all paths in the home directory by default.
+*
+
+# ....................{ WHITELIST                          }....................
+# Whitelist the current file.
+!/.gitignore.d
+!/.gitignore.d/vim
+
+# Whitelist all dotfile-specific paths in the home directory by default. Such
+# whitelist may be (and often is) overridden by lower-level ".gitignore" files
+# nested in such paths.
+!/.vim
+!/.vim/**/*
