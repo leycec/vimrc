@@ -1,0 +1,34 @@
+# ====================[ .gitignore                         ]====================
+#
+# --------------------( SYNOPSIS                           )--------------------
+# Blacklist all files and subdirectories of the current directory matching the
+# following git-specific glob expressions.
+#
+# --------------------( SEE ALSO                           )--------------------
+# For further details, see:
+#
+# * "man gitignore" for high-level commentary.
+# * "man 7 glob" for low-level commentary on glob syntax. Note, in particular,
+#   that glob() and hence ".gitignore" files support only a proper subset of
+#   bash- and zsh-style glob syntax.
+
+# ....................{ DIRECTORIES ~ top-level            }....................
+# Ignore NeoBundle's top-level directory. Since some bundles have non-trivial
+# installations forking external commands (e.g., "make"), copying bundle
+# subdirectories into this directory does *NOT* generally suffice to install
+# bundles. Since all missing bundles will be implicitly reinstalled on the next
+# Vim startup from the configuration defined in the top-level "conf.d"
+# directory, there exists no demonstrable reason to commit bundles to git.
+/bundle/
+
+# Ignore the top-level cache directory.
+/cache/
+
+# ....................{ FILES ~ top-level                  }....................
+# Ignore NeoBundle's top-level cache files.
+/.auto_neobundle_timestamp
+
+# For portability, ignore our "~/.vim/vimrc" -> "~/.vimrc" symbolic link.
+# Unfortunately, symbolic links are static and hence have no means of
+# dynamically resolving to the current user's home directory.
+/vimrc
