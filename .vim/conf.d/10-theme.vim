@@ -366,39 +366,3 @@ augroup END
 "highlight CursorColumn ctermbg=235 guibg=#2c2d27
 
 " --------------------( WASTELANDS                         )--------------------
-" syntax enable
-" let g:airline_section_warning = airline#section#create(['watchdogs'])
-" call airline#parts#define_function('watchdogs', 'qfstatusline#Update')
-
-" function! QfstatuslineUpdateAirline()
-"     call airline#load_theme()
-"     call airline#update_statusline()
-" endfunction
-" let g:Qfstatusline#UpdateCmd = function('QfstatuslineUpdateAirline')
-
-"absolute path " of the dirname file edited by the current buffer if any
-" Expand the centermost status line section to display the absolute path of the
-" file edited by the current buffer if any.
-" let g:airline_section_c = airline#section#create(['%<', 'file', g:airline_symbols.space, 'readonly', g:airline_symbols.space, '%{getcwd()}'])
-" let g:airline_section_c = airline#section#create(['%f'.spc, '%{getcwd()}'])
-" let g:airline_section_d = airline#section#create(['%{getcwd()}'])
-
-"* Abbreviate the current mode to "N", "I", "V", and "C" rather than the current
-"  "NORMAL", "INSERT", "VISUAL", and "COMMAND".
-" Modeline-specific theme, ideally corresponding to the prior scheme.
-" let g:airline_theme = 'lucius'
-
-" ....................{ MODELINE ~ bufferline              }....................
-" Confine bufferline to the status line (i.e., prevent bufferline from printing
-" to the command bar). Enabling this currently induces Vim to erroneously print
-" "Press ENTER or type command to continue" despite disabling such messages
-" above via &shortmess. *shrug*
-" let g:bufferline_echo = 0
-
-" Delimit sections by background colour changes rather than additional
-" * Powerline Linux installation instructions and absurdly helpful FAQ:
-"   https://powerline.readthedocs.org/en/latest/installation/linux.html
-" * Powerline-patched fonts:
-"   https://github.com/Lokaltog/powerline-fonts
-" * Alternative minimalist status line plugin:
-"   https://github.com/itchyny/lightline.vim
