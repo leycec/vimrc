@@ -19,7 +19,7 @@
 # ....................{ WHITELIST                          }....................
 # Whitelist the current file.
 !/.gitignore.d
-!/.gitignore.d/vim
+!/.gitignore.d/vimrc
 
 # Whitelist all dotfile-specific paths in the home directory by default. Such
 # whitelist may be (and often is) overridden by lower-level ".gitignore" files
