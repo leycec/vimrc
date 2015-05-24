@@ -1,4 +1,6 @@
-" ====================[ text.vim                           ]====================
+" --------------------( LICENSE                            )--------------------
+" Copyright 2015 by Cecil Curry.
+" See "LICENSE" for further details.
 
 " ....................{ FORMAT                             }....................
 " Disable option "t" autowrapping on Markdown, which Markdown plugins tend

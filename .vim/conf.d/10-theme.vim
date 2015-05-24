@@ -1,4 +1,6 @@
-" ====================[ *-rest.vim                         ]====================
+" --------------------( LICENSE                            )--------------------
+" Copyright 2015 by Cecil Curry.
+" See "LICENSE" for further details.
 
 "FIXME: Create mode-aware cursors (i.e., cursors changing color based on the
 "current Vim mode) via the "gcr" option.

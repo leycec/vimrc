@@ -1,4 +1,6 @@
-" ====================[ text.vim                           ]====================
+" --------------------( LICENSE                            )--------------------
+" Copyright 2015 by Cecil Curry.
+" See "LICENSE" for further details.
 
 "FIXME: Actually, "formatoptions+=2" is great! Can we reliably enable that
 "for other modes as well, at least in comments?

@@ -1,4 +1,6 @@
-" ====================[ *-neobundle.vim                    ]====================
+" --------------------( LICENSE                            )--------------------
+" Copyright 2015 by Cecil Curry.
+" See "LICENSE" for further details.
 
 "FIXME: Refactor according to Shougo's ".vimrc", implementing (among other tasty
 "things) a cache optimizing loading of NeoBundle dependencies on startup:
@@ -8,7 +10,7 @@
 "
 "Note the latter URL. Pretty crazy stuff. Shougo has implemented support for
 "specifying your set of NeoBundle bundles as a single TOML (!) file rather than
-"as one or more NeoBundle*() calls in vimL. (Although "readable, I happily
+"as one or more NeoBundle*() calls in vimL. (Although "readable," I happily
 "prefer YAML.) While I can't imagine that we would want to migrate to this
 "format, I should nonetheless note that the above TOML file now constitutes the
 "definitive resource for lazy loading of new bundles. Awesome!

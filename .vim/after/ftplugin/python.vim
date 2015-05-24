@@ -1,4 +1,6 @@
-" ====================[ text.vim                           ]====================
+" --------------------( LICENSE                            )--------------------
+" Copyright 2015 by Cecil Curry.
+" See "LICENSE" for further details.
 
 " ....................{ FORMAT                             }....................
 " Identify "#"-prefixed words as comment leaders. By default, "python-mode" only
@@ -7,4 +9,3 @@
 setlocal comments=:#,fb:-
 
 " --------------------( WASTELANDS                         )--------------------
-" autocmd BufEnter * :syntax sync fromstart
