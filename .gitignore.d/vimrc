@@ -31,3 +31,8 @@
 !/.vimrc
 !/.vim
 !/.vim/**/*
+
+# To avoid synchronization issues with the front-facing "github" branch,
+# whitelist all paths specific to such branch.
+!/LICENSE
+!/README.md
