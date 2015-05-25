@@ -1,19 +1,21 @@
 leycec/vimrc
 ===========
 
-Welcome to [leycec](https://github.com/leycec)'s `vimrc`. [Herein lie buried many
-things which if read with patience may show the strange meaning of](http://genius.com/Web-du-bois-the-souls-of-black-folk-the-forethought-annotated) maintaining
-well-structured and -commented Vim dotfiles.
+**Welcome to [leycec](https://github.com/leycec)'s `vimrc`.**
+
+Herein lie buried many things which if read with patience may show the strange meaning of maintaining well-structured and -commented Vim dotfiles.[*](http://genius.com/Web-du-bois-the-souls-of-black-folk-the-forethought-annotated)
+
+![image](https://cloud.githubusercontent.com/assets/217028/7790996/592554e8-0265-11e5-8874-4c82cb7b02ca.png)
+
+It's sorta like that.
 
 ## Motivation
 
-Dotfiles are intended to be rapaciously picked apart. Ours are scant exception.
-Snippets galore, we say! To better glorify the inscrutable art of working Vim
-snippetry, *every* block of *every* VimL in *every* dotfile in this repository
-has been scrupulously structured, commented, and contemplated. (Usually at the
-most neckbeardly hour of the night.)
+### Vim Snippets
 
-Dotfiles matter. Let's get to it.
+Dotfiles are intended to be rapaciously picked apart. Ours are scant exception. Snippets galore, we say! To better glorify the inscrutable art of working Vim snippetry, *every* block of *every* VimL in *every* dotfile in this repository has been scrupulously structured, commented, and contemplated. (Usually at the most neckbeardly hour of the night.)
+
+Dotfiles are a grim business. Let's get to it.
 
 ## Installation
 
@@ -34,8 +36,5 @@ meaningful order):
 
 ## License
 
-Our dotfiles are currently licensed under the [University of Illinois/NCSA Open
-Source
-License](https://en.wikipedia.org/wiki/University_of_Illinois/NCSA_Open_Source_License),
-a hospitably permissive license for the whole Vim family. See
-[LICENSE](https://github.com/leycec/vimrc/blob/github/LICENSE) for grim details.
+Our dotfiles are [licensed](https://github.com/leycec/vimrc/blob/github/LICENSE) under the [University of Illinois/NCSA Open Source License](https://en.wikipedia.org/wiki/University_of_Illinois/NCSA_Open_Source_License),
+a hospitably lax license for the whole Vim family.
