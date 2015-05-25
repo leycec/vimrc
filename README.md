@@ -13,7 +13,9 @@ Amongst our weaponry are such diverse elements as: the **IDE-in-a-CLI**, **old s
 
 ### IDE-in-a-CLI
 
-Our dotfiles feature a [NeoBundle](https://github.com/Shougo/neobundle.vim)-managed suite of bundles (third-party Vim plugins typically hosted on Github) optimizing Vim into a command-line IDE. For efficiency, most bundles are loaded lazily (just-in-time) rather than at startup (all-at-once). For simplicity, *all* bundles are automatically installed in a platform-specific manner on the first startup.
+Our dotfiles feature a [NeoBundle](https://github.com/Shougo/neobundle.vim)-managed suite of bundles<sup>1</sup> optimizing Vim into a command-line IDE. For efficiency, most bundles are loaded lazily (just-in-time) rather than at startup (all-at-once). For simplicity, *all* bundles are automatically installed in a platform-specific manner on the first startup.
+
+<sup>1. Bundles are third-party Vim plugins managed by a [Pathogen](https://github.com/tpope/vim-pathogen)-like... third-party Vim plugin. Typically hosted on Github, as Odin intended.</sup>
 
 Prominent bundles include:
 
