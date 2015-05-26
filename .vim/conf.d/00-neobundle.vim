@@ -2,6 +2,11 @@
 " Copyright 2015 by Cecil Curry.
 " See "LICENSE" for further details.
 
+"FIXME: Unite integration should be substantially improved. The best
+"introduction to Unite as of this writing is probably the following repo readme:
+"    https://github.com/joedicastro/dotfiles/tree/master/vim
+"After integrating Unite, excise airline's tagbar, which Unite (of course) also
+"offers a facsimile of. "One bundle to unbundle them all!"
 "FIXME: Refactor according to Shougo's ".vimrc", implementing (among other tasty
 "things) a cache optimizing loading of NeoBundle dependencies on startup:
 "
@@ -19,19 +24,82 @@
 "NeoBundle does appear to provide an automated cleaning command:
 ":NeoBundleClean(). Let us use it!
 
+" ....................{ PATHS                              }....................
+" Absolute path of Vim's top-level dot directory.
+let g:our_vim_dir = $HOME . '/.vim'
+
+" ....................{ PATHS ~ bundle                     }....................
+" Absolute path of the directory to install bundles to.
+let g:our_bundle_dir = g:our_vim_dir . '/bundle'
+
+" Absolute path of the directory to install NeoBundle to, allowing NeoBundle to
+" manage itself as a bundle.
+let g:our_neobundle_dir = g:our_bundle_dir . '/neobundle.vim'
+
+" ....................{ PATHS ~ cache                      }....................
+" Absolute path of the directory to cache temporary paths to.
+let g:our_cache_dir = g:our_vim_dir . '/cache'
+
+" Absolute path of the directory to backup previously edited files to.
+let g:our_backup_dir = g:our_cache_dir . '/backup'
+
+" Absolute path of the directory to backup currently edited files to.
+let g:our_swap_dir = g:our_cache_dir . '/swap'
+
+" Absolute path of the directory to cache undo trees to.
+let g:our_undo_dir = g:our_cache_dir . '/undo'
+
+" ....................{ HELPERS                            }....................
+" True if the current user is the superuser (i.e., "root").
+function IsSuperuser()
+    return $USER == 'root'
+endfunction
+
+" Create the passed directory and all parent directories of such directory as
+" needed, providing a Vim analogue of "mkdir -p".
+function MakeDirIfNotFound(path)
+    if !isdirectory(a:path)
+        call mkdir(a:path, 'p')
+    endif
+endfunction
+
+" Append the passed directory to Vim's ","-delimited PATH. For safety, all ","
+" characters in such directory will be implicitly escaped.
+function AddRuntimePath(path)
+    let &runtimepath .= ',' . escape(a:path, '\,')
+endfunction
+
 " ....................{ START                              }....................
 " Common startup-related commands include:
 "     :scriptnames      " list the absolute paths of all current startup scripts
 
+" ....................{ START ~ paths                      }....................
+" Create all requisite subdirectories as needed.
+call MakeDirIfNotFound(g:our_backup_dir)
+call MakeDirIfNotFound(g:our_bundle_dir)
+call MakeDirIfNotFound(g:our_swap_dir)
+call MakeDirIfNotFound(g:our_undo_dir)
+
+" If NeoBundle is *NOT* installed, do so before doing anything else. NeoBundle
+" is the fulcrum on which the remainder of this configuration rests.
+if !isdirectory(g:our_neobundle_dir)
+    echo "Installing NeoBundle...\n"
+    set shell=/bin/bash
+    execute
+      \ 'silent !git clone https://github.com/Shougo/neobundle.vim ' .
+      \ shellescape(g:our_neobundle_dir)
+endif
+
+" ....................{ START ~ vim                        }....................
 " When starting but *NOT* reloading Vim...
 if has('vim_starting')
-    " Disable Vi-specific backwards compatibility. It's all Vim, all the time.
+    " Disable Vi-specific backwards compatibility. It's all Vim, all the time!
     if &compatible
         set nocompatible
     endif
 
-    " Add NeoBundle to Vim's plugin path.
-    set runtimepath+=~/.vim/bundle/neobundle.vim/
+    " Add NeoBundle to Vim's PATH.
+    call AddRuntimePath(g:our_neobundle_dir)
 endif
 
 " ....................{ START ~ neobundle                  }....................
@@ -62,11 +130,11 @@ endif
 " from the following subdirectory. Since NeoBundle adopts the whitelist approach
 " to bundle management, bundles *NOT* explicitly passed to either NeoBundle() or
 " NeoBundleLazy() below will be disabled and hence *NOT* loaded.
-call neobundle#begin(expand('~/.vim/bundle/'))
+call neobundle#begin(g:our_bundle_dir)
 
 " Number of seconds after which to timeout plugin installation and upgrades.
 " Since the default is insufficient for installing large plugins on slow
-" connections, slightly increase such timeout.
+" connections, slightly increase such default.
 let g:neobundle#install_process_timeout = 120
 
 " ....................{ CORE                               }....................
@@ -83,7 +151,10 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 "FIXME: All of the following should probably be loaded lazily. Unfortunately,
 "there appears to be no simple means (at the moment) of doing so on key events.
 
-" Bind <[> and <]> to syntax-aware metamovement.
+" Bind <[> and <]> to syntax-aware metamovement. Specifically, bind:
+"
+" * <[n> to jump to the prior merge conflict if any.
+" * <]n> to jump to the next merge conflict if any.
 NeoBundle 'tpope/vim-unimpaired'
 
 " Improve <.> to support repeating of plugin-specific key bindings.
@@ -334,3 +405,16 @@ NeoBundleCheck
 " augroup END
 
 " --------------------( WASTELANDS                         )--------------------
+    " execute '!git clone https://github.com/Shougo/neobundle.vim /home/leycec/.vim/bundle/neobundle.vim'
+    " silent system(
+    "   \ 'git clone https://github.com/Shougo/neobundle.vim ' .
+    "   \ shellescape(g:our_neobundle_dir)
+    "   \ )
+    " silent !git clone https://github.com/Shougo/neobundle.vim g:our_neobundle_dir
+" call neobundle#begin(expand('~/.vim/bundle/'))
+    " set runtimepath+=~/.vim/bundle/neobundle.vim/
+    " Inform the user of imminent strangeness.
+    " Install NeoBundle to such directory.
+    " Make the parent directory of the directory to install NeoBundle to.
+" Helper functions called below.
+    " echo ''
