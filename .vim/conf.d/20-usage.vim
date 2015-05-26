@@ -62,22 +62,6 @@ nnoremap <leader>Gs :GreviewStaged<cr>
 " Bind <,Ge> to open a new buffer viewing and editing the index.
 nnoremap <leader>Ge :Gstatus<cr>
 
-" ....................{ HELPERS                            }....................
-" Helper functions called below.
-
-" True if the current user is the superuser (i.e., "root").
-function IsSuperuser()
-    return $USER == 'root'
-endfunction
-
-" Create the passed directory and all parent directories of such directory as
-" needed, providing a Vim analogue of "mkdir -p".
-function MakeDirIfNotFound(path)
-    if !isdirectory(a:path)
-        call mkdir(a:path, "p")
-    endif
-endfunction
-
 " ....................{ BUFFERS                            }....................
 " Common buffer commands include:
 "     :b{number}        " switch to the buffer with that number
@@ -102,16 +86,8 @@ set fileencodings=utf8,iso-2022-jp,euc-jp,cp932,default,latin1
 " set fileencodings=iso-2022-jp,euc-jp,cp932,utf8,default,latin1
 
 " ....................{ CACHING                            }....................
-" Absolute path of the directory to cache files to.
-let g:my_cache_dir = $HOME . '/.vim/cache/'
-
-" Create cache subdirectories if needed.
-call MakeDirIfNotFound(g:my_cache_dir . 'backup')
-call MakeDirIfNotFound(g:my_cache_dir . 'swap')
-call MakeDirIfNotFound(g:my_cache_dir . 'undo')
-
-" ","-delimited list of settings configuring persistence for the current editing
-" session. Dismantled, this is:
+" ","-delimited list of context persisted for the current editing session.
+" Dismantled, this is:
 "
 " * "%", saving all buffers and restoring such buffers when Vim is run without
 "   file arguments.
@@ -123,7 +99,7 @@ call MakeDirIfNotFound(g:my_cache_dir . 'undo')
 " * "s", *NOT* saving or restoring items (currently, only registers) larger than
 "   the passed number of kilobytes.
 " * "n", persisting all such metadata to and from the passed filename.
-let &viminfo = '%,<1024,/64,''64,h,n' . g:my_cache_dir . ' viminfo,s8'
+let &viminfo = '%,<1024,/64,''64,h,s8,n' . g:our_cache_dir . '/viminfo'
 
 " ....................{ CACHING ~ backup                   }....................
 " Directory persisting backups of edited files to corresponding files.
@@ -132,13 +108,13 @@ let &viminfo = '%,<1024,/64,''64,h,n' . g:my_cache_dir . ' viminfo,s8'
 " directory with "//", in which case the basenames of backup files will be the
 " absolute paths of the original files with all directory separators "/"
 " replaced by "%".
-let &backupdir = g:my_cache_dir . 'backup//'
+let &backupdir = g:our_backup_dir . '//'
 set backup
 
 " ....................{ CACHING ~ swap                     }....................
 " Directory persisting swap files (i.e., recoverable backups) of edited files to
 " corresponding files. See above for further details on "//".
-let &directory = g:my_cache_dir . 'swap//'
+let &directory = g:our_swap_dir . '//'
 
 " ....................{ CACHING ~ undo                     }....................
 " See section "HISTORY" for related settings.
@@ -147,7 +123,7 @@ let &directory = g:my_cache_dir . 'swap//'
 if has("persistent_undo")
     " Directory persisting the undo history trees of edited files to
     " corresponding files. See above for further details on "//".
-    let &undodir = g:my_cache_dir . 'undo//'
+    let &undodir = g:our_undo_dir . '//'
     set undofile
 endif
 
@@ -159,7 +135,7 @@ endif
 set clipboard=unnamedplus
 
 " ....................{ COMMENTING ~ tcomment              }....................
-" tcomment.
+"FIXME: Configure us up the bomb. Yes, we went there.
 
 " ....................{ DELETING                           }....................
 "FIXME: Specifically? What does this do? I like it, but I'd like to know more.
@@ -189,7 +165,7 @@ function! s:hooks.on_source(bundle)
     call unite#filters#sorter_default#use(['sorter_rank'])
 
     " Directory to which unite caches metadata.
-    let g:unite_data_directory = g:my_cache_dir . 'unite'
+    let g:unite_data_directory = g:our_cache_dir . '/unite'
 
     " Open unite buffers in Insert Mode by default.
     let g:unite_enable_start_insert = 1
@@ -652,7 +628,7 @@ function! s:hooks.on_source(bundle)
     " Directory to which filetype-specific global tags will be written. This is
     " only a fallback for buffers in which project-local tags cannot be written
     " (e.g., due to insufficient user permissions).
-    let g:easytags_by_filetype = g:my_cache_dir . 'tags'
+    let g:easytags_by_filetype = g:our_cache_dir . '/tags'
 
     " Automatically read project-local tags found according to option "tags" and
     " write such tags to the current directory if not found.
