@@ -9,11 +9,21 @@ It's *sorta* like that.
 
 ## Motivation
 
-Amongst our weaponry are such diverse elements as: the **IDE-in-a-CLI**, **old school aesthetics**, and **gratuitous Vim snippetry**.[*](https://www.youtube.com/watch?v=Tym0MObFpTI)
+Amongst our weaponry are such diverse elements as: **autoinstallation**, the **IDE-in-a-CLI** (i.e., [INTP](http://www.intp.org/intprofile.html) Shangri La), **old school aesthetics**, and **gratuitous Vim snippetry**.[*](https://www.youtube.com/watch?v=Tym0MObFpTI)
+
+### Autoinstallation
+
+Our dotfiles implicitly install all requisite dependencies in a platform-aware manner on the next Vim startup. No installation script needs to be manually run; no external software need to be manually installed. It's cyborg-like magic, complete with [uncanny valley](https://www.youtube.com/watch?v=CNdAIPoh8a4) biomechatronic handwaving.
+
+If you use [`vcsh`](https://github.com/RichiH/vcsh) to manage dotfiles, installation reduces to a single command:
+
+    $ vcsh clone https://github.com/leycec/vimrc.git
+
+See the [installation instructions](#installation) below.
 
 ### IDE-in-a-CLI
 
-Our dotfiles feature a [NeoBundle](https://github.com/Shougo/neobundle.vim)-managed suite of bundles<sup>1</sup> optimizing Vim into a command-line IDE. For efficiency, most bundles are loaded lazily (just-in-time) rather than at startup (all-at-once). For simplicity, *all* bundles are automatically installed in a platform-specific manner on the first startup.
+Our dotfiles feature a [NeoBundle](https://github.com/Shougo/neobundle.vim)-managed suite of bundles<sup>1</sup> optimizing Vim into a command-line IDE. For efficiency, most bundles are loaded lazily (just-in-time) rather than at startup (all-at-once). For simplicity, *all* bundles including NeoBundle itself are automatically installed on the next Vim startup.
 
 <sup>1. Bundles are third-party Vim plugins managed by a [Pathogen](https://github.com/tpope/vim-pathogen)-like... third-party Vim plugin. Typically hosted on Github, as Odin intended.</sup>
 
@@ -26,7 +36,7 @@ Prominent bundles include:
   * [vim-fugitive](https://github.com/tpope/vim-fugitive), wrapping Git with Vim-augmented facilities for interactive diffing, grepping, logging, staging, and blaming (our favorite part!).
   * [vim-unimpaired](https://github.com/tpope/vim-unimpaired), adding `[`- and `]`-prefixed mnemonics for syntax-aware metamovements. It's as hot as it sounds.
 
-### Old School Aesthetics
+### Aesthetics
 
 Our dotfiles embrace such commendable art movements as: the 8-bit era, post-modernist minimalism, and [brutalism](http://fuckyeahbrutalism.tumblr.com). Adopt a [full-screen 256-color terminal](http://software.schmorp.de/pkg/rxvt-unicode.html) near you and bask in debatable ANSI glory. 
 
@@ -34,7 +44,7 @@ Our dotfiles embrace such commendable art movements as: the 8-bit era, post-mode
  
 ![image](https://camo.githubusercontent.com/4cadf11a79898ac6ced753197ae5071bc6879aed/687474703a2f2f692e696d6775722e636f6d2f4c735a62462e706e67)
 
-* [vim-airline](https://github.com/bling/vim-airline), a pure-VimL statusline theme emphasizing efficiency, extensibility, and astonishing displays of hedonistic eroticism. (Just kidding on that last one. *We think.*)
+* [vim-airline](https://github.com/bling/vim-airline), a pure-VimL statusline theme emphasizing efficiency, extensibility, and eroticism. The three E's, kids! Just kidding on that last one. For portability, [Powerline-patched fonts](https://github.com/powerline/fonts) are *not* required.
 
 ![image](https://github.com/bling/vim-airline/wiki/screenshots/demo.gif)
 
@@ -49,6 +59,7 @@ Snippets galore, we say!
 Dotfiles are a gritty business. Hand me that CLI shovel.
 
 ### vcsh (Recommended)
+<a name="installation"></a>
 
 Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcsh), a Git-centric dotfile manager cleverly leveraging [Git-specific environment variables](http://git-scm.com/book/en/v2/Git-Internals-Environment-Variables) rather than fragile symlinks. This is a good thing.
 
