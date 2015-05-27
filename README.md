@@ -13,7 +13,7 @@ Amongst our weaponry are such diverse elements as: **autoinstallation**, the **I
 
 ### Autoinstallation
 
-Our dotfiles implicitly install all requisite dependencies in a platform-aware manner on the next Vim startup. No installation script needs to be manually run; no external software need to be manually installed. It's cyborg-like magic, complete with [uncanny valley](https://www.youtube.com/watch?v=CNdAIPoh8a4) handwaving.
+Our dotfiles implicitly install all dependencies in a platform-aware manner on the next Vim startup. *No* installation script needs to be manually run; *no* external software needs to be manually installed. It's cyborg-like magic, complete with [uncanny valley](https://www.youtube.com/watch?v=CNdAIPoh8a4) handwaving.
 
 If you use [`vcsh`](https://github.com/RichiH/vcsh) to manage dotfiles, installation reduces to a single command:
 
