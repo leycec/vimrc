@@ -44,7 +44,7 @@ Our dotfiles embrace such commendable art movements as: the 8-bit era, post-mode
  
 ![image](https://camo.githubusercontent.com/4cadf11a79898ac6ced753197ae5071bc6879aed/687474703a2f2f692e696d6775722e636f6d2f4c735a62462e706e67)
 
-* [vim-airline](https://github.com/bling/vim-airline), a pure-VimL statusline theme emphasizing efficiency, extensibility, and eroticism. The three E's, kids! Just kidding on that last one. For portability, [Powerline-patched fonts](https://github.com/powerline/fonts) are neither required *nor* currently used. (The animated GIF below is a seductive lie.)
+* [vim-airline](https://github.com/bling/vim-airline), a pure-VimL statusline theme emphasizing efficiency, extensibility, and monochromatic eroticism. ("It's the three E's, kids!") For portability, [Powerline-patched fonts](https://github.com/powerline/fonts) are neither required *nor* currently used. The animated GIF below is a seductive lie.
 
 ![image](https://github.com/bling/vim-airline/wiki/screenshots/demo.gif)
 
@@ -52,7 +52,7 @@ Our dotfiles embrace such commendable art movements as: the 8-bit era, post-mode
 
 Our dotfiles promote the inscrutable art of Vim snippetry. For your [copypasta](https://www.reddit.com/r/copypasta) perusal, *every* block of *every* VimL in *every* dotfile in this repository has been scrupulously structured, commented, and contemplated. Usually at the most neckbeardly hour of the night.
 
-Snippets galore, we say!
+Snippets galore, we say.
 
 ## Installation
 
@@ -61,7 +61,7 @@ Dotfiles are a gritty business. Hand me that CLI shovel.
 ### vcsh (Recommended)
 <a name="installation"></a>
 
-Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcsh), a Git-centric dotfile manager cleverly leveraging [Git-specific environment variables](http://git-scm.com/book/en/v2/Git-Internals-Environment-Variables) rather than fragile symlinks. This is a good thing.
+Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcsh), a Git-centric dotfile manager leveraging [robust Git cleverness](http://git-scm.com/book/en/v2/Git-Internals-Environment-Variables) rather than fragile symbolic links. This is a good thing.
 
 * **Install `vcsh`.** For example, under:
   * Gentoo-based Linux distros:
