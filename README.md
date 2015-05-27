@@ -13,7 +13,7 @@ Amongst our weaponry are such diverse elements as: **autoinstallation**, the **I
 
 ### Autoinstallation
 
-Our dotfiles implicitly install all requisite dependencies in a platform-aware manner on the next Vim startup. No installation script needs to be manually run; no external software need to be manually installed. It's cyborg-like magic, complete with [uncanny valley](https://www.youtube.com/watch?v=CNdAIPoh8a4) biomechatronic handwaving.
+Our dotfiles implicitly install all requisite dependencies in a platform-aware manner on the next Vim startup. No installation script needs to be manually run; no external software need to be manually installed. It's cyborg-like magic, complete with [uncanny valley](https://www.youtube.com/watch?v=CNdAIPoh8a4) handwaving.
 
 If you use [`vcsh`](https://github.com/RichiH/vcsh) to manage dotfiles, installation reduces to a single command:
 
@@ -44,7 +44,7 @@ Our dotfiles embrace such commendable art movements as: the 8-bit era, post-mode
  
 ![image](https://camo.githubusercontent.com/4cadf11a79898ac6ced753197ae5071bc6879aed/687474703a2f2f692e696d6775722e636f6d2f4c735a62462e706e67)
 
-* [vim-airline](https://github.com/bling/vim-airline), a pure-VimL statusline theme emphasizing efficiency, extensibility, and eroticism. The three E's, kids! Just kidding on that last one. For portability, [Powerline-patched fonts](https://github.com/powerline/fonts) are *not* required.
+* [vim-airline](https://github.com/bling/vim-airline), a pure-VimL statusline theme emphasizing efficiency, extensibility, and eroticism. The three E's, kids! Just kidding on that last one. For portability, [Powerline-patched fonts](https://github.com/powerline/fonts) are neither required *nor* currently used. (The animated GIF below is a seductive lie.)
 
 ![image](https://github.com/bling/vim-airline/wiki/screenshots/demo.gif)
 
@@ -66,17 +66,22 @@ Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcs
 * Install `vcsh`.
   * Under Gentoo-based Linux distros:
 
-        $ sudo emerge vcsh
+            $ sudo emerge vcsh
 
   * Under Debian-based Linux distros (e.g., Ubuntu):
 
-        $ sudo apt-get install vcsh
+            $ sudo apt-get install vcsh
 
-* Install `leycec/vimrc`.
+* Move away existing Vim dotfiles.
+
+        $ mv ~/.vim{,.old}
+        $ mv ~/.vimrc{,.old}
+
+* Install our Vim dotfiles.
 
         $ vcsh clone https://github.com/leycec/vimrc.git
 
-You're done. **You can thank us later.**
+You're done. Praise be to Valhalla.
 
 ## See Also
 
