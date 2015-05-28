@@ -1,6 +1,10 @@
 " --------------------( LICENSE                            )--------------------
 " Copyright 2015 by Cecil Curry.
 " See "LICENSE" for further details.
+"
+" --------------------( SYNOPSIS                           )--------------------
+" NeoBundle configuration, defining the set of all NeoBundle-managed third-party
+" Github-hosted plugins to be used.
 
 "FIXME: Unite integration should be substantially improved. The best
 "introduction to Unite as of this writing is probably the following repo readme:
@@ -24,87 +28,13 @@
 "NeoBundle does appear to provide an automated cleaning command:
 ":NeoBundleClean(). Let us use it!
 
-" ....................{ PATHS                              }....................
-" Absolute path of Vim's top-level dot directory.
-let g:our_vim_dir = $HOME . '/.vim'
-
-" ....................{ PATHS ~ bundle                     }....................
-" Absolute path of the directory to install bundles to.
-let g:our_bundle_dir = g:our_vim_dir . '/bundle'
-
-" Absolute path of the directory to install NeoBundle to, allowing NeoBundle to
-" manage itself as a bundle.
-let g:our_neobundle_dir = g:our_bundle_dir . '/neobundle.vim'
-
-" ....................{ PATHS ~ cache                      }....................
-" Absolute path of the directory to cache temporary paths to.
-let g:our_cache_dir = g:our_vim_dir . '/cache'
-
-" Absolute path of the directory to backup previously edited files to.
-let g:our_backup_dir = g:our_cache_dir . '/backup'
-
-" Absolute path of the directory to backup currently edited files to.
-let g:our_swap_dir = g:our_cache_dir . '/swap'
-
-" Absolute path of the directory to cache undo trees to.
-let g:our_undo_dir = g:our_cache_dir . '/undo'
-
-" ....................{ HELPERS                            }....................
-" True if the current user is the superuser (i.e., "root").
-function IsSuperuser()
-    return $USER == 'root'
-endfunction
-
-" Create the passed directory and all parent directories of such directory as
-" needed, providing a Vim analogue of "mkdir -p".
-function MakeDirIfNotFound(path)
-    if !isdirectory(a:path)
-        call mkdir(a:path, 'p')
-    endif
-endfunction
-
-" Append the passed directory to Vim's ","-delimited PATH. For safety, all ","
-" characters in such directory will be implicitly escaped.
-function AddRuntimePath(path)
-    let &runtimepath .= ',' . escape(a:path, '\,')
-endfunction
-
 " ....................{ START                              }....................
 " Common startup-related commands include:
 "     :scriptnames      " list the absolute paths of all current startup scripts
-
-" ....................{ START ~ paths                      }....................
-" Create all requisite subdirectories as needed.
-call MakeDirIfNotFound(g:our_backup_dir)
-call MakeDirIfNotFound(g:our_bundle_dir)
-call MakeDirIfNotFound(g:our_swap_dir)
-call MakeDirIfNotFound(g:our_undo_dir)
-
-" If NeoBundle is *NOT* installed, do so before doing anything else. NeoBundle
-" is the fulcrum on which the remainder of this configuration rests.
-if !isdirectory(g:our_neobundle_dir)
-    echo "Installing NeoBundle...\n"
-    set shell=/bin/bash
-    execute
-      \ 'silent !git clone https://github.com/Shougo/neobundle.vim ' .
-      \ shellescape(g:our_neobundle_dir)
-endif
-
-" ....................{ START ~ vim                        }....................
-" When starting but *NOT* reloading Vim...
-if has('vim_starting')
-    " Disable Vi-specific backwards compatibility. It's all Vim, all the time!
-    if &compatible
-        set nocompatible
-    endif
-
-    " Add NeoBundle to Vim's PATH.
-    call AddRuntimePath(g:our_neobundle_dir)
-endif
-
-" ....................{ START ~ neobundle                  }....................
-" Configure the NeoBundle plugin manager *BEFORE* installed plugins -- which, in
-" practice, means "early in Vim startup." Common commands include:
+"
+" The NeoBundle plugin manager must be configured *BEFORE* NeoBundle-managed
+" bundles -- which, in practice, means "bloody early in Vim startup." Common
+" NeoBundle commands include:
 "     :NeoBundleList            " list configured bundles
 "     :NeoBundleClean           " confirm removal of unused bundles
 "     :NeoBundleUpdate          " update all installed bundles
@@ -125,6 +55,26 @@ endif
 "
 "     " Leverage official Neobundle recipes for popular plugins, if available.
 "     NeoBundle 'Shougo/neobundle-vim-recipes', {'force' : 1}
+
+" If NeoBundle is *NOT* installed, do so before doing anything else. NeoBundle
+" is the fulcrum on which the remainder of this configuration rests.
+if !isdirectory(g:our_neobundle_dir)
+    echo "Installing NeoBundle...\n"
+    execute
+      \ 'silent !git clone https://github.com/Shougo/neobundle.vim ' .
+      \ shellescape(g:our_neobundle_dir)
+endif
+
+" When starting but *NOT* reloading Vim...
+if has('vim_starting')
+    " Disable Vi-specific backwards compatibility. It's all Vim, all the time!
+    if &compatible
+        set nocompatible
+    endif
+
+    " Add NeoBundle to Vim's PATH.
+    call AddRuntimePath(g:our_neobundle_dir)
+endif
 
 " Initialize NeoBundle, installing new bundles to and loading installed bundles
 " from the following subdirectory. Since NeoBundle adopts the whitelist approach
@@ -165,14 +115,13 @@ NeoBundle 'coot/EnchantedVim.git', {
   \ 'depends': ['coot/CRDispatcher.git'],
   \ }
 
-" ....................{ NON-LAZY ~ theme : colour          }....................
+" ....................{ NON-LAZY ~ theme                   }....................
 "FIXME: I'm not entirely fond of either the comment or documentation colors.
 "Contemplate corrections.
 
 " Colour theme.
 NeoBundle 'jonathanfilip/vim-lucius'
 
-" ....................{ NON-LAZY ~ theme : statusline      }....................
 " Statusline theme.
 NeoBundle 'bling/vim-airline'
 
@@ -230,8 +179,7 @@ NeoBundleLazy 'thinca/vim-quickrun', {
 NeoBundleLazy 'xolox/vim-misc'
 
 " ....................{ LAZY ~ fugitive                    }....................
-" Tim Pope's infamous git plugin. The following lazy loading code was stripped
-" directly from:
+" Git wrapper. The following snippet was stripped directly from:
 "     https://github.com/pgilad/vim-lazy-recipes/blob/master/tpope.vim-fugitive.vim
 NeoBundleLazy 'tpope/vim-fugitive', {
   \ 'autoload': {
@@ -248,6 +196,16 @@ if neobundle#tap('vim-fugitive')
     endfunction
     call neobundle#untap()
 endif
+
+" ....................{ LAZY ~ lawrencium                  }....................
+" Mercurial wrapper.
+NeoBundleLazy 'ludovicchabant/vim-lawrencium', {
+  \ 'autoload': {
+  \     'commands': [
+  \         'Hg', 'Hgcommit', 'Hgedit', 'Hgstatus', 'Hgvdiff',
+  \         ],
+  \     },
+  \ }
 
 " ....................{ LAZY ~ filetype                    }....................
 " Markdown.
@@ -405,16 +363,3 @@ NeoBundleCheck
 " augroup END
 
 " --------------------( WASTELANDS                         )--------------------
-    " execute '!git clone https://github.com/Shougo/neobundle.vim /home/leycec/.vim/bundle/neobundle.vim'
-    " silent system(
-    "   \ 'git clone https://github.com/Shougo/neobundle.vim ' .
-    "   \ shellescape(g:our_neobundle_dir)
-    "   \ )
-    " silent !git clone https://github.com/Shougo/neobundle.vim g:our_neobundle_dir
-" call neobundle#begin(expand('~/.vim/bundle/'))
-    " set runtimepath+=~/.vim/bundle/neobundle.vim/
-    " Inform the user of imminent strangeness.
-    " Install NeoBundle to such directory.
-    " Make the parent directory of the directory to install NeoBundle to.
-" Helper functions called below.
-    " echo ''
