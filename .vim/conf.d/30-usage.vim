@@ -1,6 +1,10 @@
 " --------------------( LICENSE                            )--------------------
 " Copyright 2015 by Cecil Curry.
 " See "LICENSE" for further details.
+"
+" --------------------( SYNOPSIS                           )--------------------
+" Non-theme configuration, configuring Vim and bundle functionality pertaining
+" to actual usage rather than aesthetic style.
 
 "FIXME: "python-mode" provides Rope support, which we should both learn and
 "configure appropriately. Rope is basically PyCharm for Vim, providing deep
