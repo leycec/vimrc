@@ -100,10 +100,11 @@ You're done. Praise be to Valhalla.
 
 ## See Also
 
-Actually, you ~~probably~~ really, *really* don't want to fork our dotfiles. While well-intended, they haven't yet metastasized into a general-purpose configuration likely to satisfy the greasy gamut of humanity. If you currently lack Vim dotfiles of your own, consider (in no meaningful order):
+Actually, you ~~probably~~ really, *really* don't want to fork our dotfiles. While well-intended, they haven't yet metastasized into a general-purpose configuration likely to satisfy the greasy gamut of humanity. For those lacking dotfiles of their own, consider appropriating (in no meaningful order):
 
 * [amix](https://github.com/amix)'s [vimrc](https://github.com/amix/vimrc). It's penultimate.
 * [nvie](https://github.com/nvie)'s [vimrc](https://github.com/nvie/vimrc). It's *lots* of love.
+* [tony](https://github.com/tony)'s [vimrc](https://github.com/tony/vim-config). It's a bundle of newness.
 
 ## License
 
