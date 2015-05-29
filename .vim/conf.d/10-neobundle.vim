@@ -6,6 +6,11 @@
 " NeoBundle configuration, defining the set of all NeoBundle-managed third-party
 " Github-hosted plugins to be used.
 
+"FIXME: Install https://github.com/airblade/vim-gitgutter, an utterly awesome
+"bundle augmenting the gutter in an airline-aware manner with discrete "+" and
+""-" symbols signifying changes versus the current branch HEAD. It also comes
+"with a number of really awesome key bindings for navigating changes. Yeah!
+
 "FIXME: Unite integration should be substantially improved. The best
 "introduction to Unite as of this writing is probably the following repo readme:
 "    https://github.com/joedicastro/dotfiles/tree/master/vim
@@ -178,7 +183,7 @@ NeoBundleLazy 'thinca/vim-quickrun', {
 " easytags dependency.
 NeoBundleLazy 'xolox/vim-misc'
 
-" ....................{ LAZY ~ fugitive                    }....................
+" ....................{ LAZY ~ vcs                         }....................
 " Git wrapper. The following snippet was stripped directly from:
 "     https://github.com/pgilad/vim-lazy-recipes/blob/master/tpope.vim-fugitive.vim
 NeoBundleLazy 'tpope/vim-fugitive', {
@@ -190,14 +195,6 @@ NeoBundleLazy 'tpope/vim-fugitive', {
   \     },
   \ }
 
-if neobundle#tap('vim-fugitive')
-    function! neobundle#hooks.on_post_source(bundle)
-        call fugitive#detect(expand('#:p'))
-    endfunction
-    call neobundle#untap()
-endif
-
-" ....................{ LAZY ~ lawrencium                  }....................
 " Mercurial wrapper.
 NeoBundleLazy 'ludovicchabant/vim-lawrencium', {
   \ 'autoload': {
@@ -206,6 +203,7 @@ NeoBundleLazy 'ludovicchabant/vim-lawrencium', {
   \         ],
   \     },
   \ }
+" NeoBundle 'ludovicchabant/vim-lawrencium'
 
 " ....................{ LAZY ~ filetype                    }....................
 " Markdown.
