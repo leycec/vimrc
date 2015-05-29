@@ -78,7 +78,7 @@ Dotfiles are a gritty business. Hand me my CLI shovel.
 
 Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcsh), a Git-centric dotfile manager leveraging [robust Git cleverness](http://git-scm.com/book/en/v2/Git-Internals-Environment-Variables) rather than fragile symbolic links. This is a good thing.
 
-* **Install `vcsh`.** For example, under:
+* **Install `vcsh`.** Specifically, under:
   * Gentoo-based Linux distros:
 
             $ sudo emerge vcsh
@@ -87,12 +87,12 @@ Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcs
 
             $ sudo apt-get install vcsh
 
-* **Move aside any existing Vim dotfiles.**
+* **Move aside any existing dotfiles.**
 
         $ mv ~/.vim{,.old}
         $ mv ~/.vimrc{,.old}
 
-* **Install our Vim dotfiles.**
+* **Install our dotfiles.**
 
         $ vcsh clone https://github.com/leycec/vimrc.git
 
