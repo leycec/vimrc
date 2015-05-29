@@ -58,13 +58,13 @@ let g:our_undo_dir = g:our_cache_dir . '/undo'
 
 " ....................{ HELPERS                            }....................
 " True if the current user is the superuser (i.e., "root").
-function IsSuperuser()
+function IsSuperuser() abort
     return $USER == 'root'
 endfunction
 
 " Append the passed directory to Vim's ","-delimited PATH. For safety, all ","
 " characters in such directory will be implicitly escaped.
-function AddRuntimePath(path)
+function AddRuntimePath(path) abort
     let &runtimepath .= ',' . escape(a:path, '\,')
 endfunction
 
@@ -79,7 +79,7 @@ endfunction
 "   http://mattn.kaoriya.net/software/vim/20090826003359.htm
 " * Yasuhiro Matsumoto's GetScriptID() function, published at:
 "   http://mattn.kaoriya.net/software/vim/20090826003359.htm
-function! GetScriptSID(script_filename)
+function! GetScriptSID(script_filename) abort
     " Capture the contents of the buffer output by calling scriptnames() to a
     " function-local variable.
     redir => l:scriptnames_output
@@ -126,14 +126,14 @@ endfunction
 "
 " * Kanno Kanno's s:get_func() function, published at:
 "   http://kannokanno.hatenablog.com/entry/20120720/1342733323
-function! GetScriptFunction(script_filename, function_name)
+function! GetScriptFunction(script_filename, function_name) abort
     let l:sid = GetScriptSID(a:script_filename)
     return function("<SNR>" . l:sid . '_' . a:function_name)
 endfunction
 
 " Create the passed directory and all parent directories of such directory as
 " needed, providing a Vim analogue of "mkdir -p".
-function MakeDirIfNotFound(path)
+function MakeDirIfNotFound(path) abort
     if !isdirectory(a:path)
         call mkdir(a:path, 'p')
     endif

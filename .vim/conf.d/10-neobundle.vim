@@ -203,7 +203,6 @@ NeoBundleLazy 'ludovicchabant/vim-lawrencium', {
   \         ],
   \     },
   \ }
-" NeoBundle 'ludovicchabant/vim-lawrencium'
 
 " ....................{ LAZY ~ filetype                    }....................
 " Markdown.
