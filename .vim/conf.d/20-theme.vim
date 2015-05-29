@@ -265,17 +265,20 @@ let g:airline_section_x = airline#section#create_right(['%{getcwd()}'])
 " section (e.g., line numbers) are visible elsewhere and hence redundant here.
 let g:airline_section_z = airline#section#create(['%2c'])
 
-let s:hooks = neobundle#get_hooks('vim-qfstatusline')
-function! s:hooks.on_source(bundle)
-    " Conditionally display a rightmost section synopsizing the line and column
-    " number of the first syntax error in the current buffer.
-    let g:airline_section_warning =
-      \ airline#section#create(["%{qfstatusline#Update()}"])
-    
-    " Configure "vim-qfstatusline" to update the statusline on syntax errors.
-    let g:Qfstatusline#UpdateCmd = function('airline#update_statusline')
-endfunction
-unlet s:hooks
+" Configure qfstatusline when lazily loaded.
+if neobundle#tap('vim-qfstatusline')
+    function! neobundle#hooks.on_post_source(bundle)
+        " Conditionally display a rightmost section synopsizing the line and
+        " column number of the first syntax error in the current buffer.
+        let g:airline_section_warning =
+          \ airline#section#create(["%{qfstatusline#Update()}"])
+
+        " Update the statusline on syntax errors.
+        let g:Qfstatusline#UpdateCmd = function('airline#update_statusline')
+    endfunction
+
+    call neobundle#untap()
+endif
 
 " ....................{ WRAPPING                           }....................
 " String prefixing soft-wrapped lines.

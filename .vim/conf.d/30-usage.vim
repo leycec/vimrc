@@ -153,45 +153,52 @@ set backspace=indent,eol,start
 " * "filler", display filler lines (i.e., contextual lines whose sole purpose is
 "   to synchronize vertically-split diff buffers).
 " * "vertical", opening "diff" mode with vertical rather than horizontal splits.
+"   (Horizontal splits? Seriously, Bram. Who does that? *NO ONE*. That's who.)
 set diffopt=filler,vertical
 
 " ....................{ EXPLORING ~ unite                  }....................
-" Since unite is loaded lazily, defer its configuration until loaded.
-let s:hooks = neobundle#get_hooks('unite.vim')
-function! s:hooks.on_source(bundle)
-    " Match "fuzzily," effectively inserting the nongreedy globbing operator
-    " "*?" between each character of the search pattern (e.g., searching for
-    " "vvrc" in a unite buffer matches both "~/.vim/vimrc" and
-    " "~/.vim/bundle/vundle/startup/rc.vim").
-    call unite#filters#matcher_default#use(['matcher_fuzzy'])
+" Configure Unite when lazily loaded.
+if neobundle#tap('unite.vim')
+    function! neobundle#hooks.on_post_source(bundle)
+        " Match "fuzzily," effectively inserting the nongreedy globbing operator
+        " "*?" between each character of the search pattern (e.g., searching for
+        " "vvrc" in a unite buffer matches both "~/.vim/vimrc" and
+        " "~/.vim/bundle/vundle/startup/rc.vim").
+        call unite#filters#matcher_default#use(['matcher_fuzzy'])
 
-    " Sort unite matches by descending rank.
-    call unite#filters#sorter_default#use(['sorter_rank'])
+        " Sort unite matches by descending rank.
+        call unite#filters#sorter_default#use(['sorter_rank'])
 
-    " Directory to which unite caches metadata.
-    let g:unite_data_directory = g:our_cache_dir . '/unite'
+        " Directory to which unite caches metadata.
+        let g:unite_data_directory = g:our_cache_dir . '/unite'
 
-    " Open unite buffers in Insert Mode by default.
-    let g:unite_enable_start_insert = 1
+        " Open unite buffers in Insert Mode by default.
+        let g:unite_enable_start_insert = 1
 
-    " String prefixing the unite input prompt.
-    let g:unite_prompt = '» '
+        " String prefixing the unite input prompt.
+        let g:unite_prompt = '» '
 
-    " Enable unite source "unite-source-history/yank", permitting exploration of the
-    " yank history (e.g., as via plugins "yankring" and "yankstack").
-    let g:unite_source_history_yank_enable = 1
-endfunction
+        " Enable unite source "unite-source-history/yank", permitting
+        " exploration of yank history (e.g., via "yankring" or "yankstack").
+        let g:unite_source_history_yank_enable = 1
+    endfunction
+
+    call neobundle#untap()
+endif
 
 " ....................{ EXPLORING ~ files                  }....................
 " Common file exploration commands include:
 "     :VimFiler         " run vimfiler
 
-" Since vimfiler is loaded lazily, defer its configuration until loaded.
-let s:hooks = neobundle#get_hooks('vimfiler')
-function! s:hooks.on_source(bundle)
-    " Set vimfiler as the default file explorer.
-    let g:vimfiler_as_default_explorer = 1
-endfunction
+" Configure vimfiler when lazily loaded.
+if neobundle#tap('vimfiler')
+    function! neobundle#hooks.on_post_source(bundle)
+        " Set vimfiler as the default file explorer.
+        let g:vimfiler_as_default_explorer = 1
+    endfunction
+
+    call neobundle#untap()
+endif
 
 " ....................{ FILETYPE ~ markdown : tpope        }....................
 " Tim Pope's Markdown plugin.
@@ -543,11 +550,15 @@ let g:quickrun_config['watchdogs_checker/_'] = {
 "   \ }
 
 " ....................{ SYNTAX CHECK ~ watchdogs : stop    }....................
-" Configure watchdogs with the prior "quickrun" configuration.
-let s:hooks = neobundle#get_hooks('vim-watchdogs')
-function! s:hooks.on_source(bundle)
-    call watchdogs#setup(g:quickrun_config)
-endfunction
+" Configure watchdogs when lazily loaded.
+if neobundle#tap('vimfiler')
+    function! neobundle#hooks.on_post_source(bundle)
+        " Initialize watchdogs with the prior "quickrun" configuration
+        call watchdogs#setup(g:quickrun_config)
+    endfunction
+
+    call neobundle#untap()
+endif
 
 " Syntax check on buffer writes.
 let g:watchdogs_check_BufWritePost_enable = 1 
@@ -622,47 +633,79 @@ set tags=./.tags;
 "FIXME: Or perhaps such functionality has already been implemented by now? Look
 "into this, please. It's been over a year since we last examined this.
 
-" Since easytags is loaded lazily, defer its configuration until loaded.
-let s:hooks = neobundle#get_hooks('vim-easytags')
-function! s:hooks.on_source(bundle)
-    " Due to an unresolved issue in easytags itself, automatic tag highlighting
-    " is currently inordinantely slow. Until resolved, disable such automation.
-    let g:easytags_auto_highlight = 0
+" Configure easytags when lazily loaded.
+if neobundle#tap('vim-easytags')
+    function! neobundle#hooks.on_post_source(bundle)
+        " Due to an unresolved issue in easytags itself, automatic tag
+        " highlighting is currently inordinantely slow. Until resolved, disable
+        " such automation.
+        let g:easytags_auto_highlight = 0
 
-    " Directory to which filetype-specific global tags will be written. This is
-    " only a fallback for buffers in which project-local tags cannot be written
-    " (e.g., due to insufficient user permissions).
-    let g:easytags_by_filetype = g:our_cache_dir . '/tags'
+        " Directory to which filetype-specific global tags will be written. This
+        " is only a fallback for buffers in which project-local tags cannot be
+        " written (e.g., due to insufficient user permissions).
+        let g:easytags_by_filetype = g:our_cache_dir . '/tags'
 
-    " Automatically read project-local tags found according to option "tags" and
-    " write such tags to the current directory if not found.
-    let g:easytags_dynamic_files = 2
+        " Automatically read project-local tags found according to option "tags"
+        " and write such tags to the current directory if not found.
+        let g:easytags_dynamic_files = 2
 
-    " For efficiency, highlight tags with an external Python script rather than
-    " pure Vimscript.
-    let g:easytags_python_enabled = 1
+        " For efficiency, highlight tags with an external Python script rather
+        " than pure Vimscript.
+        let g:easytags_python_enabled = 1
 
-    " Since "ctags" is no longer actively released (and in any case is predicate
-    " on regex heuristics rather than deterministic parsing), prefer
-    " language-specific commands producing "ctags"-compatible output to "ctags".
-    "
-    " Note that keys are lowercase "ctags" rather than vim filetypes (e.g.,
-    " "c++" rather than "cpp"). To list all available such filetypes, run:
-    "
-    "     >>> ctags --list-languages
-    "     >>> ctags --list-maps
-    let g:easytags_languages = {
-      \ 'ruby': {
-      \     'cmd': 'ripper-tags',
-      \     'args': [],
-      \     'fileoutput_opt': '-f',
-      \     'stdout_opt': '-f-',
-      \     'recurse_flag': '-R'
-      \     }
-      \ }
-endfunction
+        " Since "ctags" is no longer actively released (and in any case is
+        " predicate on regex heuristics rather than deterministic parsing),
+        " prefer language-specific commands producing "ctags"-compatible output
+        " to "ctags".
+        "
+        " Note that keys are lowercase "ctags" rather than vim filetypes (e.g.,
+        " "c++" rather than "cpp"). To list all available such filetypes, run:
+        "
+        "     >>> ctags --list-languages
+        "     >>> ctags --list-maps
+        let g:easytags_languages = {
+          \ 'ruby': {
+          \     'cmd': 'ripper-tags',
+          \     'args': [],
+          \     'fileoutput_opt': '-f',
+          \     'stdout_opt': '-f-',
+          \     'recurse_flag': '-R'
+          \     }
+          \ }
+    endfunction
+
+    call neobundle#untap()
+endif
 
 " ....................{ VCS ~ git : fugitive               }....................
+" Initialize Fugitive when lazily loaded against the current buffer (e.g., by
+" searching for the ".git" directory relative to such buffer's path).
+if neobundle#tap('vim-fugitive')
+    function! neobundle#hooks.on_post_source(bundle)
+        call fugitive#detect(expand('#:p'))
+    endfunction
+
+    call neobundle#untap()
+endif
+
+" Initialize Lawrencium when lazily loaded against the current buffer (e.g., by
+" searching for the ".hg" directory relative to such buffer's path).
+if neobundle#tap('vim-lawrencium')
+    function! neobundle#hooks.on_post_source(bundle)
+        " Absolute path of Lawrencium's main plugin script.
+        let l:lawrencium_filename =
+          \ g:our_bundle_dir . '/vim-lawrencium/plugin/lawrencium.vim'
+
+        " Initialize Lawrencium.
+        let SetupBufferCommands = GetScriptFunction(
+          \ l:lawrencium_filename, 'setup_buffer_commands')
+        call SetupBufferCommands()
+    endfunction
+
+    call neobundle#untap()
+endif
+
 " Define the following new commands:
 "
 " * GreviewUnstaged(), opening a new vertically_split diff of the working tree
@@ -683,9 +726,6 @@ command GreviewStaged :Git! diff --staged
 xnoremap p "_c<Esc>p
 
 " ....................{ CLEANUP                            }....................
-" For safety, undefine previously defined variables.
-unlet s:hooks
-
 " When reloading Vim, reconfigure all bundles *AFTER* defining all on_source()
 " hooks for such bundles above.
 if !has('vim_starting')
@@ -693,3 +733,5 @@ if !has('vim_starting')
 endif
 
 " --------------------( WASTELANDS                         )--------------------
+" For safety, undefine previously defined variables.
+" unlet s:hooks
