@@ -7,13 +7,26 @@ leycec/vimrc
 
 It's *sorta* like that.
 
-## Motivation
+## Six-word Synopsis
+
+[No installation](#autoinstallation). [NeoBundle laziness](#neobundle). [Neon lucidity](#aesthetics).
+
+## Nebulous Synopsis
 
 Amongst our weaponry are such diverse elements as: **autoinstallation**, the **IDE-in-a-CLI** (i.e., [INTP](http://www.intp.org/intprofile.html) Shangri La), **old school aesthetics**, and **gratuitous Vim snippetry**.[*](https://www.youtube.com/watch?v=Tym0MObFpTI)
 
 ### Autoinstallation
+<a name="autoinstallation"></a>
 
-Our dotfiles implicitly install all dependencies in a platform-aware manner on the next Vim startup. *No* installation script needs to be manually run; *no* external software needs to be manually installed. It's cyborg-like magic, complete with [uncanny valley](https://www.youtube.com/watch?v=CNdAIPoh8a4) handwaving.
+Our dotfiles require the following hard dependencies:
+
+* **Vim** >= **7.4.427** compiled with the following features:
+  * `+signs`.
+* **Git**. Any Git should do, but newer Git is a happy Git.
+
+**That's it.**
+
+Our dotfiles implicitly install all other dependencies in a platform-aware manner on the next Vim startup. *No* installation script needs to be manually run; *no* external software needs to be manually installed. It's cyborg-like magic, complete with [uncanny valley](https://www.youtube.com/watch?v=CNdAIPoh8a4) handwaving.
 
 If you use [`vcsh`](https://github.com/RichiH/vcsh) to manage dotfiles, installation reduces to a single command:
 
@@ -22,6 +35,7 @@ If you use [`vcsh`](https://github.com/RichiH/vcsh) to manage dotfiles, installa
 See the [installation instructions](#installation) below.
 
 ### IDE-in-a-CLI
+<a name="neobundle"></a>
 
 Our dotfiles feature a [NeoBundle](https://github.com/Shougo/neobundle.vim)-managed suite of bundles<sup>1</sup> optimizing Vim into a command-line IDE. For efficiency, most bundles are loaded lazily (just-in-time) rather than at startup (all-at-once). For simplicity, *all* bundles including NeoBundle itself are automatically installed on the next Vim startup.
 
@@ -37,6 +51,7 @@ Prominent bundles include:
   * [vim-unimpaired](https://github.com/tpope/vim-unimpaired), adding `[`- and `]`-prefixed mnemonics for syntax-aware metamovements. It's as hot as it sounds.
 
 ### Aesthetics
+<a name="aesthetics"></a>
 
 Our dotfiles embrace such commendable art movements as: the 8-bit era, post-modernist minimalism, and [brutalism](http://fuckyeahbrutalism.tumblr.com). Adopt a [full-screen 256-color terminal](http://software.schmorp.de/pkg/rxvt-unicode.html) near you and bask in debatable ANSI glory. 
 
@@ -55,11 +70,11 @@ Our dotfiles promote the inscrutable art of Vim snippetry. For your [copypasta](
 Snippets galore, we say.
 
 ## Installation
+<a name="installation"></a>
 
-Dotfiles are a gritty business. Hand me that CLI shovel.
+Dotfiles are a gritty business. Hand me my CLI shovel.
 
 ### vcsh (Recommended)
-<a name="installation"></a>
 
 Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcsh), a Git-centric dotfile manager leveraging [robust Git cleverness](http://git-scm.com/book/en/v2/Git-Internals-Environment-Variables) rather than fragile symbolic links. This is a good thing.
 
