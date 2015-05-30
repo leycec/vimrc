@@ -95,8 +95,14 @@ Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcs
 * **Install our dotfiles.**
 
         $ vcsh clone https://github.com/leycec/vimrc.git
+        
+* **_\<Optional\>_** For fellow Github developers, **install our Github-specific git hooks.**
 
-You're done. Praise be to Valhalla.
+        $ vcsh enter vimrc
+        $ ln -s $HOME/.githooks/github-post-commit $GIT_DIR/hooks/post-commit
+        $ exit
+        
+You're done. Praise be to open-source Valhalla.
 
 ## See Also
 
