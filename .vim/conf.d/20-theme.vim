@@ -191,47 +191,30 @@ set novisualbell
 " * "T", truncate messages rather than prompting users to press <Enter>.
 set shortmess=aotT
 
-" ....................{ STATUS LINE                        }....................
-" Always display the status line, regardless of how many windows are open.
+" ....................{ STATUSLINE                         }....................
+" Always show the statusline regardless of the number of currently open windows.
 set laststatus=2
 
-" ....................{ STATUS LINE ~ airline              }....................
+" ....................{ STATUSLINE ~ airline               }....................
 " See also:
 "
 " * Airline FAQ:
 "   https://github.com/bling/vim-airline/wiki/FAQ
+" * Airline documentation:
+"   https://github.com/bling/vim-airline/blob/master/doc/airline.txt
 
-"FIXME: We can and eventually should do significantly better. airline's default
-"status line is *WAY* too verbose, displaying a variety of information either
-"obtainable elsewhere or easily abbreviatable. Specifically:
-"
-"* Don't bother displaying how far one is through the current buffer (e.g., the
-"  "50%"). That's functionally useless metadata.
-"* Don't bother displaying how the current line number, which is already given
-"  by the line number column.
-"* Don't bother displaying the current filetype. (Maybe? Arguable.)
-"* Prefix the basename of the current buffer's file by all dirnames relative to
-"  the current working directory (e.g., rather than merely "test.py", display
-"  "test/unit/test.py"). Interestingly, airline's tabline extension already
-"  sort-of does this, but reduces directory names to the first character of
-"  such names. (Which makes sense for a tabline.)
-"
-"Happily, airline is *VERY* and readily configurable. For details, see either
-"":h airline" or:
-"    https://github.com/bling/vim-airline/blob/master/doc/airline.txt
+"FIXME: Prefix the basename of the current buffer's file by all dirnames
+"relative to the current working directory (e.g., rather than merely "test.py",
+"display "test/unit/test.py"). Interestingly, airline's tabline extension
+"already sort-of does this, but reduces directory names to the first character
+"of such names. (Which makes sense for a tabline.)
 
-" Delimit sections by background colour changes rather than additional
-" characters.
+" To conserve statusline space, delimit sections by background colour changes
+" rather than additional characters.
 let g:airline_left_sep = ''
 let g:airline_right_sep = ''
 
-" Enable the airline-specific tabline extension, listing buffers in a new status
-" line appearing above rather than below current windows.
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_sep = ''
-let g:airline#extensions#tabline#left_alt_sep = ''
-
-" Reduce Vim mode names in the status line to single characters.
+" To conserve statusline space, abbreviate Vim mode names by single characters.
 let g:airline_mode_map = {
   \ '__' : '-',
   \ 'n' : 'N',
@@ -246,13 +229,29 @@ let g:airline_mode_map = {
   \ '' : 'S',
   \ }
 
+" ....................{ STATUSLINE ~ airline : extension   }....................
+" Show the current VCS branch if any.
+let g:airline#extensions#branch#enabled = 1
+
+" Avoid showing changes to the current VCS branch if any.
+let g:airline#extensions#hunks#enabled = 0
+
+" List all buffers in a new statusline situated *ABOVE* all other windows.
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_sep = ''
+let g:airline#extensions#tabline#left_alt_sep = ''
+
 "FIXME: Enable once we get such fonts (finally!) going.
 " Enable Powerline-patched font support.
 " let g:airline_powerline_fonts = 1
 
-" ....................{ STATUS LINE ~ airline : section    }....................
+" ....................{ STATUSLINE ~ airline : section     }....................
 " For a list of default values for all sections, see:
 "     https://github.com/bling/vim-airline/blob/master/autoload/airline/init.vim
+
+" let g:airline_section_b = airline#section#create(['hunks', 'branch'])
+" let g:airline_section_b = airline#section#create(['branch'])
+" let g:airline_section_b = 'branch'
 
 " Expand the center-rightmost status line section to display the current working
 " directory. By default, such section displays the filetype for the current
@@ -260,7 +259,7 @@ let g:airline_mode_map = {
 " with "set ft" when it does, this strikes us as a better use of scarce space.
 let g:airline_section_x = airline#section#create_right(['%{getcwd()}'])
 
-" Reduce the rightmost status line section to merely the current column with
+" Reduce the rightmost status line section to merely the current column with a
 " default width of two digits. All other metadata typically displayed in such
 " section (e.g., line numbers) are visible elsewhere and hence redundant here.
 let g:airline_section_z = airline#section#create(['%2c'])
@@ -345,3 +344,21 @@ augroup END
 "highlight CursorColumn ctermbg=235 guibg=#2c2d27
 
 " --------------------( WASTELANDS                         )--------------------
+"FUXME: We can and eventually should do significantly better. airline's default
+"status line is *WAY* too verbose, displaying a variety of information either
+"obtainable elsewhere or easily abbreviatable. Specifically:
+"
+"* Don't bother displaying how far one is through the current buffer (e.g., the
+"  "50%"). That's functionally useless metadata.
+"* Don't bother displaying how the current line number, which is already given
+"  by the line number column.
+"* Don't bother displaying the current filetype. (Maybe? Arguable.)
+"* Prefix the basename of the current buffer's file by all dirnames relative to
+"  the current working directory (e.g., rather than merely "test.py", display
+"  "test/unit/test.py"). Interestingly, airline's tabline extension already
+"  sort-of does this, but reduces directory names to the first character of
+"  such names. (Which makes sense for a tabline.)
+"
+"Happily, airline is *VERY* and readily configurable. For details, see either
+"":h airline" or:
+"    https://github.com/bling/vim-airline/blob/master/doc/airline.txt

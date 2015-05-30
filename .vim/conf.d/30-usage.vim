@@ -624,34 +624,7 @@ if neobundle#tap('vim-easytags')
     call neobundle#untap()
 endif
 
-" ....................{ VCS ~ git : fugitive               }....................
-" Initialize Fugitive when lazily loaded against the current buffer (e.g., by
-" searching for the ".git" directory relative to such buffer's path).
-if neobundle#tap('vim-fugitive')
-    function! neobundle#hooks.on_post_source(bundle)
-        call fugitive#detect(expand('#:p'))
-    endfunction
-
-    call neobundle#untap()
-endif
-
-" Initialize Lawrencium when lazily loaded against the current buffer (e.g., by
-" searching for the ".hg" directory relative to such buffer's path).
-if neobundle#tap('vim-lawrencium')
-    function! neobundle#hooks.on_post_source(bundle)
-        " Absolute path of Lawrencium's main plugin script.
-        let l:lawrencium_filename =
-          \ g:our_bundle_dir . '/vim-lawrencium/plugin/lawrencium.vim'
-
-        " Initialize Lawrencium.
-        let SetupBufferCommands = GetScriptFunction(
-          \ l:lawrencium_filename, 'setup_buffer_commands')
-        call SetupBufferCommands()
-    endfunction
-
-    call neobundle#untap()
-endif
-
+" ....................{ VCS ~ fugitive                     }....................
 " Define the following new commands:
 "
 " * GreviewUnstaged(), opening a new vertically_split diff of the working tree
@@ -661,23 +634,35 @@ endif
 command GreviewUnstaged :Git! diff
 command GreviewStaged :Git! diff --staged
 
-" ....................{ FIXES                              }....................
-"FIXME: Actually, this strikes me as a poor idea. Use the 0 register, instead.
-" Prevent "x" from overwriting the default register by forcing it to cut into
-" the blackhole register _ instead.
-"noremap x "_x
-
-" Prevent "p" from repasting the currently selected text in visual mode. See
-" http://marcorucci.com/blog/#visualModePaste for additional discussion.
-xnoremap p "_c<Esc>p
-
-" ....................{ CLEANUP                            }....................
-" When reloading Vim, reconfigure all bundles *AFTER* defining all on_source()
-" hooks for such bundles above.
-if !has('vim_starting')
-    call neobundle#call_hook('on_source')
-endif
-
 " --------------------( WASTELANDS                         )--------------------
+" ....................{ VCS ~ lawrencium                   }....................
+" Initialize Fugitive when lazily loaded against the current buffer (e.g., by
+" searching for the ".git" directory relative to such buffer's path).
+" if neobundle#tap('vim-fugitive')
+"     function! neobundle#hooks.on_post_source(bundle)
+"         doautoall fugitive BufNewFile
+"         call fugitive#detect(expand('#:p'))
+"     endfunction
+"
+"     call neobundle#untap()
+" endif
+"
+" " Initialize Lawrencium when lazily loaded against the current buffer (e.g., by
+" " searching for the ".hg" directory relative to such buffer's path).
+" if neobundle#tap('vim-lawrencium')
+"     function! neobundle#hooks.on_post_source(bundle)
+"         " Absolute path of Lawrencium's main plugin script.
+"         let l:lawrencium_filename =
+"           \ g:our_bundle_dir . '/vim-lawrencium/plugin/lawrencium.vim'
+"
+"         " Initialize Lawrencium.
+"         let SetupBufferCommands = GetScriptFunction(
+"           \ l:lawrencium_filename, 'setup_buffer_commands')
+"         call SetupBufferCommands()
+"     endfunction
+"
+"     call neobundle#untap()
+" endif
+
 " For safety, undefine previously defined variables.
 " unlet s:hooks
