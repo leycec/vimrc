@@ -25,6 +25,10 @@
 !/.gitignore.d
 !/.gitignore.d/vimrc
 
+# Whitelist git hooks of interest to fellow developers.
+!/.githooks
+!/.githooks/post-commit
+
 # Whitelist all dotfile-specific paths in the home directory by default. Such
 # whitelist may be (and often is) overridden by lower-level ".gitignore" files
 # nested in such paths.
