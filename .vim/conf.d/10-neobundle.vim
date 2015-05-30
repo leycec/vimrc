@@ -130,6 +130,36 @@ NeoBundle 'jonathanfilip/vim-lucius'
 " Statusline theme.
 NeoBundle 'bling/vim-airline'
 
+
+" ....................{ NON-LAZY ~ vcs                     }....................
+" By definition, VCS wrappers *CANNOT* be loaded lazily -- despite the abundance
+" of online ".vimrc" examples erroneously suggesting they can. Since VCS wrapper
+" hooks *MUST* be run on buffer switches to detect whether that buffer is under
+" VCS control, VCS wrappers *MUST* be sourced before such switches. Then since
+" the first file to be opened constitutes a buffer switch *AND* since at least
+" one file is (typically) always open, VCS wrappers *MUST* be non-lazily sourced
+" on every Vim startup.
+"
+" Technically, this requirement is somewhat circumventable by defining
+" on_post_hook() hooks for the bundles installing such VCS wrappers that
+" explicitly call such VCS wrapper detection hooks. However:
+"
+" * Such detection hooks are often privatized to script-local functions. While
+"   such privacy is trivially breakable (and our dotfiles define utility
+"   functions for doing just that), the resulting logic depends on script
+"   internals *NOT* intended for public use and is hence liable to break without
+"   public notice.
+" * Such circumventions prevent display of VCS metadata in the Vim UI (e.g., the
+"   name of the current VCS branch in a statusline section).
+"
+" The costs are considerably higher than the negligible efficiency gains.
+
+" Git wrapper.
+NeoBundle 'tpope/vim-fugitive'
+
+" Mercurial wrapper.
+NeoBundle 'ludovicchabant/vim-lawrencium'
+
 " ....................{ NON-LAZY ~ rest                    }....................
 " Buffer commenting/uncommenting.
 "
@@ -182,27 +212,6 @@ NeoBundleLazy 'thinca/vim-quickrun', {
 
 " easytags dependency.
 NeoBundleLazy 'xolox/vim-misc'
-
-" ....................{ LAZY ~ vcs                         }....................
-" Git wrapper. The following snippet was stripped directly from:
-"     https://github.com/pgilad/vim-lazy-recipes/blob/master/tpope.vim-fugitive.vim
-NeoBundleLazy 'tpope/vim-fugitive', {
-  \ 'autoload': {
-  \     'commands': [
-  \         'Gcd', 'Gcommit', 'Gdiff', 'Ggrep', 'Git', 'Git!',
-  \         'Glcd', 'Glog', 'Gstatus', 'Gwrite',
-  \         ],
-  \     },
-  \ }
-
-" Mercurial wrapper.
-NeoBundleLazy 'ludovicchabant/vim-lawrencium', {
-  \ 'autoload': {
-  \     'commands': [
-  \         'Hg', 'Hgcommit', 'Hgedit', 'Hgstatus', 'Hgvdiff',
-  \         ],
-  \     },
-  \ }
 
 " ....................{ LAZY ~ filetype                    }....................
 " Markdown.
@@ -360,3 +369,27 @@ NeoBundleCheck
 " augroup END
 
 " --------------------( WASTELANDS                         )--------------------
+" " can. The crux of the issue is that VCS wrappers *MUST* be run on buffer
+" switches to detect whether or not that buffer is under VCS control, implying. 
+" ....................{ LAZY ~ vcs                         }....................
+" Git wrapper. The following snippet was stripped directly from:
+"     https://github.com/pgilad/vim-lazy-recipes/blob/master/tpope.vim-fugitive.vim
+" NeoBundleLazy 'tpope/vim-fugitive', {
+"   \ 'augroup': 'fugitive',
+"   \ 'autoload': {
+"   \     'commands': [
+"   \         'Gcd', 'Gcommit', 'Gdiff', 'Ggrep', 'Git', 'Git!',
+"   \         'Glcd', 'Glog', 'Gstatus', 'Gwrite',
+"   \         ],
+"   \     },
+"   \ }
+"
+" " Mercurial wrapper.
+" NeoBundleLazy 'ludovicchabant/vim-lawrencium', {
+"   \ 'augroup': 'lawrencium_detect',
+"   \ 'autoload': {
+"   \     'commands': [
+"   \         'Hg', 'Hgcommit', 'Hgedit', 'Hgstatus', 'Hgvdiff',
+"   \         ],
+"   \     },
+"   \ }

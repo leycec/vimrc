@@ -5,7 +5,7 @@
 " --------------------( SYNOPSIS                           )--------------------
 " Dotfile-specific key bindings.
 
-" ....................{ BINDINGS                           }....................
+" ....................{ NORMAL                             }....................
 " Bind <;> to <:> and <:> to <;> in normal and visual modes. This reduces the
 " number of keystrokes required to enter Ex commands -- which, ammortized over
 " time, can dramatically reduce keystroke load.
@@ -19,11 +19,11 @@
 nnoremap j gj
 nnoremap k gk
 
-" ....................{ BINDINGS ~ ex                      }....................
+" ....................{ EX                                 }....................
 " Bind <:w!!> to reopen the current file for writing with superuser privelages.
 cnoremap <silent> w!! w !sudo tee % >/dev/null
 
-" ....................{ BINDINGS ~ leader                  }....................
+" ....................{ LEADER                             }....................
 " Bind <,> to "<Leader>", a symbolic user-specific prefix for Vim key bindings.
 " By design, such prefix is guaranteed to *NOT* conflict with default bindings,
 " and hence provides a safe namespace with which to define custom key bindings.
@@ -49,7 +49,7 @@ nnoremap <silent> <leader>vr load-vim-script $MYVIMRC<cr>
 " strings (e.g., "/ oeuoeuoeu").
 nnoremap <silent> <leader>/ :nohlsearch<cr>
 
-" ....................{ BINDINGS ~ leader : vcs            }....................
+" ....................{ LEADER ~ vcs                       }....................
 " Bind <,Gu> to open a new buffer diffing the working Git tree against the index.
 nnoremap <leader>Gu :GreviewUnstaged<cr>
 
@@ -61,5 +61,15 @@ nnoremap <leader>Ge :Gstatus<cr>
 
 " Bind <,He> to open a new buffer viewing and editing Mercurial's DirState.
 nnoremap <leader>He :Hgstatus<cr>
+
+" ....................{ FIXES                              }....................
+"FIXME: Actually, this strikes me as a poor idea. Use the 0 register, instead.
+" Prevent <x> from overwriting the default register by forcing it to cut into
+" the blackhole register _ instead.
+"noremap x "_x
+
+" Prevent <p> from repasting the currently selected text in visual mode. See
+" http://marcorucci.com/blog/#visualModePaste for additional discussion.
+xnoremap p "_c<Esc>p
 
 " --------------------( WASTELANDS                         )--------------------

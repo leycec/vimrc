@@ -272,7 +272,7 @@
 " Recursively source all user-specific Vim startup scripts (i.e., ".vim" files
 " under "~/.vim/conf.d"). Such scripts are globbed lexicographically and hence
 " may be ordered with numeric prefixes. Such subdirectory and hence scripts are
-" ignored by Vim by default and hence specific to this root startup script.
+" ignored by Vim by default and hence specific to this custom dotfile.
 "
 " Technically, Vim already performs a similar command on startup (e.g.,
 " "runtime! plugin/**/*.vim"), implying that moving ".vimrc" and all dependent

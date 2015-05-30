@@ -35,6 +35,9 @@ endif
 " Absolute path of Vim's top-level dot directory.
 let g:our_vim_dir = $HOME . '/.vim'
 
+" Absolute path of the current user's custom Vim dotfile.
+let g:our_vimrc_local_file = $HOME . '/.vimrc.local'
+
 " ....................{ PATHS ~ bundle                     }....................
 " Absolute path of the directory to install bundles to.
 let g:our_bundle_dir = g:our_vim_dir . '/bundle'
