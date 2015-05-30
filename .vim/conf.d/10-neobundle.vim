@@ -10,6 +10,11 @@
 "bundle augmenting the gutter in an airline-aware manner with discrete "+" and
 ""-" symbols signifying changes versus the current branch HEAD. It also comes
 "with a number of really awesome key bindings for navigating changes. Yeah!
+"FIXME: Install https://github.com/mhinz/vim-signify, an alternative to
+"gitgutter generally applicable to *ALL* VCSs. Do we want both? Simply, *YES*.
+"gitgutter is more feature-full and hence preferable for git, thus relegating
+"signify as a backup applicable to all other VCSs. Naturally, we would then need
+"to conditionally disable signify for git buffers. Certainly feasible.
 
 "FIXME: Unite integration should be substantially improved. The best
 "introduction to Unite as of this writing is probably the following repo readme:
