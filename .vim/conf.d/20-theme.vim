@@ -233,7 +233,9 @@ let g:airline_mode_map = {
 " Show the current VCS branch if any.
 let g:airline#extensions#branch#enabled = 1
 
-" Avoid showing changes to the current VCS branch if any.
+" Avoid describing changes to the current VCS branch if any. Such description
+" tends to be overly verbose (e.g., "+1 ~3 -1"), irrelevant, and available via
+" other means, such as at the CLI prompt.
 let g:airline#extensions#hunks#enabled = 0
 
 " List all buffers in a new statusline situated *ABOVE* all other windows.
@@ -248,10 +250,6 @@ let g:airline#extensions#tabline#left_alt_sep = ''
 " ....................{ STATUSLINE ~ airline : section     }....................
 " For a list of default values for all sections, see:
 "     https://github.com/bling/vim-airline/blob/master/autoload/airline/init.vim
-
-" let g:airline_section_b = airline#section#create(['hunks', 'branch'])
-" let g:airline_section_b = airline#section#create(['branch'])
-" let g:airline_section_b = 'branch'
 
 " Expand the center-rightmost status line section to display the current working
 " directory. By default, such section displays the filetype for the current
@@ -344,6 +342,10 @@ augroup END
 "highlight CursorColumn ctermbg=235 guibg=#2c2d27
 
 " --------------------( WASTELANDS                         )--------------------
+" let g:airline_section_b = airline#section#create(['hunks', 'branch'])
+" let g:airline_section_b = airline#section#create(['branch'])
+" let g:airline_section_b = 'branch'
+
 "FUXME: We can and eventually should do significantly better. airline's default
 "status line is *WAY* too verbose, displaying a variety of information either
 "obtainable elsewhere or easily abbreviatable. Specifically:
