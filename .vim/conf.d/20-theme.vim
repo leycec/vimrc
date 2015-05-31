@@ -127,7 +127,7 @@ set wildmode=list:longest,full
 " and hence should *NOT* be synchronized here:
 "
 " * "python", by "python-mode"'s global variable "g:pymode_syntax_slow_sync".
-augroup filetype_syntax
+augroup our_filetype_syntax
     autocmd!
     autocmd FileType html,zsh autocmd BufEnter * :syntax sync fromstart
 augroup END
@@ -154,7 +154,7 @@ set listchars=tab:»·,trail:·,nbsp:␣
 
 " Avoid displaying tab characters in modes in which such characters are either
 " required (e.g., ebuilds) or merely commonplace (e.g., HTML, XML).
-augroup filetype_tabs
+augroup our_filetype_tabs
     autocmd!
     autocmd FileType ebuild,html,xml setlocal nolist
 augroup END
@@ -304,7 +304,7 @@ set showbreak=↳  " ↺↳↪
 set textwidth=80
 
 " Filetype-specific wrapping.
-augroup filetype_wrapping
+augroup our_filetype_wrapping
     autocmd!
 
     " Visually soft-wrap lines exceeding the width of the current Vim window.

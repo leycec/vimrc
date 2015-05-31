@@ -52,18 +52,41 @@ set fileencodings=utf8,iso-2022-jp,euc-jp,cp932,default,latin1
 let &viminfo = '%,<1024,/64,''64,h,s8,n' . g:our_cache_dir . '/viminfo'
 
 " ....................{ CACHING ~ backup                   }....................
-" Directory persisting backups of edited files to corresponding files.
-"
-" To ensure the uniqueness of such files in such directory, suffix such
-" directory with "//", in which case the basenames of backup files will be the
-" absolute paths of the original files with all directory separators "/"
-" replaced by "%".
-let &backupdir = g:our_backup_dir . '//'
+" Backup files to the directory specified below.
 set backup
+
+" Directory persisting backups of edited files to corresponding files. Since Vim
+" offers a builtin means of uniquifying swap and undo but *NOT* backup files, we
+" unroll our own for the latter below.
+let &backupdir = g:our_backup_dir
+
+augroup our_backup_uniquification
+    autocmd!
+
+    "FIXME: The directory separator "/" is clearly POSIX-specific, but we
+    "currently have no idea how to generalize this to the Windows directory
+    "separator "\". Such is code life.
+
+    " Uniquify the basename of the backup file corresponding to the current file
+    " *BEFORE* backing up such file *BEFORE* ovewriting such file with the
+    " contents of the current buffer. Specifically, to ensure the uniqueness of
+    " all backup files in the backup directory, each such file's filetype is the
+    " absolute path of the parent directory of the corresponding file with all
+    " directory separators "/" replaced by "%" (e.g., when edited,
+    " "/the/pharmacratic/inquisition.ott" will be backed up as
+    " "~/.vim/cache/backup/inquisition.ott%the%pharmacratic"). While the
+    " resulting basenames are less than ideal, they *ARE* guaranteeably unique
+    " in the filesystem namespace and hence satisfy basic requirements.
+    autocmd BufWritePre *
+      \ let &backupext = substitute(expand('%:p:h'), '/', '%', 'g')
+augroup END
 
 " ....................{ CACHING ~ swap                     }....................
 " Directory persisting swap files (i.e., recoverable backups) of edited files to
-" corresponding files. See above for further details on "//".
+" corresponding files. To ensure the uniqueness of such files in such directory,
+" such directory is suffixed by "//"; in this case, the basenames of swap files
+" will be the absolute paths of the original files with all directory separators
+" (e.g., "/" under POSIX-compatible systems) replaced by "%".
 let &directory = g:our_swap_dir . '//'
 
 " ....................{ CACHING ~ undo                     }....................
@@ -252,7 +275,7 @@ set foldlevel=99
 "
 " For efficiency, formatting specific to single filetypes is isolated into the
 " "after/ftplugin" directory.
-augroup filetype_format
+augroup our_filetype_format
     autocmd!
 
     " Enable option "t" autowrapping for markup-specific filetypes (e.g., XML)
@@ -320,7 +343,7 @@ set copyindent
 
 " ....................{ INDENTATION ~ filetype             }....................
 " Filetype-specific indentation.
-augroup filetype_indentation
+augroup our_filetype_indentation
     autocmd!
 
     " By default (in order):
@@ -535,7 +558,7 @@ endfunction
 "   switching back to previously opened buffers).
 " * On leaving Insert mode.
 " * On Normal mode changes.
-augroup bundle_watchdogs
+augroup our_bundle_watchdogs
     autocmd!
     autocmd BufEnter,InsertLeave,TextChanged * call <SID>bundle_watchdogs_run()
 augroup END
@@ -635,6 +658,13 @@ command GreviewUnstaged :Git! diff
 command GreviewStaged :Git! diff --staged
 
 " --------------------( WASTELANDS                         )--------------------
+" To ensure the uniqueness of such files in such directory, suffix such
+" directory with "//", in which case the basenames of backup files will be the
+" absolute paths of the original files with all directory separators "/"
+" replaced by "%".
+" let &backupdir = g:our_backup_dir . '//'
+
+" corresponding files. See above for further details on "//".
 " ....................{ VCS ~ lawrencium                   }....................
 " Initialize Fugitive when lazily loaded against the current buffer (e.g., by
 " searching for the ".git" directory relative to such buffer's path).

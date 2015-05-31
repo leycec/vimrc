@@ -95,7 +95,7 @@ call MakeDirIfNotFound(g:our_undo_dir)
 " ....................{ FILETYPE                           }....................
 " Associate Vim-specific filetypes with filename-embedded filetypes *BEFORE*
 " subsequent logic, much of which depends on Vim-specific filetypes.
-augroup filetype_detect
+augroup our_filetype_detect
     autocmd!
 
     " Associate filetype ".md" with Markdown mode (e.g., as used by Github). By

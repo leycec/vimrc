@@ -85,7 +85,7 @@ if !isdirectory(g:our_neobundle_dir)
       \ shellescape(g:our_neobundle_dir)
 
     " Install all bundles as well below.
-    let g:our_neobundle_is_installed = 0
+    let s:our_neobundle_is_installed = 0
 endif
 
 " When starting but *NOT* reloading Vim...
