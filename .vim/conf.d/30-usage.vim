@@ -184,12 +184,12 @@ let g:pymode_lint = 0
 " If the current user is the superuser, prevent Rope from recursively searching
 " for ".ropeproject" directories in parent directories of the current directory
 " if the latter contains no ".ropeproject" directory. Since the superuser
-" typically edits top-level files containing no such directory, such
-" functionality customarily causes Rope to recursively search the entire disk
-" and hence hang Vim. (This is bad.)
+" typically edits top-level files containing no such directory, such recursion
+" typically induces a recursive search of the entire filesystem and hence hangs
+" Vim. (Which would be bad.)
 if IsSuperuser()
     let g:pymode_rope_lookup_project = 0
-" Else, permit Rope to perform such recursive searches.
+" Else, permit Rope to perform such recursion.
 else
     let g:pymode_rope_lookup_project = 1
 endif
