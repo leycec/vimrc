@@ -369,8 +369,8 @@ call neobundle#end()
 " all NeoBundle-related tasks below.
 filetype plugin indent on
 
-" ....................{ UPDATING                           }....................
-" If NeoBundle was only installed above, install all bundles.
+" ....................{ INSTALLATION                       }....................
+" If NeoBundle was installed above, install all bundles as well.
 "
 " Ideally, this should *NOT* be required. After all, isn't this what the call to
 " NeoBundleCheck() below already does? The answer, of course, is "Not quite."
@@ -381,9 +381,9 @@ filetype plugin indent on
 if s:our_neobundle_is_installed == 0
     echo "Installing NeoBundle bundles...\n"
     NeoBundleInstall
-" Else, install all uninstalled bundles. Since such installation does
-" *NOT* update already installed bundles, ":NeoBundleUpdate" *MUST* be manually
-" run by the current user to do so. (Yes, this is terrible. No, no fix exists.)
+" Else, only install uninstalled bundles. Since the call to NeoBundleCheck()
+" below does *NOT* update already installed bundles, the Ex command
+" ":NeoBundleUpdate" *MUST* be manually run by the current user to do so.
 else
     NeoBundleCheck
 endif
