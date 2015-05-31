@@ -67,7 +67,7 @@ Our dotfiles embrace such commendable art movements as: the 8-bit era, post-mode
 
 Our dotfiles promote the inscrutable art of Vim snippetry. For your [copypasta](https://www.reddit.com/r/copypasta) perusal, *every* block of *every* VimL in *every* dotfile in this repository has been scrupulously structured, commented, and contemplated. Usually at the most neckbeardly hour of the night.
 
-Snippets galore, we say.
+**"Snippets galore!"**, we snort.
 
 ## Installation
 <a name="installation"></a>
@@ -76,7 +76,7 @@ Dotfiles are a gritty business. Hand me my CLI shovel.
 
 ### vcsh (Recommended)
 
-Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcsh), a Git-centric dotfile manager leveraging [robust Git cleverness](http://git-scm.com/book/en/v2/Git-Internals-Environment-Variables) rather than fragile symbolic links. This is a good thing.
+Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcsh), a Git-centric dotfile manager leveraging [internal Git cleverness](http://git-scm.com/book/en/v2/Git-Internals-Environment-Variables) rather than filesystem-level symlinks. (You *know* this to be a good thing.)
 
 * **Install `vcsh`.** Specifically, under:
   * Gentoo-based Linux distros:
@@ -101,8 +101,19 @@ Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcs
         $ vcsh enter vimrc
         $ ln -s $HOME/.githooks/github-post-commit $GIT_DIR/hooks/post-commit
         $ exit
-        
+
 You're done. Praise be to open-source Valhalla.
+
+## Organization
+
+Our dotfiles are internally structured as follows:
+
+Path(s) | Purpose
+:------ | :------
+`.vimrc` | **Root dotfile.** Ours is a thin wrapper consisting of only a single line of code iteratively sourcing all Vim scripts under `.vim/conf.d` in lexicographic order.
+`.vim/` | **Top-level dotfile directory.** This is where the circus magic happens.
+`.gitignore.d/vcsh` | **`vcsh`-specific `.gitignore` file**. Probably only of interest to fellow `vcsh` users.
+`.githooks/github-post-commit` | **Sample `post-commit` Git hook.** Synchronizes this repository's `master` and `github` branches. Probably only of interest to fellow `vcsh` users attempting to replicate our Github-based workflow.
 
 ## See Also
 
