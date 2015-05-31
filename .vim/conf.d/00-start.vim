@@ -75,11 +75,9 @@ endfunction
 " absolute path. This function is principally intended to break the thin veneer
 " of privacy provided by "s:", syntactic sugar prefixing function names which
 " Vim internally mangles into "<SNR>${SID}_" (where "${SID}" is the SID of the
-" script declaring such functions). This function is a shameless mashup of the
-" following two external functions, for which we are effervescently grateful:
+" script declaring such functions). This function is inspired by the following
+" external function, for which we are effervescently grateful:
 "
-" * Yasuhiro Matsumoto's GetScriptID() function, published at:
-"   http://mattn.kaoriya.net/software/vim/20090826003359.htm
 " * Yasuhiro Matsumoto's GetScriptID() function, published at:
 "   http://mattn.kaoriya.net/software/vim/20090826003359.htm
 function! GetScriptSID(script_filename) abort

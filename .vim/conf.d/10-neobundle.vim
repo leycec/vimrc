@@ -66,13 +66,26 @@
 "     " Leverage official Neobundle recipes for popular plugins, if available.
 "     NeoBundle 'Shougo/neobundle-vim-recipes', {'force' : 1}
 
+" 1 if NeoBundle has already been installed or 0 otherwise. If 0, then all
+" NeoBundle-managed bundles will also be installed after NeoBundle is installed.
+" This boolean and related logic is inspired by the following external dotfile,
+" for which we are ineluctably grateful:
+"
+" * Tony Narlock's "vim-config", published at:
+"   https://github.com/tony/vim-config
+let s:our_neobundle_is_installed = 1
+
 " If NeoBundle is *NOT* installed, do so before doing anything else. NeoBundle
 " is the fulcrum on which the remainder of this configuration rests.
 if !isdirectory(g:our_neobundle_dir)
+    " Install NeoBundle.
     echo "Installing NeoBundle...\n"
     execute
       \ 'silent !git clone https://github.com/Shougo/neobundle.vim ' .
       \ shellescape(g:our_neobundle_dir)
+
+    " Install all bundles as well below.
+    let g:our_neobundle_is_installed = 0
 endif
 
 " When starting but *NOT* reloading Vim...
@@ -357,9 +370,23 @@ call neobundle#end()
 filetype plugin indent on
 
 " ....................{ UPDATING                           }....................
-" Install uninstalled plugins on Vim startup. Since such function does *NOT*
-" update installed plugins, consider calling :NeoBundleUpdate() on occasion.
-NeoBundleCheck
+" If NeoBundle was only installed above, install all bundles.
+"
+" Ideally, this should *NOT* be required. After all, isn't this what the call to
+" NeoBundleCheck() below already does? The answer, of course, is "Not quite."
+" NeoBundleCheck() *DOES* appear to call NeoBundleInstall(), but only *AFTER*
+" all dotfiles have already been sourced. This results in the first Vim startup
+" failing with fatal errors, requiring Vim be manually restarted and (more
+" saliently) inciting the user to abandon our dotfiles like a lukewarm potato.
+if s:our_neobundle_is_installed == 0
+    echo "Installing NeoBundle bundles...\n"
+    NeoBundleInstall
+" Else, install all uninstalled bundles. Since such installation does
+" *NOT* update already installed bundles, ":NeoBundleUpdate" *MUST* be manually
+" run by the current user to do so. (Yes, this is terrible. No, no fix exists.)
+else
+    NeoBundleCheck
+endif
 
 " Asynchronously update all currently NeoBundle-installed bundles on a fixed
 " schedule. Available schedules include:
