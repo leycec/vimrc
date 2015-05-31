@@ -26,7 +26,7 @@ Our dotfiles require the following hard dependencies:
 
 **That's it.**
 
-Our dotfiles implicitly install all other dependencies in a platform-aware manner on the next Vim startup. *No* installation script needs to be manually run; *no* external software needs to be manually installed. It's cyborg-like magic, complete with [uncanny valley](https://www.youtube.com/watch?v=CNdAIPoh8a4) handwaving.
+Our dotfiles implicitly install all other dependencies in a platform-aware manner on the next Vim startup. *No* installation script needs to be manually run; *no* external software needs to be manually installed. It's cyborg-like wonder, replete with [uncanny valley](https://www.youtube.com/watch?v=CNdAIPoh8a4) handwaving.
 
 If you use [`vcsh`](https://github.com/RichiH/vcsh) to manage dotfiles, installation reduces to a single command:
 
@@ -87,10 +87,10 @@ Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcs
 
             $ sudo apt-get install vcsh
 
-* **Move aside any existing dotfiles.**
+* **Move aside any existing dotfiles.** Renaming an existing `~/.vimrc` file to `~/.vimrc.local` ensures that *your* dotfile will be sourced by *our* dotfiles on Vim startup.
 
         $ mv ~/.vim{,.old}
-        $ mv ~/.vimrc{,.old}
+        $ mv ~/.vimrc{,.local}
 
 * **Install our dotfiles.**
 
@@ -110,8 +110,14 @@ Our dotfiles are internally structured as follows:
 
 Path(s) | Purpose
 :------ | :------
-`.vimrc` | **Root dotfile.** Ours is a thin wrapper consisting of only a single line of code iteratively sourcing all Vim scripts under `.vim/conf.d` in lexicographic order.
-`.vim/` | **Top-level dotfile directory.** This is where the circus magic happens.
+`.vimrc` | **Our dotfile.** A single line of uncommented code iteratively sourcing all Vim scripts under `.vim/conf.d` in lexicographic order.
+`.vimrc.local` | **Your dotfile.** To avoid merge conflicts on repository updates, user-specific Vim settings should be segregated to this dotfile. Our dotfiles source this dotfile as their last action at Vim startup (i.e., immediately *before* returning control to Vim).
+`.vim/` | **Our dotfile directory.** This is where the circus magic happens.
+`.vim/conf.d/` | **Our main dotfile subdirectory.** Each file in this directory is a Vim script with basename matching `\d\d-[a-z]\.vim`. Since our `.vimrc` sources all scripts in this directory in lexicographic order, the two-digit numbers prefixing such basenames define the order such scripts are sourced in at Vim startup.
+`.vim/cache/` | **Your temporary files.** This directory and all subdirectories thereof are implicitly (re)created as needed at Vim startup. For safety and/or security, *any* file or subdirectory in this directory may be safely removed at *any* time. Removing directories probably requires a Vim restart to restore depleted sanity.
+`.vim/cache/backup/` | **Backup of previously edited files.** Each file in this directory persists the prior contents of the corresponding file (i.e., contents of the Vim buffer at the second-to-last write of that file).
+`.vim/cache/swap/` | **Backup of currently edited files.** Each file in this directory *effectively* persists the current contents of the corresponding file *before* such file is officially written to disk (e.g., with `:w`). Such file will be restored at the user's prompting the next time that file is opened *after* a Vim session with that file opened crashed.
+`.vim/cache/undo/` | **Undo trees for edited files.** Each file in this directory persists the undo tree of the corresponding file (i.e., directed acyclic graph (DAG) of all changes to such file). Such tree will be implicitly restored the next time that file is opened, thereby preserving undo history in a file-specific manner across Vim sessions.
 `.gitignore.d/vcsh` | **`vcsh`-specific `.gitignore` file**. Probably only of interest to fellow `vcsh` users.
 `.githooks/github-post-commit` | **Sample `post-commit` Git hook.** Synchronizes this repository's `master` and `github` branches. Probably only of interest to fellow `vcsh` users attempting to replicate our Github-based workflow.
 
