@@ -8,6 +8,55 @@
 
 "FIXME: Create mode-aware cursors (i.e., cursors changing color based on the
 "current Vim mode) via the "gcr" option.
+"FIXME: The "lucius" colorscheme and hence our dotfiles implicitly require 256-
+"color terminals, which is bad. Since "lucius" reduces to a pure monochrome
+"colorscheme (and hence does *NOT* gracefully degrade) under terminals with
+"fewer colors, it's our responsibility to:
+"
+"* Detect the *ACTUAL* (rather than reported) number of colors supported by the
+"  current terminal. Note the use of "actual" rather than "reported". This is a
+"  critical distinction. The "reported" number of colors is trivially obtainable
+"  by running "tput colors" from the CLI or by Vim's "t_Co" option (which is
+"  presumably set by running the prior command).
+"
+"  Unfortunately, numerous popular terminals (e.g., "Terminal" under Ubuntu)
+"  report only supporting 8 colours but actually support 256. Can we detect
+"  this? From the CLI, absolutely. From Vim, we have no idea. The core concept,
+"  in Bourne shell, is as follows:
+"
+"  i=0
+"  while true
+"  do
+"      printf '\e]4;%d;?\a' $i
+"      read -d $'\a' -s -t 1 </dev/tty
+"      if [ -z "$REPLY" ]; then
+"          echo $i
+"          exit
+"      fi
+"  done
+"
+"  Yes, that appears to actually print to the terminal -- which is probably
+"  unavoidable, but also unpleasant. Also, we don't need to actually iterate all
+"  possible values in our case; we only need to test whether the color with
+"  index 255 is printable or not, ensuring that at most only one color will be
+"  printed. (Or is it? "$'\a'" is the bell character -- which shouldn't be
+"  visible when printed. Right? Definitely test this.)
+"
+"  The code from which the above snippet derives resides here:
+"  https://github.com/l0b0/xterm-color-count/blob/master/xterm-color-count.sh
+"
+"  We'll definitely want to credit the original authors for their awesomeness.
+"
+"  For efficiency, such test should *ONLY* be performed if the current terminal
+"  reports itself to be "xterm" (e.g., "if $TERM == 'xterm'"). All other
+"  terminals appear to reliably report their supported number of colors.
+"* If the *ACTUAL* (rather than reported) number of colors supported by the
+"  current terminal is less than 256, the simplest thing to do at the moment
+"  would be to avoid setting "colorscheme" at all. Default Vim colors, while
+"  certainly not the best, are better than a pure-monochrome scheme.
+"* Else if the actual and reported numbers differ, force Vim's "t_Co" option to
+"  be 256. Yes, this is sufficient to get "lucius" working as expected under
+"  such terminals. Which is a special sort of insanity all its own.
 
 " ....................{ CORE                               }....................
 " Enable filetype-dependent syntax highlighting *AFTER* NeoBundle logic above.
@@ -32,7 +81,7 @@ set scrolloff=3
 set nocursorcolumn
 set nocursorline
 
-" Do *NOT* display the current mode in the command line, as the status line
+" Do *NOT* display the current mode in the command line, as the statusline
 " already does so in a more configurable and aesthetically pleasing manner.
 set noshowmode
 
@@ -163,13 +212,6 @@ augroup END
 highlight SpecialKey ctermfg=240 guifg=#2c2d27
 
 " ....................{ PROMPT                             }....................
-" Do *NOT* prompt users to press <Enter> on each screen of long listings.
-set nomore
-
-" Do *NOT* "ring the bell" (e.g., audible beep, screen flash) on errors.
-set noerrorbells
-set novisualbell
-
 " Abbreviate canonical Vim prompts and messages as follows:
 "
 " * "a", enable all of the following flags:

@@ -6,7 +6,19 @@
 " Dotfile bootstrapping, principally defining dotfile-specific global variables
 " and functions accessed by other dotfiles.
 
-" ....................{ SANITY                             }....................
+" ....................{ PROMPT                             }....................
+" Sanitize prompt (i.e., Vim's audible and/or visual response to various events)
+" settings as our initial action. The default prompt settings are sufficiently
+" insane to warrant their addressing *BEFORE* attempting anything further.
+
+" Do *NOT* "ring the bell" (e.g., audible beep, screen flash) on errors.
+set noerrorbells
+set novisualbell
+
+" Do *NOT* prompt users to press <Enter> on each screen of long listings.
+set nomore
+
+" ....................{ CHECKS                             }....................
 " If the current version of Vim is insufficient, print a non-fatal warning. This
 " requirement is currently dictated by:
 "
