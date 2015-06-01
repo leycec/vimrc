@@ -27,7 +27,19 @@
 " database for the "Co" attribute of the terminal named "${TERM}".
 " Unfortunately, such attribute is often unreliable -- especially for terminals
 " named "xterm". The GNOME Terminal, for example, is named "xterm" and has a
-" "Co" attribute of 8 while actually supporting 256 colors. Insanity prevails.
+" "Co" attribute of 8 while actually supporting 256 colors.
+"
+" This stems from the fact that the terminfo database associates each terminal
+" name with exactly one "Co" attribute value, despite the fact that multiple
+" terminals self-identifying as "xterm" support a variable number of colors
+" depending on codebase, version, and compile- and runtime options. Plainly,
+" this attempt to centralize all terminal metadata into a single authoritative
+" database is fundamentally flawed and at the root of various ongoing issues
+" with respect to Linux and BSD CLI usage. POSIX-compatible terminals *SHOULD*
+" have been required to conform to some semblance of a sane runtime API
+" dynamically exposing terminal metadata to end users. Indeed, even the most
+" simplistic solution of a suite of well-named environment variables (e.g.,
+" "${TERM_Co}") would have sufficed. Big reality fail, guys.
 "
 " For portability, such detection is implemented as a multiline Bash snippet
 " embedded inline below. This snippet generalizes the following external source,
@@ -36,7 +48,6 @@
 " * Gille's stackoverflow answer, published at:
 "   https://unix.stackexchange.com/a/23789/117478
 
-" set t_Co=255
 if &t_Co < 256 &&
   \ $TERM == 'xterm' &&
   \ executable('bash') &&
@@ -76,6 +87,8 @@ if &t_Co < 256 &&
     "       terminal, moving the cursor back to the start of the current line.
     "   * Return successful exit status.
     " * Else, return failure exit status.
+    "
+    " Yes, this *ACTUALLY* works. And reliably so.
     silent
       \ !printf '\e]4;255;?\a' >/dev/tty;
       \ if read -d $'\a' -r -s -t 0.01 </dev/tty; then
@@ -86,10 +99,9 @@ if &t_Co < 256 &&
       \ fi
 
     " If the prior command succeeded, the current terminal actually supports at
-    " least 256 colors. In such case, instruct Vim of this fact.
+    " least 256 colors. Notify Vim of its failings.
     if ! v:shell_error
         set t_Co=256
-        " echo 'Yes 256!'
     endif
 
     " Restore the current shell to the prior command.
