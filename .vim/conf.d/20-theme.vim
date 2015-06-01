@@ -8,55 +8,93 @@
 
 "FIXME: Create mode-aware cursors (i.e., cursors changing color based on the
 "current Vim mode) via the "gcr" option.
-"FIXME: The "lucius" colorscheme and hence our dotfiles implicitly require 256-
-"color terminals, which is bad. Since "lucius" reduces to a pure monochrome
-"colorscheme (and hence does *NOT* gracefully degrade) under terminals with
-"fewer colors, it's our responsibility to:
+
+" ....................{ TERMINAL                           }....................
+" If the following conditions all hold:
 "
-"* Detect the *ACTUAL* (rather than reported) number of colors supported by the
-"  current terminal. Note the use of "actual" rather than "reported". This is a
-"  critical distinction. The "reported" number of colors is trivially obtainable
-"  by running "tput colors" from the CLI or by Vim's "t_Co" option (which is
-"  presumably set by running the prior command).
+" * Vim autodetected the current terminal to support less than 256 colors.
+" * The name of the current terminal is "xterm".
+" * Bash is installed (i.e., the command "bash" is in the current ${PATH}).
+" * A POSIX-compatible device node exists for the current terminal (i.e.,
+"   "/dev/tty" is an existing file). Sadly, Vim provides no means of
+"   distinguishing device nodes from non-device nodes.
 "
-"  Unfortunately, numerous popular terminals (e.g., "Terminal" under Ubuntu)
-"  report only supporting 8 colours but actually support 256. Can we detect
-"  this? From the CLI, absolutely. From Vim, we have no idea. The core concept,
-"  in Bourne shell, is as follows:
+" Then confirm that the current terminal actually supports less than 256 colors
+" and, if this is not the case, instruct Vim of this fact.
 "
-"  i=0
-"  while true
-"  do
-"      printf '\e]4;%d;?\a' $i
-"      read -d $'\a' -s -t 1 </dev/tty
-"      if [ -z "$REPLY" ]; then
-"          echo $i
-"          exit
-"      fi
-"  done
+" Presumably, Vim "autodetects" such quantity in a similar manner to that of the
+" command "tput colors" -- which is to say, by querying the local terminfo
+" database for the "Co" attribute of the terminal named "${TERM}".
+" Unfortunately, such attribute is often unreliable -- especially for terminals
+" named "xterm". The GNOME Terminal, for example, is named "xterm" and has a
+" "Co" attribute of 8 while actually supporting 256 colors. Insanity prevails.
 "
-"  Yes, that appears to actually print to the terminal -- which is probably
-"  unavoidable, but also unpleasant. Also, we don't need to actually iterate all
-"  possible values in our case; we only need to test whether the color with
-"  index 255 is printable or not, ensuring that at most only one color will be
-"  printed. (Or is it? "$'\a'" is the bell character -- which shouldn't be
-"  visible when printed. Right? Definitely test this.)
+" For portability, such detection is implemented as a multiline Bash snippet
+" embedded inline below. This snippet generalizes the following external source,
+" for which we are indecently grateful:
 "
-"  The code from which the above snippet derives resides here:
-"  https://github.com/l0b0/xterm-color-count/blob/master/xterm-color-count.sh
-"
-"  We'll definitely want to credit the original authors for their awesomeness.
-"
-"  For efficiency, such test should *ONLY* be performed if the current terminal
-"  reports itself to be "xterm" (e.g., "if $TERM == 'xterm'"). All other
-"  terminals appear to reliably report their supported number of colors.
-"* If the *ACTUAL* (rather than reported) number of colors supported by the
-"  current terminal is less than 256, the simplest thing to do at the moment
-"  would be to avoid setting "colorscheme" at all. Default Vim colors, while
-"  certainly not the best, are better than a pure-monochrome scheme.
-"* Else if the actual and reported numbers differ, force Vim's "t_Co" option to
-"  be 256. Yes, this is sufficient to get "lucius" working as expected under
-"  such terminals. Which is a special sort of insanity all its own.
+" * Gille's stackoverflow answer, published at:
+"   https://unix.stackexchange.com/a/23789/117478
+
+" set t_Co=255
+if &t_Co < 256 &&
+  \ $TERM == 'xterm' &&
+  \ executable('bash') &&
+  \ filereadable('/dev/tty')
+    " Absolute path of the "bash" command in the current ${PATH}.
+    let s:bash_file = exepath('bash')
+
+    " Absolute path of the command running the current shell.
+    let s:shell_old = &shell
+
+    " Temporarily set the current shell to "bash".
+    let &shell = s:bash_file
+
+    " Dismantled, this is (in order):
+    "
+    " * Write the xterm-specific ANSI escape sequence "<OSC>4;255;?<BEL>" to the
+    "   current terminal device. If such terminal supports the color with index
+    "   255 and hence at least 256 colors, such terminal writes a string
+    "   resembling "^[]4;rgb:eeee/eeee/eeee^G" to itself identifying the current
+    "   color value assigned that color index; else, no string is written.
+    " * If reading from the current terminal device succeeds with options:
+    "   * "-d $'\a'", reading an arbitrary string delimited either by a newline
+    "     *OR* by the bell character (i.e., "\a", "^G", <Ctrl-G>, <BEL>).
+    "   * "-r", reading in raw mode whereby backslashes are parsed as literal
+    "     backslashes rather than as character escapes or line continuations.
+    "   * "-s", reading silently without echoing the read string.
+    "   * "-t 0.01", waiting 0.01s for a string matching such constraints to be 
+    "     written to the current terminal device before failing. Larger
+    "     intervals induce non-negligible delays; smaller intervals induce race
+    "     conditions. This interval strikes a delicate balance between the two.
+    " * Then:
+    "   * Erase the string written to the current terminal. Specifically:
+    "     * Write the xterm-specific ANSI escape sequence "<CSI>1K" to such
+    "       terminal, erasing from the start of the current line to the current
+    "       cursor position.
+    "     * Write the xterm-specific ANSI escape sequence "<CSI>0E" to such
+    "       terminal, moving the cursor back to the start of the current line.
+    "   * Return successful exit status.
+    " * Else, return failure exit status.
+    silent
+      \ !printf '\e]4;255;?\a' >/dev/tty;
+      \ if read -d $'\a' -r -s -t 0.01 </dev/tty; then
+      \     printf '\e[1K\e[0E' >/dev/tty;
+      \     exit 0;
+      \ else
+      \     exit 1;
+      \ fi
+
+    " If the prior command succeeded, the current terminal actually supports at
+    " least 256 colors. In such case, instruct Vim of this fact.
+    if ! v:shell_error
+        set t_Co=256
+        " echo 'Yes 256!'
+    endif
+
+    " Restore the current shell to the prior command.
+    let &shell = s:shell_old
+endif
 
 " ....................{ CORE                               }....................
 " Enable filetype-dependent syntax highlighting *AFTER* NeoBundle logic above.
@@ -119,12 +157,16 @@ set noshowmode
 "lucius. This would probably also require adopting lucius colors for urxvt's
 "standard 16 colors, which I'm quite alright with.
 
-" Colour scheme.
-"
-" For further details, see:
+" If the current terminal supports at least 256 colors, enable a color scheme
+" requiring such support. Unfortunately, such scheme degrades to pure monochrome
+" under terminals supporting less than 256 colors -- which is substantially
+" worse than Vim's default color scheme. For further details, see:
 " http://www.vim.org/scripts/script.php?script_id=2536
-colorscheme lucius
-"colorscheme desert-warm-256
+"
+" Else, preserve Vim's default color scheme as is.
+if &t_Co >= 256
+    colorscheme lucius
+endif
 
 " ....................{ COLOUR ~ highlight                 }....................
 " Custom highlight groups overwriting those defined by the above color scheme.
@@ -384,6 +426,74 @@ augroup END
 "highlight CursorColumn ctermbg=235 guibg=#2c2d27
 
 " --------------------( WASTELANDS                         )--------------------
+"FUXME: The "lucius" colorscheme and hence our dotfiles implicitly require 256-
+"color terminals, which is bad. Since "lucius" reduces to a pure monochrome
+"colorscheme (and hence does *NOT* gracefully degrade) under terminals with
+"fewer colors, it's our responsibility to:
+"
+"* Detect the *ACTUAL* (rather than reported) number of colors supported by the
+"  current terminal. Note the use of "actual" rather than "reported". This is a
+"  critical distinction. The "reported" number of colors is trivially obtainable
+"  by running "tput colors" from the CLI or by Vim's "t_Co" option (which is
+"  presumably set by running the prior command).
+"
+"  Unfortunately, numerous popular terminals (e.g., "Terminal" under Ubuntu)
+"  report only supporting 8 colours but actually support 256. Can we detect
+"  this? From the CLI, absolutely. From Vim, we have no idea. The core concept,
+"  in Bourne shell, is as follows:
+"
+"  i=0
+"  while true
+"  do
+"      printf '\e]4;%d;?\a' $i
+"      read -d $'\a' -s -t 1 </dev/tty
+"      if [ -z "$REPLY" ]; then
+"          echo $i
+"          exit
+"      fi
+"  done
+"
+"  Yes, that appears to actually print to the terminal -- which is probably
+"  unavoidable, but also unpleasant. Also, we don't need to actually iterate all
+"  possible values in our case; we only need to test whether the color with
+"  index 255 is printable or not, ensuring that at most only one color will be
+"  printed. (Or is it? "$'\a'" is the bell character -- which shouldn't be
+"  visible when printed. Right? Definitely test this.)
+"
+"  For efficiency, such test should *ONLY* be performed if the current terminal
+"  reports itself to be "xterm" (e.g., "if $TERM == 'xterm'"). All other
+"  terminals appear to reliably report their supported number of colors.
+"* If the *ACTUAL* (rather than reported) number of colors supported by the
+"  current terminal is less than 256, the simplest thing to do at the moment
+"  would be to avoid setting "colorscheme" at all. Default Vim colors, while
+"  certainly not the best, are better than a pure-monochrome scheme.
+"* Else if the actual and reported numbers differ, force Vim's "t_Co" option to
+"  be 256. Yes, this is sufficient to get "lucius" working as expected under
+"  such terminals. Which is a special sort of insanity all its own.
+
+    " colorscheme desert-warm-256
+    " silent system("!printf '\\e]4;255;?\\a' >/dev/tty; if ! read -d $'\\a' -r -s -t 0.01 </dev/tty; then printf '\\e[1K\\e[0E'; exit 0; else exit 1; fi")
+    " silent !bash -c "printf '\\e]4;255;?\\a' >/dev/tty; if read -d $'\\a' -r -s -t 0.01 </dev/tty; then exit 0; else exit 1; fi"
+    " 1 if the current terminal supports at least 256 colors or 0
+    " otherwise.
+"     silent let s:is_terminal_colors_256 =
+"       \ system("printf '\\e]4;255;?\\a' >/dev/tty; if ! read -d $'\a' -r -s -t 0.01 </dev/tty; then echo 0; else
+"     # Erase from the start of the current line to the current cursor position.
+"     printf '\e[1K'
+"
+"     # Move the cursor back to the start of the current line.
+"     printf '\e[0E'
+"     echo "Color $i supported."
+" fi
+" exit
+    " echo s:is_terminal_colors_256
+
+    " if v:shell_error
+    "     echo 'No 256.'
+    " else
+    "     set t_Co=256
+    "     echo 'Yes 256!'
+    " endif
 " let g:airline_section_b = airline#section#create(['hunks', 'branch'])
 " let g:airline_section_b = airline#section#create(['branch'])
 " let g:airline_section_b = 'branch'
