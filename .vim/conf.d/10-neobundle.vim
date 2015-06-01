@@ -370,22 +370,23 @@ call neobundle#end()
 filetype plugin indent on
 
 " ....................{ INSTALLATION                       }....................
-" If NeoBundle was installed above, install all bundles as well.
+" If NeoBundle was already installed at Vim startup, only install uninstalled
+" bundles. Since this does *NOT* update already installed bundles, the
+" NeoBundleUpdate() function *MUST* be manually run by the user to do so.
+if s:our_neobundle_is_installed
+    NeoBundleCheck
+" Else, NeoBundle was installed above. In such case, unconditionally install all
+" bundles as well.
 "
-" Ideally, this should *NOT* be required. After all, isn't this what the call to
-" NeoBundleCheck() below already does? The answer, of course, is "Not quite."
+" Ideally, this shouldn't be needed. After all, isn't that what the call to
+" NeoBundleCheck() above already does? The answer, of course, is "Not quite."
 " NeoBundleCheck() *DOES* appear to call NeoBundleInstall(), but only *AFTER*
 " all dotfiles have already been sourced. This results in the first Vim startup
 " failing with fatal errors, requiring Vim be manually restarted and (more
 " saliently) inciting the user to abandon our dotfiles like a lukewarm potato.
-if s:our_neobundle_is_installed == 0
+else
     echo "Installing NeoBundle bundles...\n"
     NeoBundleInstall
-" Else, only install uninstalled bundles. Since the call to NeoBundleCheck()
-" below does *NOT* update already installed bundles, the Ex command
-" ":NeoBundleUpdate" *MUST* be manually run by the current user to do so.
-else
-    NeoBundleCheck
 endif
 
 " Asynchronously update all currently NeoBundle-installed bundles on a fixed
