@@ -74,10 +74,11 @@ if &t_Co < 256 &&
     "   * "-r", reading in raw mode whereby backslashes are parsed as literal
     "     backslashes rather than as character escapes or line continuations.
     "   * "-s", reading silently without echoing the read string.
-    "   * "-t 0.01", waiting 0.01s for a string matching such constraints to be 
-    "     written to the current terminal device before failing. Larger
-    "     intervals induce non-negligible delays; smaller intervals induce race
-    "     conditions. This interval strikes a delicate balance between the two.
+    "   * "-t 0.1", waiting such number of seconds for a string matching such
+    "     constraints to be written to the current terminal device before
+    "     failing. Larger intervals induce non-negligible delays; smaller
+    "     intervals induce race conditions. This interval strikes a delicate
+    "     balance between the two.
     " * Then:
     "   * Erase the string written to the current terminal. Specifically:
     "     * Write the xterm-specific ANSI escape sequence "<CSI>1K" to such
@@ -91,7 +92,7 @@ if &t_Co < 256 &&
     " Yes, this *ACTUALLY* works. And reliably so.
     silent
       \ !printf '\e]4;255;?\a' >/dev/tty;
-      \ if read -d $'\a' -r -s -t 0.01 </dev/tty; then
+      \ if read -d $'\a' -r -s -t 0.1 </dev/tty; then
       \     printf '\e[1K\e[0E' >/dev/tty;
       \     exit 0;
       \ else
