@@ -19,7 +19,7 @@ BRANCH_NAME="$(git rev-parse --abbrev-ref HEAD)"
 
 # If this is a commit to the default branch, attempt to temporarily switch to the
 # "github" branch and...
-if [ "${BRANCH_NAME}" == 'master' ] && git checkout github; then
+if [ "${BRANCH_NAME}" = 'master' ] && git checkout github; then
     # Attempt to apply this commit to the "github" branch.
     if git rebase master; then
         echo '[post-commit] Rebased "github" to "master".'
