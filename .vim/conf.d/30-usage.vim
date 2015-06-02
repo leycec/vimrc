@@ -101,11 +101,44 @@ if has("persistent_undo")
 endif
 
 " ....................{ CLIPBOARD                          }....................
+" There exist two fundamentally orthogonal types of "clipboards".
+"
+" * The system clipboard, accessible outside of Vim via the customary keyboard
+"   shortcuts (e.g., <Ctrl-v> to paste the contents of such clipboard).
+" * The X11 primary selection, accessible outside of Vim via the mouse, whereby:
+"   * Selecting a substring of text implicitly yanks that substring into the
+"     primary selection.
+"   * The right mouse button pastes such substring from the primary selection.
+"
+" Under X11, both cliboards are available. Under all other windowing systems,
+" only the system clipboard is available. Accessing either requires Vim to have
+" been compiled with the corresponding features. If:
+"
+" * The "+clipboard" feature is available:
+"   * The system clipboard is accessible via the "*" register.
+"   * But the "-xterm_clipboard" feature is unavailable, the system clipboard is
+"     also accessible via the "+" register.
+" * The "+xterm_clipboard" feature is available, the xterm-specific primary
+"   selection is accessible via the "+" register.
+
 " Alias the anonymous register (i.e., the default register for yanks, puts, and
-" cuts) to the "+" register (i.e., X11's system clipboard) such that copying to
-" and pasting from the clipboard is as simple as copying and pasting text
-" without a destination register.
-set clipboard=unnamedplus
+" cuts) to whichever of the "*" and "+" registers apply to the current Vim.
+" Yanking, putting, or cutting text without specifying a register yanks, puts,
+" or cuts such text into the corresponding clipboard.
+"
+" If both registers apply, the "+" register takes precedence and hence is
+" usually preferable. While yanking text without specifying a register yanks
+" such text into both clipboards, putting or cutting text without specifying a
+" register puts or cuts such text *ONLY* into the primary selection.
+if has('clipboard')
+    if has('unnamedplus')
+        set clipboard=unnamed,unnamedplus
+    else
+        set clipboard=unnamed
+    endif
+elseif has('unnamedplus')
+    set clipboard=unnamedplus
+endif
 
 " ....................{ COMMENTING ~ tcomment              }....................
 "FIXME: Configure us up the bomb. Yes, we went there.
@@ -658,6 +691,12 @@ command GreviewUnstaged :Git! diff
 command GreviewStaged :Git! diff --staged
 
 " --------------------( WASTELANDS                         )--------------------
+" Alias the anonymous register (i.e., the default register for yanks, puts, and
+" cuts) to the both the "*" and "+" registers (i.e., X11's system clipboard) such that copying to
+" and pasting from the clipboard is as simple as copying and pasting text
+" without a destination register.
+" set clipboard=unnamedplus
+
 " To ensure the uniqueness of such files in such directory, suffix such
 " directory with "//", in which case the basenames of backup files will be the
 " absolute paths of the original files with all directory separators "/"

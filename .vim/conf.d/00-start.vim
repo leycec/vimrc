@@ -26,21 +26,13 @@ set nomore
 "   * Recommending Vim >= 7.4.427 to avoid random highlighting glitches.
 "   * Requiring Vim >= 7.3.105 for realtime highlighting.
 if v:version < 704
-    echoerr 'Vim version older than 7.4 detected. Consider upgrading to avoid spurious errors.'
-endif
-
-" If the current version of Vim was *NOT* compiled with the following optional
-" features, print non-fatal warnings:
-"
-" * "signs", required by the "vim-gitgutter" bundle.
-if !has('signs')
-    echoerr 'Vim feature "signs" unavailable. Consider reinstalling Vim with this feature enabled to avoid spurious errors.'
+    echomsg 'Vim version older than 7.4 detected.'
 endif
 
 " If "git" is not in the current ${PATH}, print a non-fatal warning. Subsequent
 " logic (e.g., NeoBundle installation) runs and hence requires Git.
 if !executable('git')
-    echoerr 'Git not found. Consider installing Git to avoid spurious errors.'
+    echomsg 'Git not found.'
 endif
 
 " ....................{ PATHS                              }....................
@@ -83,11 +75,6 @@ function AddRuntimePath(path) abort
     let &runtimepath .= ',' . escape(a:path, '\,')
 endfunction
 
-" True if the current user is the superuser (i.e., "root").
-function IsSuperuser() abort
-    return $USER == 'root'
-endfunction
-
 " Create the passed directory and all parent directories of such directory as
 " needed. This function provides a pure-Vim analogue to the external shell
 " command "mkdir -p".
@@ -96,6 +83,38 @@ function MakeDirIfNotFound(path) abort
         call mkdir(a:path, 'p')
     endif
 endfunction
+
+" ....................{ HELPERS ~ testers                  }....................
+" Return 1 if the current user is the superuser (i.e., "root") and 0 otherwise.
+function IsSuperuser() abort
+    return $USER == 'root'
+endfunction
+
+" Return 1 if Vim is running under a display server supporting the X11 protocol
+" (e.g., X.org, XWayland, XMir, Cygwin/X) and 0 otherwise.
+function IsDisplayServerX11() abort
+    return $DISPLAY != ''
+endfunction
+
+" ....................{ CHECKS ~ features                  }....................
+" If the current version of Vim was *NOT* compiled with the following optional
+" features, print non-fatal warnings:
+"
+" * "+signs", required by the "vim-gitgutter" bundle.
+if !has('signs')
+    echomsg 'Vim feature "signs" unavailable.'
+endif
+
+" If Vim is running under a display server supporting the X11 protocol but *NOT*
+" compiled with the "+clipboard" or "+xterm_clipboard" features, print non-fatal
+" warnings. For sane X11 usage, both should ideally be available. This can
+" typically be rectified as follows:
+"
+" * Under Gentoo, reinstall "vim" with USE flag "X" enabled.
+" * Under Ubuntu, uninstall the "vim" package and install the "vim-gtk" package.
+if IsDisplayServerX11() && (!has('clipboard') || !has('xterm_clipboard'))
+    echomsg "Vim features \"clipboard\" or \"xterm_clipboard\" unavailable, but running under X11."
+endif
 
 " ....................{ PATHS ~ make                       }....................
 " Create all requisite subdirectories as needed.
@@ -135,6 +154,13 @@ augroup our_filetype_detect
 augroup END
 
 " --------------------( WASTELANDS                         )--------------------
+    " echoerr 'Vim version older than 7.4 detected. Consider upgrading to avoid spurious errors.'
+    " echoerr 'Git not found. Consider installing Git to avoid spurious errors.'
+    " echomsg "Vim features \"clipboard\" and/or \"xterm_clipboard\" unavailable while running under"
+    " echomsg "X11. Consider reinstalling Vim with these features enabled to avoid errors."
+    " echomsg 'Vim feature "signs" unavailable. Consider reinstalling Vim with this feature'
+    " echomsg 'enabled to avoid errors.'
+
     " set shell=/bin/bash
     " execute '!git clone https://github.com/Shougo/neobundle.vim /home/leycec/.vim/bundle/neobundle.vim'
     " silent system(
