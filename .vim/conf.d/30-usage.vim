@@ -140,7 +140,21 @@ elseif has('unnamedplus')
     set clipboard=unnamedplus
 endif
 
-" ....................{ COMMENTING ~ tcomment              }....................
+" ....................{ COMMENTS                           }....................
+" Filetype-specific comment settings. See the "FORMATTING" section below for
+" related formatting settings.
+augroup our_filetype_comments
+    autocmd!
+
+    " Parse "#" characters prefixing any words as comment leaders regardless
+    " of whether such characters are immediately followed by whitespace. By
+    " default, the plugins for the following filetypes only parse "#" characters
+    " immediately followed by whitespace as comment leaders -- which, given our
+    " glut of "#FIXME" comments, is less than helpful.
+    autocmd FileType ebuild,python setlocal comments=:#,fb:-
+augroup END
+
+" ....................{ COMMENTS ~ tcomment                }....................
 "FIXME: Configure us up the bomb. Yes, we went there.
 
 " ....................{ DELETING                           }....................
@@ -301,7 +315,7 @@ set nofoldenable
 set foldlevelstart=99
 set foldlevel=99
 
-" ....................{ FORMAT ~ filetype                  }....................
+" ....................{ FORMATTING                         }....................
 " Filetype-specific formatting. For safety, append and shift list
 " "formatoptions" with the "+=" and "-=" operators rather than overwriting such
 " list (and hence sane Vim defaults) with the "=" operator. See ":h fo-table".
