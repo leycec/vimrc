@@ -79,15 +79,15 @@ Dotfiles are a gritty business. Hand me my CLI shovel.
 Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcsh), a Git-centric dotfile manager leveraging [internal Git cleverness](http://git-scm.com/book/en/v2/Git-Internals-Environment-Variables) rather than filesystem-level symlinks. (You *know* this to be a good thing.)
 
 * **Install `vcsh`.** Specifically, under:
-  * Gentoo-based Linux distros:
+  * **Gentoo**-based Linux distros:
 
             $ sudo emerge vcsh
 
-  * Debian-based Linux distros (e.g., Ubuntu):
+  * **Debian**-based Linux distros (e.g., **Ubuntu**):
 
             $ sudo apt-get install vcsh
 
-  * Platforms providing no `vcsh` package (e.g., Cygwin):
+  * Platforms providing no `vcsh` package (e.g., **Cygwin**):
 
             $ git clone https://github.com/RichiH/vcsh.git ~/vcsh
             $ cd ~/vcsh
@@ -102,11 +102,23 @@ Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcs
 
         $ vcsh clone https://github.com/leycec/vimrc.git
         
-* **_\<Optional\>_** For fellow Github developers, **install our Github-specific git hooks.**
+* (_Optional_) For fellow Github developers:
+  * **Enter the cloned repository.**
 
-        $ vcsh enter vimrc
-        $ ln -s $HOME/.githooks/github-post-commit $GIT_DIR/hooks/post-commit
-        $ exit
+            $ vcsh enter vimrc
+
+  * **Pull the `github` branch**, storing front-facing Github files (including this readme).
+
+            $ git checkout -b github
+            $ git pull origin github
+
+  * **Install the `git` hook**, synchronizing the `master` and `github` branches on every commit to the former. 
+
+            $ ln -s $HOME/.githooks/github-post-commit $GIT_DIR/hooks/post-commit
+
+  * **Leave the cloned repository.**
+
+            $ exit
 
 You're done. Praise be to open-source Valhalla.
 
