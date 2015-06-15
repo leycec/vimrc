@@ -51,16 +51,16 @@ nnoremap <silent> <leader>/ :nohlsearch<cr>
 
 " ....................{ LEADER ~ vcs                       }....................
 " Bind <,Gu> to open a new buffer diffing the working Git tree against the index.
-nnoremap <leader>Gu :GreviewUnstaged<cr>
+nnoremap <leader>Gu :GdiffUnstaged<cr>
 
 " Bind <,Gs> to open a new buffer diffing the Git index against the current HEAD.
-nnoremap <leader>Gs :GreviewStaged<cr>
+nnoremap <leader>Gt :GdiffStaged<cr>
 
 " Bind <,Ge> to open a new buffer viewing and editing the Git index.
-nnoremap <leader>Ge :Gstatus<cr>
+nnoremap <leader>Gs :Gstatus<cr>
 
 " Bind <,He> to open a new buffer viewing and editing Mercurial's DirState.
-nnoremap <leader>He :Hgstatus<cr>
+nnoremap <leader>Hs :Hgstatus<cr>
 
 " ....................{ FIXES                              }....................
 "FIXME: Actually, this strikes me as a poor idea. Use the 0 register, instead.

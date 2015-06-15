@@ -172,6 +172,10 @@ set backspace=indent,eol,start
 "   (Horizontal splits? Seriously, Bram. Who does that? *NO ONE*. That's who.)
 set diffopt=filler,vertical
 
+" Define the DiffSelf() command to review all unsaved changes in the current
+" buffer by diffing the current buffer against the corresponding file if any.
+command DiffSelf call vimrc#diff_buffer_current_with_file_current()
+
 " ....................{ EXPLORING ~ unite                  }....................
 " Configure Unite when lazily loaded.
 if neobundle#tap('unite.vim')
@@ -697,12 +701,12 @@ endif
 " ....................{ VCS ~ fugitive                     }....................
 " Define the following new commands:
 "
-" * GreviewUnstaged(), opening a new vertically_split diff of the working tree
-"   against the index (e.g., for reviewing all unstaged changes).
-" * GreviewStaged(), opening a new vertically_split diff of the index against
-"   the current HEAD (e.g., for reviewing all staged changes).
-command GreviewUnstaged :Git! diff
-command GreviewStaged :Git! diff --staged
+" * GdiffUnstaged(), reviewing all unstaged changes by diffing the working
+"   tree against the index.
+" * GdiffStaged(), reviewing all staged changes by diffing the index against
+"   the current HEAD.
+command GdiffUnstaged :Git! diff
+command GdiffStaged :Git! diff --staged
 
 " --------------------( WASTELANDS                         )--------------------
 " Alias the anonymous register (i.e., the default register for yanks, puts, and

@@ -26,13 +26,13 @@ set nomore
 "   * Recommending Vim >= 7.4.427 to avoid random highlighting glitches.
 "   * Requiring Vim >= 7.3.105 for realtime highlighting.
 if v:version < 704
-    echomsg 'Vim version older than 7.4 detected.'
+    echomsg 'Vim version older than 7.4 detected. Expect horror.'
 endif
 
 " If "git" is not in the current ${PATH}, print a non-fatal warning. Subsequent
-" logic (e.g., NeoBundle installation) runs and hence requires Git.
+" logic (e.g., NeoBundle installation) requires Git as a hard dependency.
 if !executable('git')
-    echomsg 'Git not found.'
+    echomsg 'Git not found. Expect death.'
 endif
 
 " ....................{ PATHS                              }....................
@@ -100,9 +100,13 @@ endfunction
 " If the current version of Vim was *NOT* compiled with the following optional
 " features, print non-fatal warnings:
 "
+" * "+autocmd", required by everything everywhere. (Why is this even optional?)
 " * "+signs", required by the "vim-gitgutter" bundle.
+if !has('autocmd')
+    echomsg 'Vim feature "autocmd" unavailable. Expect terror.'
+endif
 if !has('signs')
-    echomsg 'Vim feature "signs" unavailable.'
+    echomsg 'Vim feature "signs" unavailable. Expect ugliness.'
 endif
 
 " If Vim is running under a display server supporting the X11 protocol but *NOT*
@@ -113,7 +117,7 @@ endif
 " * Under Gentoo, reinstall "vim" with USE flag "X" enabled.
 " * Under Ubuntu, uninstall the "vim" package and install the "vim-gtk" package.
 if IsDisplayServerX11() && (!has('clipboard') || !has('xterm_clipboard'))
-    echomsg "Vim features \"clipboard\" or \"xterm_clipboard\" unavailable, but running under X11."
+    echomsg 'Vim features "clipboard" or "xterm_clipboard" unavailable, but running under X11. Expect woe.'
 endif
 
 " ....................{ PATHS ~ make                       }....................
