@@ -107,10 +107,9 @@ Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcs
 
             $ vcsh enter vimrc
 
-  * **Pull the `github` branch**, storing front-facing Github files (including this readme).
+  * **Ch the `github` branch**, storing front-facing Github files (including this readme).
 
-            $ git checkout -b github
-            $ git pull origin github
+            $ git branch github origin/github
 
   * **Install the `git` hook**, synchronizing the `master` and `github` branches on every commit to the former. 
 
