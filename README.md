@@ -87,6 +87,12 @@ Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcs
 
             $ sudo apt-get install vcsh
 
+  * Platforms providing no `vcsh` package (e.g., Cygwin):
+
+            $ git clone https://github.com/RichiH/vcsh.git ~/vcsh
+            $ cd ~/vcsh
+            $ sudo make install
+
 * **Move aside any existing dotfiles.** Renaming an existing `~/.vimrc` file to `~/.vimrc.local` ensures that *your* dotfile will be sourced by *our* dotfiles on Vim startup.
 
         $ mv ~/.vim{,.old}
