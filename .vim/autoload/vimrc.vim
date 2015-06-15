@@ -73,4 +73,18 @@ function! vimrc#get_script_sid(script_filename) abort
     return l:script_line + 1
 endfunction
 
+" ....................{ DIFFERS                            }....................
+" Review all unsaved changes in the current buffer by diffing the current buffer
+" against the corresponding file if any. This function is inspired by the
+" DiffOrig() command defined by Vim's stock "vimrc_example.vim" script.
+function! vimrc#diff_buffer_current_with_file_current() abort
+    vert new
+    set bt=nofile
+    r ++edit #
+    0d_
+    diffthis
+    wincmd p
+    diffthis
+endfunction
+
 " --------------------( WASTELANDS                         )--------------------

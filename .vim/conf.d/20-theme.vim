@@ -397,20 +397,23 @@ set showbreak=↳  " ↺↳↪
 
 " Preferred line length, respected by numerous other settings and commands
 " (e.g., "gq{movement}", wrapping all text from the cursor to the end of such
-" movement to this length).
-set textwidth=80
+" movement to this length). Since external sources beyond our control (namely
+" "/etc/vimrc") often maliciously override this option on a filetype-specific
+" basis, this option is globalized under a unique name guaranteed *NOT* to be
+" overridden, permitting such sources to themselves be overridden... by us!
+let g:our_textwidth = 80
+let &textwidth = g:our_textwidth
 
 " Filetype-specific wrapping.
 augroup our_filetype_wrapping
     autocmd!
 
-    " Visually soft-wrap lines exceeding the width of the current Vim window.
-    " Rather than permanently hard-wrapping such lines by adding a newline
-    " character into such buffer, this only temporarily wraps such lines in such
-    " window for readability.
-    "
-    " Ensure this overwrites plugin defaults by setting such option *AFTER*
-    " opening new buffers and hence running such plugins.
+    " For readability, visually soft-wrap lines exceeding the width of the
+    " current window. Do *NOT* permanently hard-wrap such lines by inserting a
+    " newline character into the current buffer, which tends to have miserably
+    " unexpected side effects in most languages. To ensure this overwrites
+    " plugin defaults, this option is set *AFTER* opening a new buffer and hence
+    " running such plugins.
     autocmd FileType * setlocal wrap
 augroup END
 

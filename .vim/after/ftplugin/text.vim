@@ -21,4 +21,9 @@
 " behaves overzealously for our tastes and is hence disabled.
 setlocal formatoptions+=2 formatoptions-=c
 
+" Restore our preferred line length. External sources beyond our control (e.g.,
+" the default "/etc/vimrc" shipped with Babun) often maliciously override this
+" option and hence must themselves be overridden.
+let &textwidth = g:our_textwidth
+
 " --------------------( WASTELANDS                         )--------------------
