@@ -158,24 +158,3 @@ augroup our_filetype_detect
 augroup END
 
 " --------------------( WASTELANDS                         )--------------------
-    " echoerr 'Vim version older than 7.4 detected. Consider upgrading to avoid spurious errors.'
-    " echoerr 'Git not found. Consider installing Git to avoid spurious errors.'
-    " echomsg "Vim features \"clipboard\" and/or \"xterm_clipboard\" unavailable while running under"
-    " echomsg "X11. Consider reinstalling Vim with these features enabled to avoid errors."
-    " echomsg 'Vim feature "signs" unavailable. Consider reinstalling Vim with this feature'
-    " echomsg 'enabled to avoid errors.'
-
-    " set shell=/bin/bash
-    " execute '!git clone https://github.com/Shougo/neobundle.vim /home/leycec/.vim/bundle/neobundle.vim'
-    " silent system(
-    "   \ 'git clone https://github.com/Shougo/neobundle.vim ' .
-    "   \ shellescape(g:our_neobundle_dir)
-    "   \ )
-    " silent !git clone https://github.com/Shougo/neobundle.vim g:our_neobundle_dir
-" call neobundle#begin(expand('~/.vim/bundle/'))
-    " set runtimepath+=~/.vim/bundle/neobundle.vim/
-    " Inform the user of imminent strangeness.
-    " Install NeoBundle to such directory.
-    " Make the parent directory of the directory to install NeoBundle to.
-" Helper functions called below.
-    " echo ''
