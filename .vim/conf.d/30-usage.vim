@@ -151,7 +151,7 @@ augroup our_filetype_comments
     " default, the plugins for the following filetypes only parse "#" characters
     " immediately followed by whitespace as comment leaders -- which, given our
     " glut of "#FIXME" comments, is less than helpful.
-    autocmd FileType ebuild,python setlocal comments=:#,fb:-
+    autocmd FileType ebuild,python,sh setlocal comments=:#,fb:-
 augroup END
 
 " ....................{ COMMENTS ~ tcomment                }....................
@@ -329,11 +329,6 @@ set foldlevel=99
 augroup our_filetype_format
     autocmd!
 
-    " Enable option "t" autowrapping for markup-specific filetypes (e.g., XML)
-    " for which newlines are largely insignificant and hence automatically
-    " insertable without issue.
-    autocmd FileType yaml setlocal formatoptions+=t
-
     " Enable comment-aware text formatting for *ALL* code-specific filetypes
     " (i.e., filetypes supporting comments), regardless of whether the plugins
     " configuring such filetypes already do so. The following code-specific
@@ -356,6 +351,29 @@ augroup our_filetype_format
     autocmd FileType
       \ ebuild,markdown,python,sh,vim,yaml,zsh
       \ setlocal formatoptions+=croqnjmB
+
+    " Option "t" autowraps any line longer than "textwidth" on the first
+    " addition, deletion, or edit of a character in such line with column
+    " greater than "textwidth". It's fairly subtle, but largely useful.
+    "
+    " Enable such option for markup-specific filetypes (e.g., YAML, XML), for
+    " which newlines are largely insignificant and hence automatically
+    " insertable without issue.
+    "
+    " Disable such option for the follomwing filetypes (whose corresponding
+    " plugins typically enable such option by default):
+    "
+    " * Markdown. Conventional Markdown ignores newlines and hence permits
+    "   contiguous text in the same paragraph to be delimited by ignorable
+    "   newlines, in which case autowrapping Markdown is safe. However, GFM
+    "   (GitHub-flavoured Markdown) does *NOT* ignore newlines. In recognition
+    "   of Github's usurpation of Sourceforge as the de-facto standard for
+    "   open-source hosting, assume all Markdown to be GFM.
+    " * Plaintext. Line breaks and the absence thereof are frequently
+    "   significant in plaintext files (e.g., to preserve soft-wrapping of
+    "   e-mail content) and hence must *NOT* be added without user consent.
+    autocmd FileType yaml setlocal formatoptions+=t
+    autocmd FileType markdown,text setlocal formatoptions-=t
 augroup END
 
 " ....................{ GLOBBING                           }....................
