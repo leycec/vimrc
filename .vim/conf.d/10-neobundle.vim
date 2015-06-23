@@ -235,6 +235,13 @@ NeoBundleLazy 'xolox/vim-misc'
 " Markdown. While Tim Pope also provides a Markdown plugin at
 " 'tpope/vim-markdown', this alternative is more frequently maintained. As of
 " this writing, the former was last updated mid-2014 and suffering some bitrot.
+" Note, however, that the "filetype" option set by:
+"
+" * Tim Pope's plugin is "markdown".
+" * plasticboy's plugin is "mkd".
+"
+" Hence, switching between the two requires non-trivial modifications elsewhere
+" (e.g., substituting "markdown" by "mkd" or vice versa).
 NeoBundleLazy 'plasticboy/vim-markdown', {
   \ 'autoload': { 'filetypes': ['markdown', 'md'] }
   \ }

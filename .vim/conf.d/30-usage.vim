@@ -221,7 +221,8 @@ if neobundle#tap('vimfiler')
 endif
 
 " ....................{ FILETYPE ~ markdown : tpope        }....................
-" Tim Pope's Markdown plugin.
+" Tim Pope's Markdown plugin. While no longer used, there's little harm in
+" preserving the following variable.
 
 " List of all "fenced languages" in Github-flavored Markdown code blocks. The
 " opening delimiter "```" of such blocks may be suffixed by a string signifying
@@ -373,7 +374,7 @@ augroup our_filetype_format
     "   significant in plaintext files (e.g., to preserve soft-wrapping of
     "   e-mail content) and hence must *NOT* be added without user consent.
     autocmd FileType yaml setlocal formatoptions+=t
-    autocmd FileType markdown,text setlocal formatoptions-=t
+    autocmd FileType mkd,text setlocal formatoptions-=t
 augroup END
 
 " ....................{ GLOBBING                           }....................
