@@ -232,8 +232,10 @@ NeoBundleLazy 'thinca/vim-quickrun', {
 NeoBundleLazy 'xolox/vim-misc'
 
 " ....................{ LAZY ~ filetype                    }....................
-" Markdown.
-NeoBundleLazy 'tpope/vim-markdown', {
+" Markdown. While Tim Pope also provides a Markdown plugin at
+" 'tpope/vim-markdown', this alternative is more frequently maintained. As of
+" this writing, the former was last updated mid-2014 and suffering some bitrot.
+NeoBundleLazy 'plasticboy/vim-markdown', {
   \ 'autoload': { 'filetypes': ['markdown', 'md'] }
   \ }
 
@@ -343,33 +345,6 @@ NeoBundleLazy 'xolox/vim-easytags', {
 " Load all subdirectories of this directory as Vim plugins.
 call neobundle#local(expand('~/vim'))
 
-" Finalize NeoBundle configuration.
-call neobundle#end()
-
-" ....................{ FILETYPES                          }....................
-" Enable the following four core features (related to filetypes) *AFTER*
-" completing NeoBundle configuration but *BEFORE* subsequent functionality
-" requiring such features. (Attempting to enable such features *BEFORE*
-" beginning NeoBundle configuration erroneously overwrites the "formatoptions"
-" option with garbage. Presumably, other horrible things occur as well.)
-"
-" * Filetype detection. On opening new buffers, Vim attempts to deduce the
-"   filetype for such buffer from the filename associated with such buffer (if
-"   any) and/or shebang or modeline lines (if any) at the head of such buffer.
-"   Vim uses filetypes for syntax highlighting and the two features below.
-" * Filetype-dependent plugin files. Different filetypes are commonly associated
-"   with different Vim options. So-called "filetype plugins" ensure such options
-"   are set on opening buffers of such filetype.
-" * Filetype-dependent indentation files. Different filetypes are commonly
-"   associated with different indentation rules. As with filetype plugins,
-"   these files ensure such rules are set on opening buffers of such filetype.
-"
-" Do *NOT* attempt to enable support for filetype-dependent syntax highlighting
-" files. Since doing so here disables such support, do so *AFTER* completing
-" all NeoBundle-related tasks below.
-filetype plugin indent on
-
-" ....................{ INSTALLATION                       }....................
 " If NeoBundle was already installed at Vim startup, only install uninstalled
 " bundles. Since this does *NOT* update already installed bundles, the
 " NeoBundleUpdate() function *MUST* be manually run by the user to do so.
@@ -400,6 +375,33 @@ endif
 "     autocmd!
 "     autocmd VimEnter * call auto_neobundle#update_weekly()
 " augroup END
+
+" Finalize NeoBundle configuration. To avoid runtime warnings, all calls to
+" NeoBundle-specific functions *MUST* appear above this call.
+call neobundle#end()
+
+" ....................{ FILETYPES                          }....................
+" Enable the following four core features (related to filetypes) *AFTER*
+" completing NeoBundle configuration but *BEFORE* subsequent functionality
+" requiring such features. (Attempting to enable such features *BEFORE*
+" beginning NeoBundle configuration erroneously overwrites the "formatoptions"
+" option with garbage. Presumably, other horrible things occur as well.)
+"
+" * Filetype detection. On opening new buffers, Vim attempts to deduce the
+"   filetype for such buffer from the filename associated with such buffer (if
+"   any) and/or shebang or modeline lines (if any) at the head of such buffer.
+"   Vim uses filetypes for syntax highlighting and the two features below.
+" * Filetype-dependent plugin files. Different filetypes are commonly associated
+"   with different Vim options. So-called "filetype plugins" ensure such options
+"   are set on opening buffers of such filetype.
+" * Filetype-dependent indentation files. Different filetypes are commonly
+"   associated with different indentation rules. As with filetype plugins,
+"   these files ensure such rules are set on opening buffers of such filetype.
+"
+" Do *NOT* attempt to enable support for filetype-dependent syntax highlighting
+" files. Since doing so here disables such support, do so *AFTER* completing
+" all NeoBundle-related tasks below.
+filetype plugin indent on
 
 " --------------------( WASTELANDS                         )--------------------
 " " can. The crux of the issue is that VCS wrappers *MUST* be run on buffer
