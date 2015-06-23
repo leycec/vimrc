@@ -385,13 +385,13 @@ set showbreak=↳  " ↺↳↪
 " * "j", removing comment leaders when joining lines.
 " * "n", handling numbered lists.
 "
-" Avoid enabling "a", automatically formatting all comments. While such option
-" sounds pleasant in theory, it behaves unpleasantly destructively in practice,
-" rendering most comments uneditable.
+" Avoid enabling:
 "
-" Avoid enabling "t", as the current mode does so on your behalf. Comment
-" autoformatting is only enabled under modes enabling "t", which includes most
-" programming modes.
+" * "a", automatically formatting all comments. While such option sounds
+"   pleasant in theory, it behaves unpleasantly destructively in practice,
+"   rendering most comments uneditable.
+" * "t", as the current mode does so on your behalf. Comment autoformatting is
+"   only enabled under modes enabling "t", including most programming modes.
 "
 " See ":h fo-table" for further details.
 
@@ -414,6 +414,14 @@ augroup our_filetype_wrapping
     " unexpected side effects in most languages. To ensure this overwrites
     " plugin defaults, this option is set *AFTER* opening a new buffer and hence
     " running such plugins.
+    "
+    " Ideally, the "linebreak" option visually soft-wrapping lines at standard
+    " English word delimiters (e.g., spaces, hyphens, punctuation) would also be
+    " set. Unfortunately, this option conflicts with the "list" option visually
+    " distinguishing tabs from spaces. Given the non-negligible significance of
+    " tabs under various modes (e.g., "ebuild", "make", "python"), the latter
+    " option is arguably of greater significance and hence takes precedence.
+    " Unsurprisingly, we do not even bother enabling the "linebreak" option.
     autocmd FileType * setlocal wrap
 augroup END
 
