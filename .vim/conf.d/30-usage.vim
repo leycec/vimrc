@@ -245,6 +245,11 @@ let g:markdown_fenced_languages = [
   \ ]
 
 " ....................{ FILETYPE ~ python-mode             }....................
+"FIXME: "python-mode" currently indents line continuations by one level more of
+"indentation than seems reasonable. The culprit appears to be the block
+"commented by "If this line is explicitly joined..." in
+""autoload/pymode/indent.vim", but we're unsure how to properly correct it.
+
 " Enable Python 3- rather than 2-specific functionality. (Currently, the latter
 " is the default.)
 let g:pymode_python = 'python3'
