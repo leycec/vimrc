@@ -145,6 +145,12 @@ augroup our_filetype_detect
     " Python, they are Pythonic enough to parse as such.
     autocmd BufNewFile,BufRead *.spec setlocal filetype=python
 
+    " Associate all shell scripts in all ".oh-my-zsh" and "oh-my-zsh"
+    " directories of the current user's home directory with zsh mode. By
+    " definition, oh-my-zsh as *ALWAYS* user-local.
+    autocmd BufNewFile,BufRead ~/{*/,}{.,}oh-my-zsh/{*/,}*.sh
+      \ setlocal filetype=zsh
+
     " Associate all files in the "~/.gitignore.d" directory with conf mode. Such
     " files are vcsh-specific files in canonical ".gitignore" format, which Vim
     " also assigns the same mode by default.
