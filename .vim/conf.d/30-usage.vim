@@ -430,12 +430,12 @@ augroup our_filetype_indentation
     "
     " Ensure this overwrites plugin defaults by setting such options *AFTER*
     " opening new buffers and hence running such plugins.
-    autocmd FileType * setlocal softtabstop=4 shiftwidth=4 tabstop=4 expandtab
+    autocmd FileType * setlocal shiftwidth=4 softtabstop=4 tabstop=4 expandtab
 
     " For markup-specific filetypes (e.g., XML), reduce the default tab width.
     " Since markup tends to heavily nest, this helps prevent overly long lines
     " and hence improve readability.
-    autocmd FileType html,yaml setlocal softtabstop=2 shiftwidth=2 tabstop=2
+    autocmd FileType html,yaml setlocal shiftwidth=2 softtabstop=2 tabstop=2
 
     " For filetypes in which tabs are significant (e.g., ebuilds, makefiles),
     " bind <Tab> to insert tabs rather than spaces.
@@ -732,11 +732,30 @@ endif
 command GdiffUnstaged :Git! diff
 command GdiffStaged :Git! diff --staged
 
+" ....................{ PROJECTS                           }....................
+" Associate project roots (i.e., top-level subdirectories of the current user's
+" home directory, containing all content for such projects) with project-
+" specific settings, typically enforcing coding conventions.
+augroup our_project_settings
+    autocmd!
+
+    " Associate all shell scripts in all ".oh-my-zsh" and "oh-my-zsh"
+    " subdirectories of the current user's home directory with:
+    "
+    " * zsh mode.
+    " * Two-space indentation.
+    "
+    " Since oh-my-zsh as *NEVER* installed as a system-wide package, this logic
+    " should (theoretically) generalize to other developers as well.
+    autocmd BufNewFile,BufRead ~/{*/,}{.,}oh-my-zsh/{*/,}*.sh
+      \ setlocal filetype=zsh shiftwidth=2 softtabstop=2 tabstop=2
+augroup END
+
 " --------------------( WASTELANDS                         )--------------------
 " Alias the anonymous register (i.e., the default register for yanks, puts, and
-" cuts) to the both the "*" and "+" registers (i.e., X11's system clipboard) such that copying to
-" and pasting from the clipboard is as simple as copying and pasting text
-" without a destination register.
+" cuts) to the both the "*" and "+" registers (i.e., X11's system clipboard)
+" such that copying to and pasting from the clipboard is as simple as copying
+" and pasting text without a destination register.
 " set clipboard=unnamedplus
 
 " To ensure the uniqueness of such files in such directory, suffix such
