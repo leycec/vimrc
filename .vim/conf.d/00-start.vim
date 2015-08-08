@@ -148,6 +148,18 @@ function IfPlatformWindows() abort
     return g:our_platform == 'Windows'
 endfunction
 
+" Return 1 if the current platform is vanilla non-Cygwin-enabled Microsoft
+" Windows and 0 otherwise.
+function IfPlatformWindowsVanilla() abort
+    return has("win32")
+endfunction
+
+" Return 1 if the current platform is non-vanilla Cygwin-enabled Microsoft
+" Windows and 0 otherwise.
+function IfPlatformWindowsCygwin() abort
+    return has("win32unix")
+endfunction
+
 " ....................{ CHECKS ~ features                  }....................
 " If the current version of Vim was *NOT* compiled with the following optional
 " features, print non-fatal warnings:
@@ -176,14 +188,20 @@ endif
 " If "git" is not in the current ${PATH}, print a non-fatal warning. Subsequent
 " logic (e.g., NeoBundle installation) requires Git as a hard dependency.
 if !executable('git')
-    echomsg 'Git not found. Expect NeoBundle installation to fail.'
+    echomsg 'Command "git" not found. Expect NeoBundle installation to fail.'
 endif
 
-" If the current operation system is Microsoft Windows *AND* "mingw32-make" is
-" not in the current ${PATH}, print a non-fatal warning. The "vimproc" bundle
-" executes this command to compile itself under Windows.
-if IfPlatformWindows() && !executable('mingw32-make')
-    echomsg '"mingw32-make" not found. Expect "vimproc" installation to fail.'
+" If the current operation system is vanilla Microsoft Windows *AND*
+" "mingw32-make" is not in the current ${PATH}, print a non-fatal warning. The
+" "vimproc" bundle runs this command to compile itself under this platform.
+if IfPlatformWindowsVanilla() && !executable('mingw32-make')
+    echomsg 'Command "mingw32-make" not found. Expect NeoBundle installation to fail.'
+" Else if "make" is not in the current ${PATH}, print a non-fatal warning. While
+" generally unlikely, "make" is *NOT* installed under non-vanilla Cygwin-enabled
+" Microsoft Windows by default. The "vimproc" bundle runs this command to
+" compile itself under all platforms that are *NOT* vanilla Microsoft Windows.
+elseif !executable('make')
+    echomsg 'Command "make" not found. Expect NeoBundle installation to fail.'
 endif
 
 " ....................{ PATHS ~ make                       }....................
