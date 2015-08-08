@@ -29,10 +29,46 @@ if v:version < 704
     echomsg 'Vim version older than 7.4 detected. Expect horror.'
 endif
 
-" If "git" is not in the current ${PATH}, print a non-fatal warning. Subsequent
-" logic (e.g., NeoBundle installation) requires Git as a hard dependency.
-if !executable('git')
-    echomsg 'Git not found. Expect death.'
+" ....................{ PLATFORM                           }....................
+" Machine-readable capitalized name of the current platform (operating system),
+" guaranteed to be one of the following:
+"
+" * "Darwin", for OS X.
+" * "Linux", for Linux.
+" * "Windows", for Microsoft Windows.
+" * The output of "uname -s", for all other platforms.
+"
+" For efficient platform checking during Vim startup, such name is set here.
+"
+" Ideally, such name could be set merely by portably testing for the existence
+" of appropriate Vim features. Unfortunately, these features do *NOT*
+" necessarily correspond to reality. On OS X:
+"
+" * Under CLI Vim, "has('unix')" returns 1 while both "has('mac')" and
+"   "has('macunix')" return 0.
+" * Under MacVim (both CLI and GUI), all three return 1.
+"
+" The failure of OS X Vim derivatives to reliably report their features renders
+" the three features above (i.e., "mac", "macunix", and "unix") useless for
+" platform detection. Hence, we test only those Vim features reliably indicating
+" the current platform before falling back to capturing the standard output of
+" the external "uname" command.
+"
+" The current platform is Microsoft Windows if and only if either of the
+" following conditions holds:
+"
+" * The "win32" feature is available, in which case this in a vanilla Windows
+"   CLI environment (e.g., "cmd.exe", PowerShell). Note the "32" refers to the
+"   "win32" API encompassing all Windows platforms rather than only 32-bit
+"   Windows platforms.
+" * The "win32unix" feature is available, in which case this in a non-vanilla
+"   Cygwin-enabled Windows CLI environment (e.g., "mintty.exe").
+if has("win32") || has("win32unix")
+    let g:our_platform = 'Windows'
+" Else, the current platform is Unix-like and hence has the "uname" command.
+else
+    " Strip the trailing newline from such name.
+    let g:our_platform = substitute(system('uname -s'), '\n', '', '')
 endif
 
 " ....................{ PATHS                              }....................
@@ -96,6 +132,22 @@ function IsDisplayServerX11() abort
     return $DISPLAY != ''
 endfunction
 
+" ....................{ HELPERS ~ testers : platform       }....................
+" Return 1 if the current platform is Linux and 0 otherwise.
+function IfPlatformLinux() abort
+    return g:our_platform == 'Linux'
+endfunction
+
+" Return 1 if the current platform is Apple OS X and 0 otherwise.
+function IfPlatformOSX() abort
+    return g:our_platform == 'Darwin'
+endfunction
+
+" Return 1 if the current platform is Microsoft Windows and 0 otherwise.
+function IfPlatformWindows() abort
+    return g:our_platform == 'Windows'
+endfunction
+
 " ....................{ CHECKS ~ features                  }....................
 " If the current version of Vim was *NOT* compiled with the following optional
 " features, print non-fatal warnings:
@@ -118,6 +170,20 @@ endif
 " * Under Ubuntu, uninstall the "vim" package and install the "vim-gtk" package.
 if IsDisplayServerX11() && (!has('clipboard') || !has('xterm_clipboard'))
     echomsg 'Vim features "clipboard" or "xterm_clipboard" unavailable, but running under X11. Expect woe.'
+endif
+
+" ....................{ CHECKS ~ pathables                 }....................
+" If "git" is not in the current ${PATH}, print a non-fatal warning. Subsequent
+" logic (e.g., NeoBundle installation) requires Git as a hard dependency.
+if !executable('git')
+    echomsg 'Git not found. Expect NeoBundle installation to fail.'
+endif
+
+" If the current operation system is Microsoft Windows *AND* "mingw32-make" is
+" not in the current ${PATH}, print a non-fatal warning. The "vimproc" bundle
+" executes this command to compile itself under Windows.
+if IfPlatformWindows() && !executable('mingw32-make')
+    echomsg '"mingw32-make" not found. Expect "vimproc" installation to fail.'
 endif
 
 " ....................{ PATHS ~ make                       }....................
