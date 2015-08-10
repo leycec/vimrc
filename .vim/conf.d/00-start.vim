@@ -29,6 +29,45 @@ if v:version < 704
     echomsg 'Vim version older than 7.4 detected. Expect horror.'
 endif
 
+" ....................{ PATHABLES                          }....................
+"FIXME: This implementation assumes no dirname in ${PATH} to contain commas.
+"Generalize to handle such (admittedly unlikely) edge-cases.
+
+" Get the absolute path of the passed pathable (i.e., command in the current
+" $PATH) if such pathable exists or the empty string otherwise. This function
+" should typically be preceded by an "if executable(pathable)" check ensuring
+" such pathable to exist.
+function GetPathablePath(pathable) abort
+    " Platform-specific character delimiting dirnames in the current $PATH.
+    let l:path_delimiter = has("win32") ? ';' : ':'
+
+    " Return the first absolute path whose basename is the passed pathable and
+    " whose dirname is a dirname in the current $PATH. To do so portably without
+    " requiring external shell commands (which, as example, are unlikely to
+    " exist under vanilla non-Cygwin-enabled Windows):
+    "
+    " 1. The current $PATH is converted into a comma-delimited list, as required
+    "    by the globpath() builtin.
+    " 2. A new list of all directories containing such pathable is created.
+    "    Since globpath() returns a newline-delimited list rather than list by
+    "    default, the optional arguments "0" and "1" *MUST* be passed. Backwards
+    "    compatibility, you die.
+    " 3. The first item of this list is returned.
+    return globpath(
+      \ substitute($PATH, l:path_delimiter, ',', 'g'),
+      \ a:pathable, 0, 1)[0]
+endfunction
+
+" ....................{ SHELL                              }....................
+" If "bash" is in the current ${PATH}, forcefully set Vim's preferred shell to
+" "bash" *BEFORE* running the first shell command below (e.g., system()). Vim
+" startup and numerous bundles assume the shell to be sane (e.g., to print no
+" output on non-interactive startup and to conform to POSIX shell standards),
+" which may *NOT* necessarily be the case for non-standard shells.
+if executable('bash')
+    let &shell = GetPathablePath('bash')
+endif
+
 " ....................{ PLATFORM                           }....................
 " Machine-readable capitalized name of the current platform (operating system),
 " guaranteed to be one of the following:
@@ -245,3 +284,12 @@ augroup our_filetype_detect
 augroup END
 
 " --------------------( WASTELANDS                         )--------------------
+    " if has("win32")
+    "     let l:path_delimiter = ';'
+    " else
+    "     let l:path_delimiter = ':'
+    " endif
+    " echo 'pathable: ' . a:pathable . ', ' . l:pithy
+    " return l:pithy
+    " Return the first item of such list.
+    " return l:pathables[1]
