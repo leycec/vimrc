@@ -539,10 +539,6 @@ let g:VeryMagicVimGrep = 1
 " substitution, as expected.
 set gdefault
 
-" ....................{ SHELL COMMANDS                     }....................
-" Absolute path of the default shell with which to run commands.
-set shell=/bin/zsh
-
 " ....................{ SPELLING                           }....................
 "FIXME: This works, but it looks hideous on the console. Ideally, it would
 "only apply to commented blocks and even then only lightly highlight or
@@ -752,6 +748,10 @@ augroup our_project_settings
 augroup END
 
 " --------------------( WASTELANDS                         )--------------------
+" ....................{ SHELL COMMANDS                     }....................
+" Absolute path of the default shell with which to run commands.
+" set shell=/bin/zsh
+
 " Alias the anonymous register (i.e., the default register for yanks, puts, and
 " cuts) to the both the "*" and "+" registers (i.e., X11's system clipboard)
 " such that copying to and pasting from the clipboard is as simple as copying
