@@ -250,9 +250,14 @@ let g:markdown_fenced_languages = [
 "commented by "If this line is explicitly joined..." in
 ""autoload/pymode/indent.vim", but we're unsure how to properly correct it.
 
-" Enable Python 3- rather than 2-specific functionality. (Currently, the latter
-" is the default.)
-let g:pymode_python = 'python3'
+" If the "python3" command is in the current ${PATH}, Python 3 is available and
+" presumably preferred to Python 2. In such case, enable Python 3- rather than
+" Python 2-specific functionality. Currently, the latter is the default.
+"
+" Ideally, "python-mode" would conditionally detect which Python functionality
+" to enable based on the shebang line prefixing the current file buffer. Since
+" it does *NOT*, this is the next-best thing in GrungyTown.
+let g:pymode_python = executable('python3') ? 'python3' : 'python'
 
 " Disable all folding functionality in "python-mode".
 let g:pymode_folding = 0
