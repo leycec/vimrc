@@ -8,6 +8,13 @@
 "FIXME: Actually, "formatoptions+=2" is great! Can we reliably enable that
 "for other modes as well, at least in comments?
 
+" ....................{ PREAMBLE                           }....................
+" If such plugin has already been loaded for the current buffer, return. Since
+" dependencies below may also set such variable, test such variable first.
+if exists("b:did_ftplugin")
+    finish
+endif
+
 " ....................{ FORMAT                             }....................
 " Enable the following auto-formatting options for plaintext files:
 "
@@ -28,6 +35,10 @@ setlocal formatoptions+=2 formatoptions-=c
 " the default "/etc/vimrc" shipped with Babun) often maliciously override this
 " option for this filetype and hence must themselves be overridden.
 let &textwidth = g:our_textwidth
+
+" ....................{ POSTAMBLE                          }....................
+" Declare such plugin to have been successfully loaded for the current buffer.
+let b:did_ftplugin = 1
 
 " --------------------( WASTELANDS                         )--------------------
 " * "t", autowrapping long lines. Line breaks and the absence thereof are
