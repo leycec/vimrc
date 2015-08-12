@@ -6,9 +6,8 @@
 " Python-specific settings.
 
 " ....................{ PREAMBLE                           }....................
-" If such plugin has already been loaded for the current buffer, return. Since
-" dependencies below may also set such variable, test such variable first.
-if exists("b:did_ftplugin")
+" If such plugin has already been loaded for the current buffer, return.
+if exists("b:is_our_ftplugin")
     finish
 endif
 
@@ -22,6 +21,6 @@ endif
 
 " ....................{ POSTAMBLE                          }....................
 " Declare such plugin to have been successfully loaded for the current buffer.
-let b:did_ftplugin = 1
+let b:is_our_ftplugin = 1
 
 " --------------------( WASTELANDS                         )--------------------
