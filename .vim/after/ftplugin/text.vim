@@ -9,9 +9,8 @@
 "for other modes as well, at least in comments?
 
 " ....................{ PREAMBLE                           }....................
-" If such plugin has already been loaded for the current buffer, return. Since
-" dependencies below may also set such variable, test such variable first.
-if exists("b:did_ftplugin")
+" If such plugin has already been loaded for the current buffer, return.
+if exists("b:is_our_ftplugin")
     finish
 endif
 
@@ -38,7 +37,7 @@ let &textwidth = g:our_textwidth
 
 " ....................{ POSTAMBLE                          }....................
 " Declare such plugin to have been successfully loaded for the current buffer.
-let b:did_ftplugin = 1
+let b:is_our_ftplugin = 1
 
 " --------------------( WASTELANDS                         )--------------------
 " * "t", autowrapping long lines. Line breaks and the absence thereof are
