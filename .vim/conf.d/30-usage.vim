@@ -733,6 +733,24 @@ endif
 command GdiffUnstaged :Git! diff
 command GdiffStaged :Git! diff --staged
 
+" ....................{ VCS ~ vimgitlog                    }....................
+"FIXME: Currently disabled, due to "vimgitlog" being basically broken. That
+"said, it's the only currently maintained Vim plugin purporting to do this.
+
+" " Display the tree (value 2) rather than log (value 1) view by default. While
+" " the latter would probably be preferable, "vimgitlog" fails hard when that is
+" " the case. Unsurprisingly, installation instructions advise this default.
+" let g:GITLOG_default_mode = 2
+"
+" " Ignore files with the following filetypes.
+" let g:GITLOG_ignore_suffixes=['swp', 'pyc', 'pyo']
+"
+" " Ignore directories with the following basenames.
+" let g:GITLOG_ignore_directories = ['.git', '__pycache__']
+"
+" " Enable tree walking, substantially optimizing the tree view.
+" let g:GITLOG_walk_full_tree = 1
+
 " ....................{ PROJECTS                           }....................
 " Associate project roots (i.e., top-level subdirectories of the current user's
 " home directory, containing all content for such projects) with project-
@@ -753,6 +771,14 @@ augroup our_project_settings
 augroup END
 
 " --------------------( WASTELANDS                         )--------------------
+" Display the log rather than tree view by default.
+" let g:GITLOG_default_mode = 1
+
+" Recommended default settings. For backwards compatibility, "vimgitlog"
+" defaults to non-optimal settings.
+" Show rather than hide dotfiles and dot directories.
+" let g:GITLOG_show_hidden_files = 1
+
 " ....................{ SHELL COMMANDS                     }....................
 " Absolute path of the default shell with which to run commands.
 " set shell=/bin/zsh

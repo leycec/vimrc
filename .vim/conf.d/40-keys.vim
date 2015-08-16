@@ -49,7 +49,7 @@ nnoremap <silent> <leader>vr load-vim-script $MYVIMRC<cr>
 " strings (e.g., "/ oeuoeuoeu").
 nnoremap <silent> <leader>/ :nohlsearch<cr>
 
-" ....................{ LEADER ~ vcs                       }....................
+" ....................{ LEADER ~ vcs : fugitive            }....................
 " Bind <,Gu> to open a new buffer diffing the working Git tree against the index.
 nnoremap <leader>Gu :GdiffUnstaged<cr>
 
@@ -61,6 +61,15 @@ nnoremap <leader>Gs :Gstatus<cr>
 
 " Bind <,He> to open a new buffer viewing and editing Mercurial's DirState.
 nnoremap <leader>Hs :Hgstatus<cr>
+
+" ....................{ LEADER ~ vcs : vimgitlog           }....................
+nnoremap <leader>Gl :GitLog<cr>
+
+"FIXME: Currently disabled, due to "vimgitlog" being basically broken. That
+"said, it's the only currently maintained Vim plugin purporting to do this.
+
+" nnoremap <leader>Gl :call GITLOG_ToggleWindows()<cr>
+" nnoremap <leader>GL :call GITLOG_FlipWindows()<cr>
 
 " ....................{ FIXES                              }....................
 "FIXME: Actually, this strikes me as a poor idea. Use the 0 register, instead.
