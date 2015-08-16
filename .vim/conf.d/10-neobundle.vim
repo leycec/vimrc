@@ -305,6 +305,23 @@ NeoBundleLazy 'osyo-manga/vim-watchdogs', {
 "   \ 'autoload': { 'filetypes': ['vim'] }
 "   \ }
 
+" ....................{ LAZY ~ vcsh                        }....................
+" Git log wrapper. While otherwise excellent, `vim-fugitive` particularly lacks
+" in this department.
+NeoBundleLazy 'kablamo/vim-git-log', {
+  \ 'autoload': { 'commands': [ 'GitLog'] }
+  \ }
+
+"FIXME: Currently disabled, due to "vimgitlog" being basically broken. That
+"said, it's the only currently maintained Vim plugin purporting to do this.
+
+" Git log wrapper. While otherwise excellent, `vim-fugitive` particularly lacks
+" in this department.
+" NeoBundleLazy 'PAntoine/vimgitlog', {
+"   \ 'autoload': {
+"   \     'functions': [ 'GITLOG_ToggleWindows', 'GITLOG_FlipWindows',]
+"   \ }}
+
 " ....................{ LAZY ~ rest                        }....................
 " Buffer undo/redo.
 "
