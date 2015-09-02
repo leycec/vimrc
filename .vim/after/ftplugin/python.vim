@@ -37,3 +37,16 @@ endif
 let b:is_our_ftplugin = 1
 
 " --------------------( WASTELANDS                         )--------------------
+" ....................{ SYNTAX CHECK ~ watchdogs           }....................
+" Configure the Python-specific "pyflakes" syntax checker.
+" let g:quickrun_config['watchdogs_checker/pyflakes'] = {
+"   \ 'command': 'pyflakes',
+"   \ 'cmdopt': '',
+"   \ 'exec': '%c %o %s:p',
+"   \ 'quickfix/errorformat': '%f:%l:%m',
+"   \ }
+
+" Syntax check Python buffers with such checker.
+" let g:quickrun_config['python/watchdogs_checker'] = {
+"   \ 'type' : 'watchdogs_checker/pyflakes',
+"   \ }
