@@ -68,7 +68,20 @@ if executable('bash')
     let &shell = GetPathablePath('bash')
 endif
 
-" ....................{ PLATFORM                           }....................
+" ....................{ GLOBALS                            }....................
+" 1 if Vim is running under a display server supporting the X11 protocol (e.g.,
+" X.org, XWayland, XMir, Cygwin/X) and 0 otherwise.
+let g:our_is_display_server_x11 = $DISPLAY != ''
+
+" 1 if Vim was compiled with Python 3 support *AND* "python3" is in the current
+" ${PATH} and 0 otherwise. In the former case, Python 3 is available and
+" presumably preferred to Python 2.
+let g:our_is_python3 = has('python3') && executable('python3')
+
+" 1 if the current user is the superuser (i.e., "root") and 0 otherwise.
+let g:our_is_superuser = $USER == 'root'
+
+" ....................{ GLOBALS ~ platform                 }....................
 " Machine-readable capitalized name of the current platform (operating system),
 " guaranteed to be one of the following:
 "
@@ -110,14 +123,14 @@ else
     let g:our_platform = substitute(system('uname -s'), '\n', '', '')
 endif
 
-" ....................{ PATHS                              }....................
+" ....................{ GLOBALS ~ paths                    }....................
 " Absolute path of Vim's top-level dot directory.
 let g:our_vim_dir = $HOME . '/.vim'
 
 " Absolute path of the current user's custom Vim dotfile.
 let g:our_vimrc_local_file = $HOME . '/.vimrc.local'
 
-" ....................{ PATHS ~ bundle                     }....................
+" ....................{ GLOBALS ~ paths : bundle           }....................
 " Absolute path of the directory to install bundles to.
 let g:our_bundle_dir = g:our_vim_dir . '/bundle'
 
@@ -125,7 +138,7 @@ let g:our_bundle_dir = g:our_vim_dir . '/bundle'
 " manage itself as a bundle.
 let g:our_neobundle_dir = g:our_bundle_dir . '/neobundle.vim'
 
-" ....................{ PATHS ~ cache                      }....................
+" ....................{ GLOBALS ~ paths : cache            }....................
 " Absolute path of the directory to cache temporary paths to.
 let g:our_cache_dir = g:our_vim_dir . '/cache'
 
@@ -160,16 +173,8 @@ function MakeDirIfNotFound(path) abort
 endfunction
 
 " ....................{ HELPERS ~ testers                  }....................
-" Return 1 if the current user is the superuser (i.e., "root") and 0 otherwise.
-function IsSuperuser() abort
-    return $USER == 'root'
-endfunction
-
-" Return 1 if Vim is running under a display server supporting the X11 protocol
-" (e.g., X.org, XWayland, XMir, Cygwin/X) and 0 otherwise.
-function IsDisplayServerX11() abort
-    return $DISPLAY != ''
-endfunction
+"FIXME: Functions are inefficient. Replace all such testers by corresponding
+"boolean globals. See g:our_is_python3 as an example.
 
 " ....................{ HELPERS ~ testers : platform       }....................
 " Return 1 if the current platform is Linux and 0 otherwise.
@@ -219,7 +224,7 @@ endif
 "
 " * Under Gentoo, reinstall "vim" with USE flag "X" enabled.
 " * Under Ubuntu, uninstall the "vim" package and install the "vim-gtk" package.
-if IsDisplayServerX11() && (!has('clipboard') || !has('xterm_clipboard'))
+if g:our_is_display_server_x11 && (!has('clipboard') || !has('xterm_clipboard'))
     echomsg 'Vim features "clipboard" or "xterm_clipboard" unavailable, but running under X11. Expect woe.'
 endif
 
@@ -284,6 +289,19 @@ augroup our_filetype_detect
 augroup END
 
 " --------------------( WASTELANDS                         )--------------------
+" Return 1 if Vim is running under a display server supporting the X11 protocol
+" (e.g., X.org, XWayland, XMir, Cygwin/X) and 0 otherwise.
+" function IsDisplayServerX11() abort
+"     return $DISPLAY != ''
+" endfunction
+
+" Return 1 if Vim was compiled with Python 3 support *AND* "python3" is in the
+" current ${PATH}, in which case Python 3 is available and presumably preferred
+" to Python 2.
+" function IsPython3() abort
+"     return has('python3') && executable('python3')
+" endfunction
+" python3 4
     " if has("win32")
     "     let l:path_delimiter = ';'
     " else

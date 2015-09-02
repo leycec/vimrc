@@ -258,8 +258,7 @@ let g:markdown_fenced_languages = [
 " Ideally, "python-mode" would conditionally detect which Python functionality
 " to enable based on the shebang line prefixing the current file buffer. Since
 " it does *NOT*, this is the next-best thing in GrungyTown.
-let g:pymode_python = has('python3') && executable('python3')
-  \ ? 'python3' : 'python'
+let g:pymode_python = g:our_is_python3 ? 'python3' : 'python'
 
 " Disable all folding functionality in "python-mode".
 let g:pymode_folding = 0
@@ -274,7 +273,7 @@ let g:pymode_lint = 0
 " typically edits top-level files containing no such directory, such recursion
 " typically induces a recursive search of the entire filesystem and hence hangs
 " Vim. (Which would be bad.)
-if IsSuperuser()
+if g:our_is_superuser
     let g:pymode_rope_lookup_project = 0
 " Else, permit Rope to perform such recursion.
 else
@@ -583,18 +582,21 @@ let g:quickrun_config['watchdogs_checker/_'] = {
   \ }
 
 " ....................{ SYNTAX CHECK ~ watchdogs : python  }....................
-" Configure the Python-specific "pyflakes" syntax checker.
-" let g:quickrun_config['watchdogs_checker/pyflakes'] = {
-"   \ 'command': 'pyflakes',
-"   \ 'cmdopt': '',
-"   \ 'exec': '%c %o %s:p',
-"   \ 'quickfix/errorformat': '%f:%l:%m',
-"   \ }
+" If both Python 3 *AND* the "pyflakes3" command are available, syntax check
+" Python buffers with such command.
+if g:our_is_python3 && executable('pyflakes3')
+    " Define a new "pyflakes3" syntax checker.
+    let g:quickrun_config['watchdogs_checker/pyflakes3'] = {
+      \ 'command': 'pyflakes3',
+      \ 'exec': '%c %o %s:p',
+      \ 'errorformat': '%f:%l:%m',
+      \ }
 
-" Syntax check Python buffers with such checker.
-" let g:quickrun_config['python/watchdogs_checker'] = {
-"   \ 'type' : 'watchdogs_checker/pyflakes',
-"   \ }
+    " Syntax check Python buffers with such checker.
+    let g:quickrun_config['python/watchdogs_checker'] = {
+      \ 'type' : 'watchdogs_checker/pyflakes3',
+      \ }
+endif
 
 " ....................{ SYNTAX CHECK ~ watchdogs : stop    }....................
 " Configure watchdogs when lazily loaded.
@@ -773,6 +775,7 @@ augroup our_project_settings
 augroup END
 
 " --------------------( WASTELANDS                         )--------------------
+" let g:pymode_python = 'python3'
 " If the "python3" command is in the current ${PATH}, Python 3 is available and
 " presumably preferred to Python 2. In such case, enable Python 3- rather than
 " Python 2-specific functionality. Currently, the latter is the default.
