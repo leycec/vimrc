@@ -18,6 +18,49 @@ set novisualbell
 " Do *NOT* prompt users to press <Enter> on each screen of long listings.
 set nomore
 
+" ....................{ GLOBALS ~ platform                 }....................
+" Machine-readable capitalized name of the current platform (operating system).
+" To improve error message granularity, this is defined *BEFORE* validating the
+" current version of Vim. This is guaranteed to be one of the following names:
+"
+" * "Darwin", for OS X.
+" * "Linux", for Linux.
+" * "Windows", for Microsoft Windows.
+" * The output of "uname -s", for all other platforms.
+"
+" For efficient platform checking during Vim startup, such name is set here.
+"
+" Ideally, such name could be set merely by portably testing for the existence
+" of appropriate Vim features. Unfortunately, these features do *NOT*
+" necessarily correspond to reality. On OS X:
+"
+" * Under CLI Vim, "has('unix')" returns 1 while both "has('mac')" and
+"   "has('macunix')" return 0.
+" * Under MacVim (both CLI and GUI), all three return 1.
+"
+" The failure of OS X Vim derivatives to reliably report their features renders
+" the three features above (i.e., "mac", "macunix", and "unix") useless for
+" platform detection. Hence, we test only those Vim features reliably indicating
+" the current platform before falling back to capturing the standard output of
+" the external "uname" command.
+"
+" The current platform is Microsoft Windows if and only if either of the
+" following conditions holds:
+"
+" * The "win32" feature is available, in which case this in a vanilla Windows
+"   CLI environment (e.g., "cmd.exe", PowerShell). Note the "32" refers to the
+"   "win32" API encompassing all Windows platforms rather than only 32-bit
+"   Windows platforms.
+" * The "win32unix" feature is available, in which case this in a non-vanilla
+"   Cygwin-enabled Windows CLI environment (e.g., "mintty.exe").
+if has("win32") || has("win32unix")
+    let g:our_platform = 'Windows'
+" Else, the current platform is Unix-like and hence has the "uname" command.
+else
+    " Strip the trailing newline from such name.
+    let g:our_platform = substitute(system('uname -s'), '\n', '', '')
+endif
+
 " ....................{ CHECKS                             }....................
 " If the current version of Vim is insufficient, print a non-fatal warning. This
 " requirement is currently dictated by:
@@ -27,6 +70,24 @@ set nomore
 "   * Requiring Vim >= 7.3.105 for realtime highlighting.
 if v:version < 704
     echomsg 'Vim version older than 7.4 detected. Expect horror.'
+
+    " If the current platform is OS X, suggest use of the CLI-specific "vim"
+    " installed with the Homebrew-managed MacVim port. Since the ideal command
+    " for doing so is somewhat non-trivial, this command is also printed.
+    "
+    " For other platforms, upgrading Vim is typically trivial and hence omitted.
+    if g:our_platform == 'Darwin'
+        " If Homebrew is unavailable, recommend its installation.
+        if !executable('brew')
+            echomsg 'Consider installing Homebrew to correct this.'
+        endif
+
+        " If MacVim is unavailable, recommend its installation.
+        if !executable('mvim')
+            echomsg 'Consider installing the Homebrew-managed MacVim port as follows:'
+            echomsg '    brew install macvim --with-override-system-vim --with-python3'
+        endif
+    endif
 endif
 
 " ....................{ PATHABLES                          }....................
@@ -80,48 +141,6 @@ let g:our_is_python3 = has('python3') && executable('python3')
 
 " 1 if the current user is the superuser (i.e., "root") and 0 otherwise.
 let g:our_is_superuser = $USER == 'root'
-
-" ....................{ GLOBALS ~ platform                 }....................
-" Machine-readable capitalized name of the current platform (operating system),
-" guaranteed to be one of the following:
-"
-" * "Darwin", for OS X.
-" * "Linux", for Linux.
-" * "Windows", for Microsoft Windows.
-" * The output of "uname -s", for all other platforms.
-"
-" For efficient platform checking during Vim startup, such name is set here.
-"
-" Ideally, such name could be set merely by portably testing for the existence
-" of appropriate Vim features. Unfortunately, these features do *NOT*
-" necessarily correspond to reality. On OS X:
-"
-" * Under CLI Vim, "has('unix')" returns 1 while both "has('mac')" and
-"   "has('macunix')" return 0.
-" * Under MacVim (both CLI and GUI), all three return 1.
-"
-" The failure of OS X Vim derivatives to reliably report their features renders
-" the three features above (i.e., "mac", "macunix", and "unix") useless for
-" platform detection. Hence, we test only those Vim features reliably indicating
-" the current platform before falling back to capturing the standard output of
-" the external "uname" command.
-"
-" The current platform is Microsoft Windows if and only if either of the
-" following conditions holds:
-"
-" * The "win32" feature is available, in which case this in a vanilla Windows
-"   CLI environment (e.g., "cmd.exe", PowerShell). Note the "32" refers to the
-"   "win32" API encompassing all Windows platforms rather than only 32-bit
-"   Windows platforms.
-" * The "win32unix" feature is available, in which case this in a non-vanilla
-"   Cygwin-enabled Windows CLI environment (e.g., "mintty.exe").
-if has("win32") || has("win32unix")
-    let g:our_platform = 'Windows'
-" Else, the current platform is Unix-like and hence has the "uname" command.
-else
-    " Strip the trailing newline from such name.
-    let g:our_platform = substitute(system('uname -s'), '\n', '', '')
-endif
 
 " ....................{ GLOBALS ~ paths                    }....................
 " Absolute path of Vim's top-level dot directory.
