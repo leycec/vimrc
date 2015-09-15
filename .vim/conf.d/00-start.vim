@@ -170,6 +170,10 @@ let g:our_swap_dir = g:our_cache_dir . '/swap'
 " Absolute path of the directory to cache undo trees to.
 let g:our_undo_dir = g:our_cache_dir . '/undo'
 
+" ....................{ GLOBALS ~ paths                    }....................
+" 1 if the current platform is Apple OS X and 0 otherwise.
+let g:our_is_platform_osx = g:our_platform == 'Darwin'
+
 " ....................{ HELPERS                            }....................
 " Helper functions guaranteed to be called at (and hence unconditionally
 " required by) Vim startup. All other such functions are only conditionally
@@ -199,11 +203,6 @@ endfunction
 " Return 1 if the current platform is Linux and 0 otherwise.
 function IfPlatformLinux() abort
     return g:our_platform == 'Linux'
-endfunction
-
-" Return 1 if the current platform is Apple OS X and 0 otherwise.
-function IfPlatformOSX() abort
-    return g:our_platform == 'Darwin'
 endfunction
 
 " Return 1 if the current platform is Microsoft Windows and 0 otherwise.
@@ -236,15 +235,24 @@ if !has('signs')
     echomsg 'Vim feature "signs" unavailable. Expect ugliness.'
 endif
 
-" If Vim is running under a display server supporting the X11 protocol but *NOT*
-" compiled with the "+clipboard" or "+xterm_clipboard" features, print non-fatal
-" warnings. For sane X11 usage, both should ideally be available. This can
-" typically be rectified as follows:
+" If Vim is running under a non-OS X display server supporting the X11 protocol
+" but *NOT* compiled with both the "+clipboard" and "+xterm_clipboard" features,
+" print non-fatal warnings. For sane X11 usage, both should ideally be
+" available. This can typically be rectified as follows:
 "
 " * Under Gentoo, reinstall "vim" with USE flag "X" enabled.
 " * Under Ubuntu, uninstall the "vim" package and install the "vim-gtk" package.
-if g:our_is_display_server_x11 && (!has('clipboard') || !has('xterm_clipboard'))
-    echomsg 'Vim features "clipboard" or "xterm_clipboard" unavailable, but running under X11. Expect woe.'
+if g:our_is_display_server_x11 && !has('clipboard')
+    " If running under OS X, only the "+clipboard" feature is typically enabled.
+    " The "+xterm_clipboard" feature is *NOT* required for clipboard use.
+    if g:our_is_platform_osx
+        echomsg 'Vim feature "clipboard" unavailable, but running under OS X. Expect clipboard'
+        echomsg 'integration to fail.'
+    " Else, the "+xterm_clipboard" feature is required for clipboard use.
+    elseif !has('xterm_clipboard')
+        echomsg 'Vim features "clipboard" and "xterm_clipboard" unavailable, but running under'
+        echomsg 'X11. Expect clipboard integration to fail.'
+    endif
 endif
 
 " ....................{ CHECKS ~ pathables                 }....................
@@ -308,6 +316,11 @@ augroup our_filetype_detect
 augroup END
 
 " --------------------( WASTELANDS                         )--------------------
+" Return 1 if the current platform is Apple OS X and 0 otherwise.
+" function IfPlatformOSX() abort
+"     return g:our_platform == 'Darwin'
+" endfunction
+
 " Return 1 if Vim is running under a display server supporting the X11 protocol
 " (e.g., X.org, XWayland, XMir, Cygwin/X) and 0 otherwise.
 " function IsDisplayServerX11() abort
