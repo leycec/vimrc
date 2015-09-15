@@ -89,7 +89,15 @@ if &t_Co < 256 &&
     "   * Return successful exit status.
     " * Else, return failure exit status.
     "
-    " Yes, this *ACTUALLY* works. And reliably so.
+    " Yes, this *ACTUALLY* works. And reliably so. Exepct on ancient versions
+    " of Bash (i.e., Bash < 4.0.0), which fail to support fractional seconds
+    " passed to the "-t" option and hence fail with:
+    "
+    "     /bin/bash: line 0: read: 0.1: invalid timeout specification
+    "
+    " The solution, of course, is to upgrade Bash. Since ancient versions of
+    " Bash suffer numerous well-known security vulnerabilities (e.g.,
+    " Shellshock), this is a sanity-preserving prerequisite anyway.
     silent
       \ !printf '\e]4;255;?\a' >/dev/tty;
       \ if read -d $'\a' -r -s -t 0.1 </dev/tty; then
