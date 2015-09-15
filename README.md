@@ -109,7 +109,7 @@ Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcs
 
   * **Track the `github` branch**, storing front-facing Github files (including this readme).
 
-            $ git branch github origin/github
+            $ git fetch
 
   * **Install the `git` hook**, synchronizing the `master` and `github` branches on every commit to the former. 
 
