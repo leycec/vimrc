@@ -11,12 +11,14 @@
 " "vimrc#". In return, Vim sources this script and hence autoloads all such
 " functions on the first call to any such function.
 
-" ....................{ GETTERS                            }....................
+" ....................{ GETTERS ~ script                   }....................
 " Get the function with the passed name declared by the script with the passed
-" absolute path. This function is principally intended to break the thin veneer
-" of privacy provided by "s:". See GetScriptSID() for details. This function is
-" appropriated wholesale from the following external function, for which we are
-" (again) indelicately grateful:
+" absolute path.
+"
+" This function is principally intended to break the fake privacy provided by
+" "s:". See GetScriptSID() for details.
+"
+" This function was gratefully lifted from the following external source:
 "
 " * Kanno Kanno's s:get_func() function, published at:
 "   http://kannokanno.hatenablog.com/entry/20120720/1342733323
@@ -29,8 +31,9 @@ endfunction
 " absolute path. This function is principally intended to break the thin veneer
 " of privacy provided by "s:", syntactic sugar prefixing function names which
 " Vim internally mangles into "<SNR>${SID}_" (where "${SID}" is the SID of the
-" script declaring such functions). This function is inspired by the following
-" external function, for which we are effervescently grateful:
+" script declaring such functions).
+"
+" This function was gratefully inspired by the following external source:
 "
 " * Yasuhiro Matsumoto's GetScriptID() function, published at:
 "   http://mattn.kaoriya.net/software/vim/20090826003359.htm
@@ -85,6 +88,24 @@ function! vimrc#diff_buffer_current_with_file_current() abort
     diffthis
     wincmd p
     diffthis
+endfunction
+
+" ....................{ PRINTERS ~ buffer                  }....................
+" Print the 1-based byte offset of the current position in the current buffer.
+"
+" This function returns the same value displayed by the "%o" statusline
+" modifier, and is principally intended for users preferring to manually call
+" this function rather than continually display a statusline offset.
+"
+" Note that the built-in goto() command jumps to an arbitrary byte offset
+" (e.g., ":goto 25647", jumping to the 25647th byte in the current buffer).
+"
+" This function was gratefully inspired by the following external source:
+"
+" * lcd047's FileOffset() function, published at:
+"   https://vi.stackexchange.com/a/3850
+function! vimrc#print_buffer_current_byte_offset() abort
+    echo line2byte(line('.')) + col('.') - 1
 endfunction
 
 " --------------------( WASTELANDS                         )--------------------
