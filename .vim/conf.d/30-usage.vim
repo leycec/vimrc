@@ -361,7 +361,7 @@ augroup our_filetype_format
     " * "B", *NOT* inserting whitespace between adjacent multibyte characters when
     "   joining lines.
     autocmd FileType
-      \ ebuild,markdown,python,sh,vim,yaml,zsh
+      \ ebuild,markdown,mkd,python,sh,vim,yaml,zsh
       \ setlocal formatoptions+=croqnjmB
 
     " Option "t" autowraps any line longer than "textwidth" on the first
