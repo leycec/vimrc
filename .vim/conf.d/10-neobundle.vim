@@ -133,6 +133,9 @@ NeoBundle 'tpope/vim-unimpaired'
 " Improve <.> to support repeating of plugin-specific key bindings.
 NeoBundle 'tpope/vim-repeat.git'
 
+" EnchantedVim dependency. (This is loaded non-lazily only as EnchantedVim is.)
+NeoBundle 'coot/CRDispatcher.git'
+
 " Coerce <Enter> to inject '\v' magic on search-and-replacements.
 NeoBundle 'coot/EnchantedVim.git', {
   \ 'depends': ['coot/CRDispatcher.git'],
@@ -192,9 +195,6 @@ NeoBundle 'tomtom/tcomment_vim'
 
 " Highlight syntax errors in the current buffer.
 NeoBundleLazy 'cohama/vim-hier'
-
-" EnchantedVim dependency.
-NeoBundleLazy 'coot/CRDispatcher.git'
 
 " Display quickfix messages in the command line.
 NeoBundleLazy 'dannyob/quickfixstatus'
