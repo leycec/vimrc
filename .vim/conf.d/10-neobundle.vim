@@ -243,7 +243,7 @@ NeoBundleLazy 'xolox/vim-misc'
 " Hence, switching between the two requires non-trivial modifications elsewhere
 " (e.g., substituting "markdown" by "mkd" or vice versa).
 NeoBundleLazy 'plasticboy/vim-markdown', {
-  \ 'autoload': { 'filetypes': ['markdown', 'md'] }
+  \ 'autoload': { 'filetypes': ['markdown', 'mkd'] }
   \ }
 
 " Python.
@@ -341,7 +341,7 @@ NeoBundleLazy 'mbbill/undotree', {
 " which are preferably installed via official package managers. Nonetheless, the
 " build instructions remain for reference.
 "NeoBundleLazy 'suan/vim-instant-markdown', {
-"            \ 'autoload': { 'filetypes': ['markdown', 'md'] }}
+"            \ 'autoload': { 'filetypes': ['markdown', 'mkd'] }}
 "            \ 'build': {
 "            \   'mac':  'sudo gem install pygments.rb; sudo gem install redcarpet; npm -g install instant-markdown-d ',
 "            \   'unix': 'sudo gem install pygments.rb; sudo gem install redcarpet; sudo npm -g install instant-markdown-d ',
