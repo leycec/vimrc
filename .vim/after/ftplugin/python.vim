@@ -32,6 +32,14 @@ if !executable('pyflakes') && !executable('flake8')
     echomsg 'Commands "pyflakes" and "flake8" not found. Expect Python syntax checking to fail.'
 endif
 
+" ....................{ WRAPPING                           }....................
+" For readability, visually soft-wrap long lines exceeding the width of the
+" current window. Since the "python-mode" bundle explicitly disables this, only
+" explicitly enabling this after loading that bundle suffices to re-enable this.
+"
+" See the same subsection of "conf.d/20-theme.vim".
+setlocal wrap
+
 " ....................{ POSTAMBLE                          }....................
 " Declare such plugin to have been successfully loaded for the current buffer.
 let b:is_our_ftplugin = 1

@@ -416,7 +416,7 @@ let &textwidth = g:our_textwidth
 augroup our_filetype_wrapping
     autocmd!
 
-    " For readability, visually soft-wrap lines exceeding the width of the
+    " For readability, visually soft-wrap long lines exceeding the width of the
     " current window. Do *NOT* permanently hard-wrap such lines by inserting a
     " newline character into the current buffer, which tends to have miserably
     " unexpected side effects in most languages. To ensure this overwrites
