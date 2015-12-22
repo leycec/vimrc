@@ -148,10 +148,13 @@ augroup our_filetype_comments
 
     " Parse "#" characters prefixing any words as comment leaders regardless
     " of whether such characters are immediately followed by whitespace. By
-    " default, the plugins for the following filetypes only parse "#" characters
+    " default, the bundles for the following filetypes only parse "#" characters
     " immediately followed by whitespace as comment leaders -- which, given our
     " glut of "#FIXME" comments, is less than helpful.
-    autocmd FileType ebuild,python,sh setlocal comments=:#,fb:-
+    "
+    " Note that this option must set *AFTER* loading the following bundles and
+    " hence has been omitted here: "python-mode".
+    autocmd FileType ebuild,sh setlocal comments=:#,fb:-
 augroup END
 
 " ....................{ COMMENTS ~ tcomment                }....................
@@ -350,16 +353,18 @@ augroup our_filetype_format
     "
     " Dismantled, this is:
     "
-    " * "c", autowrapping comments.
+    " * "c", autowrapping all comment line longer than "textwidth" on the first
+    "   addition, deletion, or edit of a character in such line with column
+    "   greater than "textwidth".
     " * "r", autoinserting comment leaders on <Enter> in Insert mode.
     " * "o", autoinserting comment leaders on <o> and <O> in Normal mode.
     " * "q", autoformatting comments on <gq> in Normal mode.
     " * "n", autoformatting commented numbered lists sanely.
     " * "j", removing comment leaders when joining lines.
-    " * "m", breaking long lines at multibyte characters (e.g., for Asian languages
-    "   in which characters signify words).
-    " * "B", *NOT* inserting whitespace between adjacent multibyte characters when
-    "   joining lines.
+    " * "m", breaking long lines at multibyte characters (e.g., for Asian
+    "   languages in which characters signify words).
+    " * "B", *NOT* inserting whitespace between adjacent multibyte characters
+    "   when joining lines.
     autocmd FileType
       \ ebuild,markdown,mkd,python,sh,vim,yaml,zsh
       \ setlocal formatoptions+=croqnjmB

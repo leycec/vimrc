@@ -32,6 +32,14 @@ if !executable('pyflakes') && !executable('flake8')
     echomsg 'Commands "pyflakes" and "flake8" not found. Expect Python syntax checking to fail.'
 endif
 
+" ....................{ COMMENTS                           }....................
+" Parse "#" characters prefixing any words as comment leaders regardless of
+" whether these characters are immediately followed by whitespace or not. By
+" default, the "python-mode" bundle only parses "#" characters immediately
+" followed by whitespace as comment leaders -- which, given our glut of "#FIXME"
+" comments, is less than helpful.
+setlocal comments=:#,fb:-
+
 " ....................{ WRAPPING                           }....................
 " For readability, visually soft-wrap long lines exceeding the width of the
 " current window. Since the "python-mode" bundle explicitly disables this, only
