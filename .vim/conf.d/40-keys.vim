@@ -84,6 +84,9 @@ nnoremap <leader>Gl :GitLog<cr>
 " closing) the current buffer.
 map <leader>wd :wincmd q<cr>
 
+" Bind <,wo> to delete (i.e., close) all windows except the current window.
+map <leader>wo :only<cr>
+
 " Bind <,wj> to either:
 "
 " * If a window exists under the current window, switch to that window.
