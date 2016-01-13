@@ -50,9 +50,9 @@ function! vimrc#get_script_sid(script_filename) abort
     let l:script_filename = substitute(
       \ a:script_filename, '^' . $HOME . '/', '~/', '')
 
-    " Parse such output as follows:
+    " Parse this output as follows:
     "
-    " * Split such output on newlines. Vim guarantees each resulting line to be
+    " * Split this output on newlines. Vim guarantees each resulting line to be
     "   formatted as "${SID}: ${script_filename}", where:
     "   * The first listed script has SID 1.
     "   * Each successive script an SID one larger than the prior.
@@ -66,13 +66,13 @@ function! vimrc#get_script_sid(script_filename) abort
       \   "substitute(v:val, '^[^:]*:\\s*\\(.*\\)$', '\\1', '')"
       \ ), l:script_filename)
 
-    " If such script has *NOT* been sourced yet, print a non-fatal warning.
+    " If this script has *NOT* been sourced yet, print a non-fatal warning.
     if l:script_line == -1
         throw '"' . l:script_filename . '" not previously sourced.'
     endif
 
-    " Return the line number of such script -- which, by Vim design, is
-    " guaranteed to be such script's SID.
+    " Return the line number of this script -- which, by Vim design, is
+    " guaranteed to be this script's SID.
     return l:script_line + 1
 endfunction
 
@@ -106,6 +106,53 @@ endfunction
 "   https://vi.stackexchange.com/a/3850
 function! vimrc#print_buffer_current_byte_offset() abort
     echo line2byte(line('.')) + col('.') - 1
+endfunction
+
+" ....................{ WINDOWS                            }....................
+" Contextually navigate to the window associated with the passed single letter.
+"
+" This letter *MUST* be either:
+"
+" * "j", switching to the window under the current window.
+" * "k", switching to the window above the current window.
+" * "h", switching to the window to the left of the current window.
+" * "k", switching to the window to the right of the current window.
+"
+" If the window to be navigated to exists, this function simply switches to that
+" window; else, this function splits the current window (horizontally if the
+" passed keystroke is either "j" or "k" and vertically otherwise) and switch to
+" the new window.
+"
+" This function was gratefully inspired by the following external source:
+"
+" * Nick Verlinde's WinMove() function, published at:
+"   http://www.agillo.net/simple-vim-window-management/
+function! vimrc#switch_window(key) abort
+    " Validate sanity.
+    if match(a:key, '[hjkl]') != 0
+        throw
+          \ 'Window navigation key "' . a:key .
+          \ '" not "h", "j", "k", or "l".'
+    endif
+
+    " 1-based identifier of the current window.
+    let l:window_current_id = winnr()
+
+    " Attempt the desired window switch.
+    exec 'wincmd ' . a:key
+
+    " If no window was switched to, split the current window and try again. 
+    if l:window_current_id == winnr()
+        " Perform the appropriate window split.
+        if match(a:key, '[jk]') == 0
+            wincmd s
+        else 
+            wincmd v
+        endif
+
+        " Perform the desired window switch.
+        exec 'wincmd ' . a:key
+    endif
 endfunction
 
 " --------------------( WASTELANDS                         )--------------------
