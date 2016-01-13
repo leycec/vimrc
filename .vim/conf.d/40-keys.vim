@@ -4,6 +4,13 @@
 "
 " --------------------( SYNOPSIS                           )--------------------
 " Dotfile-specific key bindings.
+"
+" --------------------( DEFAULT                            )--------------------
+" Vim provides the following little-known (but much-helpful) key bindings out of
+" the box:
+"
+" * <gQ>, opening Ex mode -- also referred to as the best equivalent of a
+"   Vimscript REPL in Vim.
 
 " ....................{ NORMAL                             }....................
 " Bind <;> to <:> and <:> to <;> in normal and visual modes. This reduces the
@@ -25,7 +32,7 @@ cnoremap <silent> w!! w !sudo tee % >/dev/null
 
 " ....................{ LEADER                             }....................
 " Bind <,> to "<Leader>", a symbolic user-specific prefix for Vim key bindings.
-" By design, such prefix is guaranteed to *NOT* conflict with default bindings,
+" By design, this prefix is guaranteed to *NOT* conflict with default bindings,
 " and hence provides a safe namespace with which to define custom key bindings.
 let mapleader=","
 
@@ -33,9 +40,9 @@ let mapleader=","
 " Bind <,e> to open a new buffer editing a file discovered via Unite.
 nnoremap <leader>e :Unite<cr>
 
-" Bind <,w> to write the current buffer. This avoids the need to otherwise
-" confirm such write with a prefixing <Enter>, reducing keystroke load.
-nnoremap <leader>w :w<cr>
+" Bind <,s> to write the current buffer. This avoids the need to otherwise
+" confirm this write with a prefixing <Enter>, reducing keystroke load.
+nnoremap <leader>s :w<cr>
 
 " Bind <,u> to toggle the undo-tree panel. (Vim 7.0 generalized the undo history
 " from a uniform path to branching tree.)
@@ -70,6 +77,57 @@ nnoremap <leader>Gl :GitLog<cr>
 
 " nnoremap <leader>Gl :call GITLOG_ToggleWindows()<cr>
 " nnoremap <leader>GL :call GITLOG_FlipWindows()<cr>
+
+" ....................{ LEADER ~ window                    }....................
+" Bind <,wd> to delete (i.e., close) the current window. This key binding has
+" been selected to orthogonally coincide with the ":bd" command deleting (i.e.,
+" closing) the current buffer.
+map <leader>wd :wincmd q<cr>
+
+" Bind <,wj> to either:
+"
+" * If a window exists under the current window, switch to that window.
+" * Else, horizontally split the current window and switch to the new window
+"   under the current window.
+map <leader>wj :SwitchWindowDown<cr>
+
+" Bind <,wk> to either:
+"
+" * If a window exists above the current window, switch to that window.
+" * Else, horizontally split the current window and switch to the new window
+"   above the current window.
+map <leader>wk :SwitchWindowUp<cr>
+
+" Bind <,wh> to either:
+"
+" * If a window exists to the left of the current window, switch to that window.
+" * Else, horizontally split the current window and switch to the new window to
+"   the left of the current window.
+map <leader>wh :SwitchWindowLeft<cr>
+
+" Bind <,wl> to either:
+"
+" * If a window exists to the right of the current window, switch to that
+"   window.
+" * Else, horizontally split the current window and switch to the new window to
+"   the right of the current window.
+map <leader>wl :SwitchWindowRight<cr>
+
+" Bind <,wJ> to switch the window position of the current window with that of
+" the bottom-most window.
+map <leader>wJ :wincmd J<cr>
+
+" Bind <,wK> to switch the window position of the current window with that of
+" the topmost window.
+map <leader>wK :wincmd K<cr>
+
+" Bind <,wH> to switch the window position of the current window with that of
+" the leftmost window.
+map <leader>wH :wincmd H<cr>
+
+" Bind <,wL> to switch the window position of the current window with that of
+" the rightmost window.
+map <leader>wL :wincmd L<cr>
 
 " ....................{ FIXES                              }....................
 "FIXME: Actually, this strikes me as a poor idea. Use the 0 register, instead.

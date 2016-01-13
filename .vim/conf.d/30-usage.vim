@@ -484,6 +484,12 @@ set mouse=a
 " * "onemore", permit the cursor to only move past the end of the line.
 set virtualedit=block
 
+" Define context-sensitive window navigation commands.
+command SwitchWindowUp    call vimrc#switch_window('k')
+command SwitchWindowDown  call vimrc#switch_window('j')
+command SwitchWindowLeft  call vimrc#switch_window('h')
+command SwitchWindowRight call vimrc#switch_window('l')
+
 " ....................{ REFORMATTING ~ vim-autoformat      }....................
 " Permit the Python-specific "autopep8" reformatter to aggressively reformat
 " long lines. While "vim-autoformat" provides default options for such
