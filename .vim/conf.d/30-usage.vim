@@ -154,7 +154,7 @@ augroup our_filetype_comments
     "
     " Note that this option must set *AFTER* loading the following bundles and
     " hence has been omitted here: "python-mode".
-    autocmd FileType ebuild,sh setlocal comments=:#,fb:-
+    autocmd FileType dosini,ebuild,sh setlocal comments=:#,fb:-
 augroup END
 
 " ....................{ COMMENTS ~ tcomment                }....................
@@ -366,19 +366,19 @@ augroup our_filetype_format
     " * "B", *NOT* inserting whitespace between adjacent multibyte characters
     "   when joining lines.
     autocmd FileType
-      \ ebuild,markdown,mkd,python,sh,vim,yaml,zsh
+      \ dosini,ebuild,markdown,mkd,python,sh,vim,yaml,zsh
       \ setlocal formatoptions+=croqnjmB
 
     " Option "t" autowraps any line longer than "textwidth" on the first
     " addition, deletion, or edit of a character in such line with column
     " greater than "textwidth". It's fairly subtle, but largely useful.
     "
-    " Enable such option for markup-specific filetypes (e.g., YAML, XML), for
+    " Enable this option for markup-specific filetypes (e.g., YAML, XML), for
     " which newlines are largely insignificant and hence automatically
     " insertable without issue.
     "
-    " Disable such option for the follomwing filetypes (whose corresponding
-    " plugins typically enable such option by default):
+    " Disable this option for the following filetypes (whose corresponding
+    " plugins typically enable this option by default):
     "
     " * Markdown. Conventional Markdown ignores newlines and hence permits
     "   contiguous text in the same paragraph to be delimited by ignorable
