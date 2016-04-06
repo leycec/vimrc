@@ -152,9 +152,12 @@ augroup our_filetype_comments
     " immediately followed by whitespace as comment leaders -- which, given our
     " glut of "#FIXME" comments, is less than helpful.
     "
-    " Note that this option must set *AFTER* loading the following bundles and
-    " hence has been omitted here: "python-mode".
-    autocmd FileType dosini,ebuild,sh setlocal comments=:#,fb:-
+    " Note that this option must set *AFTER* loading the following filetypes,
+    " which are thus omitted here:
+    "
+    " * "python", handled by the third-party "python-mode" plugin.
+    " * "dosini", handled by the official "dosini" plugin.
+    autocmd FileType ebuild,sh setlocal comments=:#,fb:-
 augroup END
 
 " ....................{ COMMENTS ~ tcomment                }....................
@@ -346,12 +349,11 @@ augroup our_filetype_format
 
     " Enable comment-aware text formatting for *ALL* code-specific filetypes
     " (i.e., filetypes supporting comments), regardless of whether the plugins
-    " configuring such filetypes already do so. The following code-specific
-    " filetypes are omitted:
+    " configuring such filetypes already do so. Since this is Vim, each option
+    " is represented as a single character of string variable "formatoptions" .
+    " See ":h fo-table" for further details.
     "
-    " * "zeshy", as the zeshy plugin already enables such formatting.
-    "
-    " Dismantled, this is:
+    " The following options are enabled for these filetypes:
     "
     " * "c", autowrapping all comment line longer than "textwidth" on the first
     "   addition, deletion, or edit of a character in such line with column
@@ -359,15 +361,37 @@ augroup our_filetype_format
     " * "r", autoinserting comment leaders on <Enter> in Insert mode.
     " * "o", autoinserting comment leaders on <o> and <O> in Normal mode.
     " * "q", autoformatting comments on <gq> in Normal mode.
-    " * "n", autoformatting commented numbered lists sanely.
+    " * "n", autoformatting commented lists matched by:
+    "   * "formatlistpat", a standard Vim regular expression matching all lists
+    "     in comments excluding prefixing comment leader. By default, this
+    "     expression matches numbered but *NOT* unnumbered lists. A "|"-prefixed
+    "     regular alternative matching all unnumbered lists prefixed by a
+    "     Markdown-compatible prefix (i.e., "*", "-", or "+" optionally
+    "     prefixed by whitespace and mandatorily suffixed by whitespace) is thus
+    "     appended to this option's default value. Note that this mostly only
+    "     prevents list items from being concatenated together. In particular,
+    "     this does *NOT* autoindent the second lines of list items.
     " * "j", removing comment leaders when joining lines.
     " * "m", breaking long lines at multibyte characters (e.g., for Asian
     "   languages in which characters signify words).
     " * "B", *NOT* inserting whitespace between adjacent multibyte characters
     "   when joining lines.
+    "
+    " The following options are disabled for these filetypes:
+    "
+    " * "l", preventing long lines from being autowrapped in Insert mode.
+    "
+    " Note that this option must set *AFTER* loading the following filetypes,
+    " which are thus omitted here:
+    "
+    " * "zeshy", handled by the third-party "zeshy" plugin. This formatting is
+    "   already applied by this plugin and need not be repeated here.
     autocmd FileType
       \ dosini,ebuild,markdown,mkd,python,sh,vim,yaml,zsh
-      \ setlocal formatoptions+=croqnjmB
+      \ setlocal
+      \     formatoptions+=cjmnoqrB
+      \     formatoptions-=l
+      \     formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*\\\|^\\s*[*-+]\\s\\+
 
     " Option "t" autowraps any line longer than "textwidth" on the first
     " addition, deletion, or edit of a character in such line with column
