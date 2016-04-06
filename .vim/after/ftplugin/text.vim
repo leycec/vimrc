@@ -9,7 +9,7 @@
 "for other modes as well, at least in comments?
 
 " ....................{ PREAMBLE                           }....................
-" If such plugin has already been loaded for the current buffer, return.
+" If this plugin has already been loaded for the current buffer, return.
 if exists("b:is_our_ftplugin")
     finish
 endif
@@ -36,7 +36,7 @@ setlocal formatoptions+=2 formatoptions-=c
 let &textwidth = g:our_textwidth
 
 " ....................{ POSTAMBLE                          }....................
-" Declare such plugin to have been successfully loaded for the current buffer.
+" Declare this plugin to have been successfully loaded for the current buffer.
 let b:is_our_ftplugin = 1
 
 " --------------------( WASTELANDS                         )--------------------
