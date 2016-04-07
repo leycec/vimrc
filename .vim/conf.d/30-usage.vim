@@ -273,21 +273,28 @@ let g:pymode_folding = 0
 " as "watchdogs" already does so in a (frankly) superior manner.
 let g:pymode_lint = 0
 
+" Disable support for rope, a Python refactoring library. In theory, enabling
+" such support would be preferable. In practice, the time (and possibly space)
+" costs of enabling such support appear to be prohibitive. The proprietary IDE
+" PyCharm appears to be both more trustworthy *AND* performant than rope for
+" industrial-strength Python refactoring, sadly.
+let g:pymode_rope = 0
+"let g:pymode_rope = 1
+
 " If the current user is the superuser, prevent Rope from recursively searching
 " for ".ropeproject" directories in parent directories of the current directory
 " if the latter contains no ".ropeproject" directory. Since the superuser
-" typically edits top-level files containing no such directory, such recursion
-" typically induces a recursive search of the entire filesystem and hence hangs
-" Vim. (Which would be bad.)
+" typically edits top-level files containing no such directory, this recursion
+" typically induces a recursive search of the entire filesystem hanging Vim.
 if g:our_is_superuser
     let g:pymode_rope_lookup_project = 0
-" Else, permit Rope to perform such recursion.
+" Else, permit Rope to perform this recursion.
 else
     let g:pymode_rope_lookup_project = 1
 endif
 
 " Disable Rope-based autocompletion on typing <.> in Insert mode. As of this
-" writing, such behaviour appears to either be broken or conflict with another
+" writing, this behaviour appears to either be broken or conflict with another
 " plugin also hooking Insert mode events (e.g., "watchdogs").
 let g:pymode_rope_complete_on_dot = 0
 
