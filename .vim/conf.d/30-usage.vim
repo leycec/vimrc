@@ -250,6 +250,15 @@ let g:markdown_fenced_languages = [
   \ 'zsh',
   \ ]
 
+" For readability, indent "*"-prefixed list items by two rather than the default
+" four spaces: e.g.,
+"
+"     * This is...
+"       * good.
+"     * This is...
+"         * not good, however.
+let g:vim_markdown_new_list_item_indent = 2
+
 " ....................{ FILETYPE ~ python-mode             }....................
 "FIXME: "python-mode" currently indents line continuations by one level more of
 "indentation than seems reasonable. The culprit appears to be the block

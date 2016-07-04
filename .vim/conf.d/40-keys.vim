@@ -141,5 +141,3 @@ map <leader>wL :wincmd L<cr>
 " Prevent <p> from repasting the currently selected text in visual mode. See
 " http://marcorucci.com/blog/#visualModePaste for additional discussion.
 xnoremap p "_c<Esc>p
-
-" --------------------( WASTELANDS                         )--------------------
