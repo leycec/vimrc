@@ -45,7 +45,7 @@
 " The NeoBundle plugin manager must be configured *BEFORE* NeoBundle-managed
 " bundles -- which, in practice, means "bloody early in Vim startup." Common
 " NeoBundle commands include:
-"     :NeoBundleList            " list configured bundles
+"     :NeoBundleList            " print state of all bundles
 "     :NeoBundleClean           " confirm removal of unused bundles
 "     :NeoBundleUpdate          " update all installed bundles
 "     :h neobundle              " peruse documentation
@@ -151,7 +151,6 @@ NeoBundle 'jonathanfilip/vim-lucius'
 " Statusline theme.
 NeoBundle 'bling/vim-airline'
 
-
 " ....................{ NON-LAZY ~ vcs                     }....................
 " By definition, VCS wrappers *CANNOT* be loaded lazily -- despite the abundance
 " of online ".vimrc" examples erroneously suggesting they can. Since VCS wrapper
@@ -199,6 +198,9 @@ NeoBundleLazy 'cohama/vim-hier'
 " Display quickfix messages in the command line.
 NeoBundleLazy 'dannyob/quickfixstatus'
 
+" Vertically align table-like text.
+NeoBundleLazy 'godlygeek/tabular'
+
 " Integrate watchdogs with the statusline.
 NeoBundleLazy 'KazuakiM/vim-qfstatusline'
 
@@ -232,23 +234,27 @@ NeoBundleLazy 'thinca/vim-quickrun', {
 NeoBundleLazy 'xolox/vim-misc'
 
 " ....................{ LAZY ~ filetype                    }....................
-" Markdown. While Tim Pope also provides a Markdown plugin at
-" 'tpope/vim-markdown', this alternative is more frequently maintained. As of
-" this writing, the former was last updated mid-2014 and suffering some bitrot.
-" Note, however, that the "filetype" option set by:
+" Markdown. There exist a variety of Markdown plugins, including:
 "
-" * Tim Pope's plugin is "markdown".
-" * plasticboy's plugin is "mkd".
-"
-" Hence, switching between the two requires non-trivial modifications elsewhere
-" (e.g., substituting "markdown" by "mkd" or vice versa).
-NeoBundleLazy 'plasticboy/vim-markdown', {
-  \ 'autoload': { 'filetypes': ['markdown', 'mkd'] }
+" * "gabrielelana/vim-markdown", implementing GitHub-flavoured Markdown (GFMD),
+"   my preferred Markdown flavour. Frequently updated and fast on large buffers.
+" * "plasticboy/vim-markdown", implementing a generic flavour of Markdown.
+"   Frequently updated but slow on large buffers.
+" * "tpope/vim-markdown", doubling as Vim's default syntax highlighting plugin
+"   for Markdown. Infrequently updated, minimalist, and painfully generic.
+NeoBundleLazy 'gabrielelana/vim-markdown', {
+  \ 'autoload': { 'filetypes': ['markdown', 'mkd'] },
+  \ 'depends': [ 'godlygeek/tabular' ],
   \ }
 
 " Python.
 NeoBundleLazy 'klen/python-mode', {
   \ 'autoload': { 'filetypes': 'python' }
+  \ }
+
+" reStructuredText (reST).
+NeoBundleLazy 'Rykka/riv.vim', {
+  \ 'autoload': { 'filetypes': 'rst' }
   \ }
 
 " ....................{ LAZY ~ syntax                      }....................
@@ -428,6 +434,22 @@ call neobundle#end()
 filetype plugin indent on
 
 " --------------------( WASTELANDS                         )--------------------
+" NeoBundle 'godlygeek/tabular'
+" NeoBundle 'plasticboy/vim-markdown'
+" NeoBundleLazy 'plasticboy/vim-markdown', {
+"   \ 'autoload': { 'filetypes': ['markdown', 'mkd'] },
+"   \ 'depends': [ 'godlygeek/tabular' ],
+"   \ }
+" As of this writing,
+" the former was last updated mid-2014 and suffering some bitrot.  Note,
+" however, that the "filetype" option set by:
+"
+" * Tim Pope's plugin is "markdown".
+" * plasticboy's plugin is "mkd".
+"
+" Hence, switching between the two requires non-trivial modifications elsewhere
+" (e.g., substituting "markdown" by "mkd" or vice versa).
+
 " " can. The crux of the issue is that VCS wrappers *MUST* be run on buffer
 " switches to detect whether or not that buffer is under VCS control, implying. 
 " ....................{ LAZY ~ vcs                         }....................
