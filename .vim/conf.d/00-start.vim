@@ -20,12 +20,12 @@ set nomore
 
 " ....................{ PATHABLES                          }....................
 "FIXME: This implementation assumes no dirname in ${PATH} to contain commas.
-"Generalize to handle such (admittedly unlikely) edge-cases.
+"Generalize to handle this (admittedly unlikely) edge case.
 
 " Get the absolute path of the passed pathable (i.e., command in the current
-" $PATH) if such pathable exists or the empty string otherwise. This function
+" $PATH) if this pathable exists or the empty string otherwise. This function
 " should typically be preceded by an "if executable(pathable)" check ensuring
-" such pathable to exist.
+" this pathable to exist.
 function GetPathablePath(pathable) abort
     " Platform-specific character delimiting dirnames in the current $PATH.
     let l:path_delimiter = has("win32") ? ';' : ':'
@@ -51,7 +51,7 @@ endfunction
 " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 " WARNING: To prevent spurious errors under insane shells and shell
 " configurations, the following logic *MUST* be performed as early in Vim
-" startup as feasible. Failure to do so results in errors under such shells
+" startup as feasible. Failure to do so results in errors under these shells
 " resembling:
 "
 "     $ vim
@@ -61,9 +61,9 @@ endfunction
 " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 " If "bash" is in the current ${PATH}, forcefully set Vim's preferred shell to
-" "bash" *BEFORE* running the first shell command below (e.g., system()). Vim
-" startup and numerous bundles assume the shell to be sane (e.g., to print no
-" output on non-interactive startup and to conform to POSIX shell standards),
+" "bash" *BEFORE* running the first shell command below (e.g., system()). Both
+" Vim startup and numerous bundles assume this shell to be sane (e.g., to print
+" no output on non-interactive startup and to conform to POSIX shell standards),
 " which may *NOT* necessarily be the case for non-standard shells.
 if executable('bash')
     let &shell = GetPathablePath('bash')

@@ -307,6 +307,25 @@ endif
 " plugin also hooking Insert mode events (e.g., "watchdogs").
 let g:pymode_rope_complete_on_dot = 0
 
+" ....................{ FILETYPE ~ rest : riv              }....................
+" Common riv commands include:
+"     :RivCheatSheet      " read the 'reStructuredText Cheatsheet'
+"     :RivPrimer          " read 'A ReStructuredText Primer'
+"     :RivSpecification   " read the 'reStructuredText Specification'
+"     :RivQuickStart      " read the 'QuickStart With Riv'
+"     :RivInstruction     " read the 'Riv Instructions'
+ 
+" ....................{ FILETYPE ~ rest : riv : instantrst }....................
+" Common InstantRst commands include:
+"     :InstantRst         " preview current reST buffer
+"     :InstantRst!        " preview all reST buffers
+"     :StopInstantRst     " stop previewing current reST buffer
+"     :StopInstantRst!    " stop previewing all reST buffers
+
+" Reduce the CPU intensiveness of reST buffer previews. While helpful, these
+" previews are non-essential and hence deprioritizable.
+let g:instant_rst_slow = 1
+
 " ....................{ FILETYPE ~ syntax                  }....................
 " Enable Python-specific syntax highlighting.
 let g:pymode_syntax = 1
@@ -597,12 +616,16 @@ let g:VeryMagicVimGrep = 1
 set gdefault
 
 " ....................{ SPELLING                           }....................
-"FIXME: This works, but it looks hideous on the console. Ideally, it would
-"only apply to commented blocks and even then only lightly highlight or
-"underline the mispelled words. Until reconfiguring this for aesthetic sanity,
-"this is disabled.
-" Enable English spell checking.
-"setlocal spell spelllang=en
+" Spell check in English when enabled on a buffer-specific basis.
+set spelllang=en
+
+" Filetype-specific spelling settings.
+augroup our_filetype_spelling
+    autocmd!
+
+    " Enable spell checking in all buffers of the following filetypes.
+    autocmd FileType md,rst,text,yaml setlocal spell
+augroup END
 
 " ....................{ SYNTAX CHECK ~ watchdogs : start   }....................
 " "vim-watchdogs" provides asynchronous syntax checking.

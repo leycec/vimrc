@@ -257,6 +257,19 @@ NeoBundleLazy 'Rykka/riv.vim', {
   \ 'autoload': { 'filetypes': 'rst' }
   \ }
 
+" If the external "instantRst" command is installed, the external "instant_rst"
+" Python package is assumed to also be installed. In this case, the "InstantRst"
+" Vim bundle by the same author as and hence integrating with the "riv.vim"
+" Vim bundle installed above is safely installable.
+if executable('instantRst')
+    NeoBundleLazy 'Rykka/InstantRst', {
+      \ 'autoload': { 'filetypes': 'rst' }
+      \ }
+" Else, "InstantRst" is *NOT* safely installable. Warn the user appropriately.
+else
+    echomsg '"instantRst" command not found; reStructuredText buffers not previewable.'
+endif
+
 " ....................{ LAZY ~ syntax                      }....................
 " CSS-specific syntax highlighting.
 NeoBundleLazy 'ap/vim-css-color', {
