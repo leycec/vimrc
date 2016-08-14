@@ -19,5 +19,3 @@ setlocal comments=:#,fb:-
 " ....................{ POSTAMBLE                          }....................
 " Declare this plugin to have been successfully loaded for the current buffer.
 let b:is_our_ftplugin = 1
-
-" --------------------( WASTELANDS                         )--------------------

@@ -11,6 +11,9 @@
 "
 " * <gQ>, opening Ex mode -- also referred to as the best equivalent of a
 "   Vimscript REPL in Vim.
+"
+" --------------------( SEE ALSO                           )--------------------
+" * "after/ftplugin/rst.vim", defining reStructuredText-specific key bindings.
 
 " ....................{ NORMAL                             }....................
 " Bind <;> to <:> and <:> to <;> in normal and visual modes. This reduces the
@@ -60,16 +63,18 @@ nnoremap <silent> <leader>/ :nohlsearch<cr>
 " Bind <,Gu> to open a new buffer diffing the working Git tree against the index.
 nnoremap <leader>Gu :GdiffUnstaged<cr>
 
-" Bind <,Gs> to open a new buffer diffing the Git index against the current HEAD.
+" Bind <,Gt> to open a new buffer diffing the Git index against the current HEAD.
 nnoremap <leader>Gt :GdiffStaged<cr>
 
-" Bind <,Ge> to open a new buffer viewing and editing the Git index.
+" Bind <,Gs> to open a new buffer viewing and editing the Git index.
 nnoremap <leader>Gs :Gstatus<cr>
 
-" Bind <,He> to open a new buffer viewing and editing Mercurial's DirState.
+" Bind <,Hs> to open a new buffer viewing and editing Mercurial's DirState.
 nnoremap <leader>Hs :Hgstatus<cr>
 
 " ....................{ LEADER ~ vcs : vimgitlog           }....................
+" Bind <,Gl> to open a new buffer viewing the Git log listing all commits and
+" files changed by those commits (in descending order of commit time).
 nnoremap <leader>Gl :GitLog<cr>
 
 "FIXME: Currently disabled, due to "vimgitlog" being basically broken. That
