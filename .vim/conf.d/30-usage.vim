@@ -448,7 +448,7 @@ augroup our_filetype_format
     " * Plaintext. Line breaks and the absence thereof are frequently
     "   significant in plaintext files (e.g., to preserve soft-wrapping of
     "   e-mail content) and hence must *NOT* be added without user consent.
-    autocmd FileType yaml setlocal formatoptions+=t
+    autocmd FileType yaml     setlocal formatoptions+=t
     autocmd FileType mkd,text setlocal formatoptions-=t
 augroup END
 
@@ -842,7 +842,7 @@ augroup our_project_settings
     " * zsh mode.
     " * Two-space indentation.
     "
-    " Since oh-my-zsh as *NEVER* installed as a system-wide package, this logic
+    " Since oh-my-zsh is *NEVER* installed as a system-wide package, this logic
     " should (theoretically) generalize to other developers as well.
     autocmd BufNewFile,BufRead ~/{*/,}{.,}oh-my-zsh/{*/,}*.sh
       \ setlocal filetype=zsh shiftwidth=2 softtabstop=2 tabstop=2
