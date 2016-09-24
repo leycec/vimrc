@@ -196,6 +196,10 @@ let g:our_swap_dir = g:our_cache_dir . '/swap'
 " Absolute path of the directory to cache undo trees to.
 let g:our_undo_dir = g:our_cache_dir . '/undo'
 
+" Absolute path of the directory to cache views (i.e., files persisting all
+" metadata pertaining to buffers) to.
+let g:our_view_dir = g:our_cache_dir . '/view'
+
 " ....................{ GLOBALS ~ paths                    }....................
 " 1 if the current platform is Apple OS X and 0 otherwise.
 let g:our_is_platform_osx = g:our_platform == 'Darwin'
@@ -307,6 +311,7 @@ call MakeDirIfNotFound(g:our_backup_dir)
 call MakeDirIfNotFound(g:our_bundle_dir)
 call MakeDirIfNotFound(g:our_swap_dir)
 call MakeDirIfNotFound(g:our_undo_dir)
+call MakeDirIfNotFound(g:our_view_dir)
 
 " ....................{ FILETYPE                           }....................
 " Associate Vim-specific filetypes with filename-embedded filetypes *BEFORE*
