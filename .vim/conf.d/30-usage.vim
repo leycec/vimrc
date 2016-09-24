@@ -100,6 +100,58 @@ if has("persistent_undo")
     set undofile
 endif
 
+" ....................{ CACHING ~ view                     }....................
+" The following logic is highly inspired by Yichao Zhou's compact "restore_view"
+" plugin available at:
+"     http://www.vim.org/scripts/download_script.php?src_id=22634
+"
+" This plugin itself was highly inspired by the corresponding Vim wiki page at:
+"     http://vim.wikia.com/wiki/Make_views_automatic
+
+" If Vim supports view persistence...
+if has("mksession")
+    " Directory persisting views.
+    let &viewdir = g:our_view_dir
+
+    " Blacklist of Vim-compatible regular expressions matching the absolute
+    " paths of all files to *NOT* persist views for. All other files will have
+    " views persisted for.
+    let g:our_unviewable_filename_regexes = []
+
+    " Prevent Vim from persisting the current working directory (CWD) of the
+    " current Vim process with views. By default, Vim silently (...typically
+    " confusingly) changes the CWD on restoring each view. Bad idea is bad.
+    set viewoptions=cursor,folds,slash,unix
+
+    " By default, Vim requires views be managed manually. Since automating such
+    " management is both trivial and essential to sanity, do so.
+    augroup our_view_automation
+        autocmd!
+
+        " Serialize the current state of the current buffer window on leaving
+        " that window to disk, overwriting any previously saved state if any.
+        " Dismantled, this is:
+        "
+        " * "?*", matching only named buffers and hence excluding the unnamed
+        "   buffer created by Vim when run without arguments.
+        "
+        " The "BufWinLeave" event is explicitly avoided here, as leveraging
+        " that event here induces errors when closing the current buffer and the
+        " next buffer is nameless.
+        autocmd BufWritePre,BufWinLeave ?*
+          \ if vimrc#is_buffer_viewable() |
+          \     silent! mkview |
+          \ endif
+
+        " Deserialize the prior state of the current buffer window on entering
+        " that window, overwriting the prior saved state of that window if any.
+        autocmd BufWinEnter ?*
+          \ if vimrc#is_buffer_viewable() |
+          \     silent! loadview |
+          \ endif
+    augroup END
+endif
+
 " ....................{ CLIPBOARD                          }....................
 " There exist two fundamentally orthogonal types of "clipboards".
 "

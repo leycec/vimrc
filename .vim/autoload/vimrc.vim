@@ -11,6 +11,51 @@
 " "vimrc#". In return, Vim sources this script and hence autoloads all such
 " functions on the first call to any such function.
 
+" ....................{ TESTERS                            }....................
+" 1 if the current buffer should have a corresponding view serialized to and
+" deserialized from disk or 0 otherwise.
+function! vimrc#is_buffer_viewable() abort
+    " Filename associated with this buffer.
+    let l:filename = expand('%:p')
+
+    " Persist no view for this buffer if...
+    "
+    " ...this buffer has no type.
+    if &buftype != '' | return 0 | endif
+
+    " ...this buffer is read-only.
+    if &modifiable == 0 | return 0 | endif
+
+    " ...this is a diff buffer.
+    if &l:diff | return 0 | endif
+
+    " ...this filename is "["- and "]"-delimited. (We have no idea what this
+    " implies, but presumably it implies this buffer to require no view.)
+    if expand('%') =~ '\[.*\]' | return 0 | endif
+
+    " ...this file does *NOT* exist.
+    if empty(glob(l:filename)) | return 0 | endif
+
+    "FIXME: This simplistic logic fails to handle files residing in
+    "subdirectories of this temporary directory.
+
+    " ...this file resides in a temporary directory.
+    if len($TEMP) && expand('%:p:h') == $TEMP | return 0 | endif
+    if len($TMP ) && expand('%:p:h') == $TMP  | return 0 | endif
+
+    " For each regular expression matching filenames to *NOT* persist views
+    " for...
+    for l:unviewable_filename_regex in g:our_unviewable_filename_regexes
+        " If this buffer has such a filename, persist no view for this buffer.
+        if l:filename =~ l:unviewable_filename_regex
+            return 0
+        endif
+    endfor
+
+    " Else, persist a view for this buffer.
+    return 1
+endfunction
+
 " ....................{ GETTERS ~ script                   }....................
 " Get the function with the passed name declared by the script with the passed
 " absolute path.
