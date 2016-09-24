@@ -265,9 +265,15 @@ if executable('instantRst')
     NeoBundleLazy 'Rykka/InstantRst', {
       \ 'autoload': { 'filetypes': 'rst' }
       \ }
+
+"FIXME: While warning the user of this condition would be generally useful, Vim
+"appears to provide no means of doing so without requiring the user to manually
+"press a key on *EVERY* Vim startup after displaying this warning. This warning
+"is currently disabled until a less intrusive warning mechanism is found.
+
 " Else, "InstantRst" is *NOT* safely installable. Warn the user appropriately.
-else
-    echomsg '"instantRst" command not found; reStructuredText buffers not previewable.'
+" else
+"     echomsg '"instantRst" command not found; reStructuredText buffers not previewable.'
 endif
 
 " ....................{ LAZY ~ syntax                      }....................

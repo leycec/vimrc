@@ -149,6 +149,20 @@ let g:our_is_display_server_x11 = $DISPLAY != ''
 " 1 if Vim was compiled with Python 3 support *AND* "python3" is in the current
 " ${PATH} and 0 otherwise. In the former case, Python 3 is available and
 " presumably preferred to Python 2.
+"
+" Note that this detection has unexpected side effects. If this version of Vim
+" was compiled with dynamic Python detection (e.g., "vim --version" shows both
+" the "+python/dyn" and "+python3/dyn" features to be enabled) and:
+"
+" * The "has('python3')" function call is performed first for the current Vim
+"   session, then Python 3 support will be dynamically enabled and Python 2
+"   support dynamically disabled for the remainder of this session.
+" * The "has('python')" function call is performed first for the current Vim
+"   session, then Python 2 support will be dynamically enabled and Python 3
+"   support dynamically disabled for the remainder of this session.
+"
+" Hence, it is imperative that "has('python3')" be called *BEFORE*
+" "has('python')" for the current Vim session.
 let g:our_is_python3 = has('python3') && executable('python3')
 
 " 1 if the current user is the superuser (i.e., "root") and 0 otherwise.
