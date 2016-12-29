@@ -1,5 +1,5 @@
 " --------------------( LICENSE                            )--------------------
-" Copyright 2015 by Cecil Curry.
+" Copyright 2015-2017 by Cecil Curry.
 " See "LICENSE" for further details.
 "
 " --------------------( SYNOPSIS                           )--------------------
@@ -361,6 +361,7 @@ let g:pymode_rope_complete_on_dot = 0
 
 " ....................{ FILETYPE ~ rest : riv              }....................
 " Common riv commands include:
+"     :RivInstruction     " list all available Riv.vim options
 "     :RivCheatSheet      " read the 'reStructuredText Cheatsheet'
 "     :RivPrimer          " read 'A ReStructuredText Primer'
 "     :RivSpecification   " read the 'reStructuredText Specification'
