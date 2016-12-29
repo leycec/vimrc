@@ -1,7 +1,7 @@
 # ====================[ .gitignore                         ]====================
 #
 # --------------------( LICENSE                            )--------------------
-# Copyright 2015 by Cecil Curry.
+# Copyright 2015-2017 by Cecil Curry.
 # See "LICENSE" for further details.
 #
 # --------------------( SYNOPSIS                           )--------------------
@@ -29,14 +29,14 @@
 !/.githooks
 !/.githooks/github-post-commit
 
-# Whitelist all dotfile-specific paths in the home directory by default. Such
+# Whitelist all dotfile-specific paths in the home directory by default. This
 # whitelist may be (and often is) overridden by lower-level ".gitignore" files
-# nested in such paths.
+# nested in these paths.
 !/.vimrc
 !/.vim
 !/.vim/**/*
 
 # To avoid synchronization issues with the front-facing "github" branch,
-# whitelist all paths specific to such branch.
+# whitelist all paths specific to this branch.
 !/LICENSE
 !/README.md
