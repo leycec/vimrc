@@ -79,7 +79,7 @@ Dotfiles are a gritty business. Hand me my CLI shovel.
 Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcsh), a Git-centric dotfile manager leveraging [internal Git cleverness](http://git-scm.com/book/en/v2/Git-Internals-Environment-Variables) rather than filesystem-level symlinks. (You *know* this to be a good thing.)
 
 * **Install `vcsh`.** Specifically, under:
-  * **Gentoo**-based Linux distros:
+  * **Gentoo**-based Linux distros (e.g., **Calculate**):
 
             $ sudo emerge vcsh
 
@@ -89,11 +89,9 @@ Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcs
 
   * Platforms providing no `vcsh` package (e.g., **Cygwin**):
 
-            $ git clone https://github.com/RichiH/vcsh.git ~/vcsh
-            $ cd ~/vcsh
-            $ sudo make install
+            $ git clone https://github.com/RichiH/vcsh.git && cd ~/vcsh && sudo make install
 
-* **Move aside any existing dotfiles.** Renaming an existing `~/.vimrc` file to `~/.vimrc.local` ensures that *your* dotfile will be sourced by *our* dotfiles on Vim startup.
+* **Move aside any existing dotfiles.** Renaming an existing `~/.vimrc` file to `~/.vimrc.local` ensures that _your_ dotfile will be sourced by _our_ dotfiles on Vim startup.
 
         $ mv ~/.vim{,.old}
         $ mv ~/.vimrc{,.local}
@@ -107,13 +105,13 @@ Our dotfiles are preferably installed via [`vcsh`](https://github.com/RichiH/vcs
 
             $ vcsh enter vimrc
 
-  * **Track the `github` branch**, storing front-facing Github files (including this readme).
+  * **Track the `github` branch**, storing front-facing Github documentation (including the current file).
 
             $ git fetch
 
-  * **Install the `git` hook**, synchronizing the `master` and `github` branches on every commit to the former. 
+  * **Install a Git `post-commit` hook**, synchronizing the `master` and `github` branches on every commit to the former. 
 
-            $ ln -s $HOME/.githooks/github-post-commit $GIT_DIR/hooks/post-commit
+            $ ln -s $HOME/.githook.d/vimrc.post-commit $GIT_DIR/hooks/post-commit
 
   * **Leave the cloned repository.**
 
