@@ -108,9 +108,27 @@ if has("win32") || has("win32unix")
     let g:our_platform = 'Windows'
 " Else, the current platform is Unix-like and hence has the "uname" command.
 else
-    " Strip the trailing newline from such name.
+    " Strip the trailing newline from this name.
     let g:our_platform = substitute(system('uname -s'), '\n', '', '')
 endif
+
+" ....................{ GLOBALS ~ platform                 }....................
+" 1 if the current platform is Linux or 0 otherwise.
+let g:our_is_platform_linux = g:our_platform == 'Linux'
+
+" 1 if the current platform is macOS or 0 otherwise.
+let g:our_is_platform_macos = g:our_platform == 'Darwin'
+
+" 1 if the current platform is Windows or 0 otherwise.
+let g:our_is_platform_windows = g:our_platform == 'Windows'
+
+" 1 if the current Vim process is running under a Cygwin-enabled Windows
+" application (e.g., terminal) or 0 otherwise.
+let g:our_is_platform_windows_cygwin = has("win32unix")
+
+" 1 if the current Vim process is running under a non-Cygwin-enabled Windows
+" application or 0 otherwise.
+let g:our_is_platform_windows_vanilla = has("win32")
 
 " ....................{ CHECKS                             }....................
 " If the current version of Vim is insufficient, print a non-fatal warning. This
@@ -122,12 +140,12 @@ endif
 if v:version < 704
     echomsg 'Vim version older than 7.4 detected. Expect horror.'
 
-    " If the current platform is OS X, suggest use of the CLI-specific "vim"
+    " If the current platform is macOS, suggest use of the CLI-specific "vim"
     " installed with the Homebrew-managed MacVim port. Since the ideal command
     " for doing so is somewhat non-trivial, this command is also printed.
     "
     " For other platforms, upgrading Vim is typically trivial and hence omitted.
-    if g:our_platform == 'Darwin'
+    if g:our_is_platform_macos
         " If Homebrew is unavailable, recommend its installation.
         if !executable('brew')
             echomsg 'Consider installing Homebrew to correct this.'
@@ -200,10 +218,6 @@ let g:our_undo_dir = g:our_cache_dir . '/undo'
 " metadata pertaining to buffers) to.
 let g:our_view_dir = g:our_cache_dir . '/view'
 
-" ....................{ GLOBALS ~ paths                    }....................
-" 1 if the current platform is Apple OS X and 0 otherwise.
-let g:our_is_platform_osx = g:our_platform == 'Darwin'
-
 " ....................{ HELPERS                            }....................
 " Helper functions guaranteed to be called at (and hence unconditionally
 " required by) Vim startup. All other such functions are only conditionally
@@ -225,33 +239,6 @@ function MakeDirIfNotFound(path) abort
     endif
 endfunction
 
-" ....................{ HELPERS ~ testers                  }....................
-"FIXME: Functions are inefficient. Replace all such testers by corresponding
-"boolean globals. See g:our_is_python3 as an example.
-
-" ....................{ HELPERS ~ testers : platform       }....................
-" Return 1 if the current platform is Linux and 0 otherwise.
-function IfPlatformLinux() abort
-    return g:our_platform == 'Linux'
-endfunction
-
-" Return 1 if the current platform is Microsoft Windows and 0 otherwise.
-function IfPlatformWindows() abort
-    return g:our_platform == 'Windows'
-endfunction
-
-" Return 1 if the current platform is vanilla non-Cygwin-enabled Microsoft
-" Windows and 0 otherwise.
-function IfPlatformWindowsVanilla() abort
-    return has("win32")
-endfunction
-
-" Return 1 if the current platform is non-vanilla Cygwin-enabled Microsoft
-" Windows and 0 otherwise.
-function IfPlatformWindowsCygwin() abort
-    return has("win32unix")
-endfunction
-
 " ....................{ CHECKS ~ features                  }....................
 " If the current version of Vim was *NOT* compiled with the following optional
 " features, print non-fatal warnings:
@@ -265,7 +252,7 @@ if !has('signs')
     echomsg 'Vim feature "signs" unavailable. Expect ugliness.'
 endif
 
-" If Vim is running under a non-OS X display server supporting the X11 protocol
+" If Vim is running under a non-macOS display server supporting the X11 protocol
 " but *NOT* compiled with both the "+clipboard" and "+xterm_clipboard" features,
 " print non-fatal warnings. For sane X11 usage, both should ideally be
 " available. This can typically be rectified as follows:
@@ -273,10 +260,10 @@ endif
 " * Under Gentoo, reinstall "vim" with USE flag "X" enabled.
 " * Under Ubuntu, uninstall the "vim" package and install the "vim-gtk" package.
 if g:our_is_display_server_x11 && !has('clipboard')
-    " If running under OS X, only the "+clipboard" feature is typically enabled.
+    " If running under macOS, only the "+clipboard" feature is typically enabled.
     " The "+xterm_clipboard" feature is *NOT* required for clipboard use.
-    if g:our_is_platform_osx
-        echomsg 'Vim feature "clipboard" unavailable, but running under OS X. Expect clipboard'
+    if g:our_is_platform_macos
+        echomsg 'Vim feature "clipboard" unavailable, but running under macOS. Expect clipboard'
         echomsg 'integration to fail.'
     " Else, the "+xterm_clipboard" feature is required for clipboard use.
     elseif !has('xterm_clipboard')
@@ -295,7 +282,7 @@ endif
 " If the current operation system is vanilla Microsoft Windows *AND*
 " "mingw32-make" is not in the current ${PATH}, print a non-fatal warning. The
 " "vimproc" bundle runs this command to compile itself under this platform.
-if IfPlatformWindowsVanilla() && !executable('mingw32-make')
+if g:our_is_platform_windows_vanilla && !executable('mingw32-make')
     echomsg 'Command "mingw32-make" not found. Expect NeoBundle installation to fail.'
 " Else if "make" is not in the current ${PATH}, print a non-fatal warning. While
 " generally unlikely, "make" is *NOT* installed under non-vanilla Cygwin-enabled
@@ -338,44 +325,3 @@ augroup our_filetype_detect
       \     setlocal filetype=text |
       \ endif
 augroup END
-
-" --------------------( WASTELANDS                         )--------------------
-    " Associate filetype ".md" with Markdown mode (e.g., as used by Github). By
-    " default, only filetype ".markdown" is associated with this mode. The
-    " filetype specified here *MUST* correspond to the filetype specific to the
-    " current markdown bundle (e.g., "mkd" for plasticboy's).
-    " autocmd BufNewFile,BufRead *.md setlocal filetype=mkd
-
-"  Despite
-    " the fact that plasticboy's Markdown plugin associates Markdown mode with
-    " the "mkd" rather than "markdown" filetype, only setting the latter here
-    " produces the expected results. (We have no idea why. And we do not care.)
-    " autocmd BufNewFile,BufRead *.md setlocal filetype=markdown
-
-" Return 1 if the current platform is Apple OS X and 0 otherwise.
-" function IfPlatformOSX() abort
-"     return g:our_platform == 'Darwin'
-" endfunction
-
-" Return 1 if Vim is running under a display server supporting the X11 protocol
-" (e.g., X.org, XWayland, XMir, Cygwin/X) and 0 otherwise.
-" function IsDisplayServerX11() abort
-"     return $DISPLAY != ''
-" endfunction
-
-" Return 1 if Vim was compiled with Python 3 support *AND* "python3" is in the
-" current ${PATH}, in which case Python 3 is available and presumably preferred
-" to Python 2.
-" function IsPython3() abort
-"     return has('python3') && executable('python3')
-" endfunction
-" python3 4
-    " if has("win32")
-    "     let l:path_delimiter = ';'
-    " else
-    "     let l:path_delimiter = ':'
-    " endif
-    " echo 'pathable: ' . a:pathable . ', ' . l:pithy
-    " return l:pithy
-    " Return the first item of such list.
-    " return l:pathables[1]
