@@ -151,49 +151,6 @@
 " * ".=", appending the argument to such list.
 " * "^=", prepending the argument to such list.
 "
-" --------------------( BINDINGS                           )--------------------
-" Vim provides the following key binding commands:
-"
-" * map(), recursively defining a mapping for all modes (i.e., ":map j gg"
-"   followed by ":map Q j" maps both "j" and "Q" to "gg").
-" * noremap(), nonrecursively defining a mapping for all modes (i.e.,
-"   ":map j gg" followed by ":map W j" maps "j" to "gg" and "W" to "j").
-" * cmap() and cnoremap(), recursively and nonrecursively defining a mapping for
-"   ex command mode (i.e., the command prompt entered via <:>).
-" * lmap() and lnoremap(), recursively and nonrecursively defining a mapping for
-"   *ALL* insertion modes (e.g., ex command mode, insert mode, regexp-search
-"   mode). The "l" purportedly stands for "[L]ang-Arg pseudo-mode." (Ugh.)
-" * nmap() and nnoremap(), recursively and nonrecursively defining a mapping for
-"   normal mode.
-" * imap() and inoremap(), recursively and nonrecursively defining a mapping for
-"   insert mode.
-" * smap() and snoremap(), recursively and nonrecursively defining a mapping for
-"   select mode.
-" * vmap() and vnoremap(), recursively and nonrecursively defining a mapping for
-"   visual *AND* select modes.
-" * xmap() and xnoremap(), recursively and nonrecursively defining a mapping for
-"   visual mode.
-"
-" If the first argument to any such command is "<silent>", Vim prevents such
-" command from printing to the command line (e.g., search patterns).
-"
-" In general, prefer nonrecursive to recursive mappings. While the former behave
-" exactly as specified, the behavior of the latter dynamically change depending
-" on the behavior of target mappings (typically defined elsewhere).
-"
-" --------------------( BINDINGS ~ debug                   )--------------------
-" To print all custom key bindings, run ":map".
-"
-" To print the command bound to custom key binding {binding} expressed as a "<"-
-" and ">"-delimited string literal, run ":map {binding}" (e.g., ":map <ctrl-_>",
-" documenting the tcomment leader). Express modifier key <Ctrl> as "<C-", <Alt>
-" as "<M-", and <Shift> as "<S-".
-"
-" To print the command bound to default key binding {binding} expressed as an
-" undelimited string literal, run ":h {binding}" (e.g., ":h CTRL-I", documenting
-" that default jump list key binding). Express modifier key <Ctrl> as "C-",
-" <Alt> as "M-", and <Shift> as "S-".
-"
 " --------------------( SEE ALSO                           )--------------------
 " * "Diff and merge using vim (or gvim)", a fantastically concise cheat sheet on
 "   interactive vim merging; great!
@@ -283,5 +240,3 @@
 " remains in dispute, their existence is trivially demonstrable by renaming
 " "~/.vim/conf.d" to "~/.vim/plugin". (Yeah. Don't do that again.)
 runtime! conf.d/**/*.vim
-
-" --------------------( WASTELANDS                         )--------------------

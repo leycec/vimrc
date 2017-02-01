@@ -15,15 +15,16 @@ endif
 " If the optional "InstantRst" bundle enabling reStructuredText buffer previews
 " is available, bind:
 "
-" * <,Ps> to start previewing the current reStructuredText buffer.
-" * <,PS> to start previewing all reStructuredText buffers.
-" * <,Po> to stop previewing the current reStructuredText buffer.
-" * <,PO> to stop previewing all reStructuredText buffers.
+" * <,p> and <,ps> to start previewing the current reStructuredText buffer.
+" * <,pS> to start previewing all reStructuredText buffers.
+" * <,po> to stop previewing the current reStructuredText buffer.
+" * <,pO> to stop previewing all reStructuredText buffers.
 if neobundle#is_sourced('InstantRst')
-    map <leader>Ps :InstantRst<cr>
-    map <leader>PS :InstantRst!<cr>
-    map <leader>Po :StopInstantRst<cr>
-    map <leader>PO :StopInstantRst!<cr>
+    nnoremap <buffer> <localleader>p :InstantRst<cr>
+    nnoremap <buffer> <localleader>ps :InstantRst<cr>
+    nnoremap <buffer> <localleader>pS :InstantRst!<cr>
+    nnoremap <buffer> <localleader>po :StopInstantRst<cr>
+    nnoremap <buffer> <localleader>pO :StopInstantRst!<cr>
 endif
 
 " ....................{ POSTAMBLE                          }....................

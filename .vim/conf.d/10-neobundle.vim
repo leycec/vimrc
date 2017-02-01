@@ -252,15 +252,16 @@ NeoBundleLazy 'klen/python-mode', {
   \ 'autoload': { 'filetypes': 'python' }
   \ }
 
+" ....................{ LAZY ~ filetype : rst              }....................
 " reStructuredText (reST).
 NeoBundleLazy 'Rykka/riv.vim', {
   \ 'autoload': { 'filetypes': 'rst' }
   \ }
 
 " If the external "instantRst" command is installed, the external "instant_rst"
-" Python package is assumed to also be installed. In this case, the "InstantRst"
-" Vim bundle by the same author as and hence integrating with the "riv.vim"
-" Vim bundle installed above is safely installable.
+" Python package is assumed to also be installed, in which case the "InstantRst"
+" bundle by the same author integrating with the "riv.vim" bundle installed
+" above is both safely installable *AND* usable.
 if executable('instantRst')
     NeoBundleLazy 'Rykka/InstantRst', {
       \ 'autoload': { 'filetypes': 'rst' }
@@ -302,13 +303,15 @@ NeoBundleLazy 'ap/vim-css-color', {
 
 " Asynchronous syntax checking. 'cohama/vim-hier' and 'dannyob/quickfixstatus'
 " are technically only optional dependencies but nonetheless listed here to
-" ensure loading of such bundles *BEFORE* watchdogs itself, in turn ensuring
-" that watchdogs enables functionality depending on such modules.
+" ensure loading of these bundles *BEFORE* watchdogs itself, in turn ensuring
+" that watchdogs enables functionality depending on these bundles.
 NeoBundleLazy 'osyo-manga/vim-watchdogs', {
   \ 'depends': [
-  \     'thinca/vim-quickrun', 'osyo-manga/shabadou.vim',
-  \     'cohama/vim-hier', 'dannyob/quickfixstatus',
   \     'KazuakiM/vim-qfstatusline',
+  \     'cohama/vim-hier',
+  \     'dannyob/quickfixstatus',
+  \     'osyo-manga/shabadou.vim',
+  \     'thinca/vim-quickrun',
   \     ],
   \ 'filetypes': [
   \     'c', 'coffee', 'cpp', 'd', 'go', 'haml', 'java', 'javascript',
@@ -319,7 +322,7 @@ NeoBundleLazy 'osyo-manga/vim-watchdogs', {
 
 "FIXME: Currently disabled. One of the plugins mentioned below leverages
 ""vimparser"; the other does not. Since "vimparser" is awesome, enable whichever
-"of the two leverages such plugin.
+"of the two leverages this plugin.
 
 " Filetype-specific syntax checking.
 "
@@ -354,23 +357,6 @@ NeoBundleLazy 'kablamo/vim-git-log', {
 NeoBundleLazy 'mbbill/undotree', {
   \ 'autoload': { 'commands': ['UndotreeToggle'] }
   \ }
-
-"FIXME: O.K.; we'll need to fork https://github.com/neurogeek/gentoo-overlay,
-"add a new "instant-markdown-d" ebuild, and file a pull request. Should be
-"sweet! Uncomment 'suan/vim-instant-markdown' below after such ebuild is
-"working.
-
-" Filetype-specific browser previewing.
-"
-" Markdown. Note that "vim-instant-markdown" requires external dependencies,
-" which are preferably installed via official package managers. Nonetheless, the
-" build instructions remain for reference.
-"NeoBundleLazy 'suan/vim-instant-markdown', {
-"            \ 'autoload': { 'filetypes': ['markdown', 'mkd'] }}
-"            \ 'build': {
-"            \   'mac':  'sudo gem install pygments.rb; sudo gem install redcarpet; npm -g install instant-markdown-d ',
-"            \   'unix': 'sudo gem install pygments.rb; sudo gem install redcarpet; sudo npm -g install instant-markdown-d ',
-"            \ },
 
 " File exploring.
 NeoBundleLazy 'Shougo/vimfiler', {
@@ -451,45 +437,3 @@ call neobundle#end()
 " files. Since doing so here disables such support, do so *AFTER* completing
 " all NeoBundle-related tasks below.
 filetype plugin indent on
-
-" --------------------( WASTELANDS                         )--------------------
-" NeoBundle 'godlygeek/tabular'
-" NeoBundle 'plasticboy/vim-markdown'
-" NeoBundleLazy 'plasticboy/vim-markdown', {
-"   \ 'autoload': { 'filetypes': ['markdown', 'mkd'] },
-"   \ 'depends': [ 'godlygeek/tabular' ],
-"   \ }
-" As of this writing,
-" the former was last updated mid-2014 and suffering some bitrot.  Note,
-" however, that the "filetype" option set by:
-"
-" * Tim Pope's plugin is "markdown".
-" * plasticboy's plugin is "mkd".
-"
-" Hence, switching between the two requires non-trivial modifications elsewhere
-" (e.g., substituting "markdown" by "mkd" or vice versa).
-
-" " can. The crux of the issue is that VCS wrappers *MUST* be run on buffer
-" switches to detect whether or not that buffer is under VCS control, implying. 
-" ....................{ LAZY ~ vcs                         }....................
-" Git wrapper. The following snippet was stripped directly from:
-"     https://github.com/pgilad/vim-lazy-recipes/blob/master/tpope.vim-fugitive.vim
-" NeoBundleLazy 'tpope/vim-fugitive', {
-"   \ 'augroup': 'fugitive',
-"   \ 'autoload': {
-"   \     'commands': [
-"   \         'Gcd', 'Gcommit', 'Gdiff', 'Ggrep', 'Git', 'Git!',
-"   \         'Glcd', 'Glog', 'Gstatus', 'Gwrite',
-"   \         ],
-"   \     },
-"   \ }
-"
-" " Mercurial wrapper.
-" NeoBundleLazy 'ludovicchabant/vim-lawrencium', {
-"   \ 'augroup': 'lawrencium_detect',
-"   \ 'autoload': {
-"   \     'commands': [
-"   \         'Hg', 'Hgcommit', 'Hgedit', 'Hgstatus', 'Hgvdiff',
-"   \         ],
-"   \     },
-"   \ }
