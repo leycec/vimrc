@@ -41,7 +41,7 @@
 " simplistic solution of a suite of well-named environment variables (e.g.,
 " "${TERM_Co}") would have sufficed. Big reality fail, guys.
 "
-" For portability, such detection is implemented as a multiline Bash snippet
+" For portability, this detection is implemented as a multiline Bash snippet
 " embedded inline below. This snippet generalizes the following external source,
 " for which we are indecently grateful:
 "
@@ -387,15 +387,15 @@ endif
 set showbreak=↳  " ↺↳↪
 
 " Text formatting options. To permit Vim to provide improved defaults in the
-" future, append and shift such list with "+=" and "-=" rather than overwriting
-" such list with "=". Dismantled, this is:
+" future, this list is appended and shifted to with the "+=" and "-=" operators
+" rather than being overwritten with the "=" operator. Dismantled, this is:
 "
 " * "j", removing comment leaders when joining lines.
 " * "n", handling numbered lists.
 "
 " Avoid enabling:
 "
-" * "a", automatically formatting all comments. While such option sounds
+" * "a", automatically formatting all comments. While this option sounds
 "   pleasant in theory, it behaves unpleasantly destructively in practice,
 "   rendering most comments uneditable.
 " * "t", as the current mode does so on your behalf. Comment autoformatting is
@@ -404,11 +404,11 @@ set showbreak=↳  " ↺↳↪
 " See ":h fo-table" for further details.
 
 " Preferred line length, respected by numerous other settings and commands
-" (e.g., "gq{movement}", wrapping all text from the cursor to the end of such
+" (e.g., "gq{movement}", wrapping all text from the cursor to the end of this
 " movement to this length). Since external sources beyond our control (namely
 " "/etc/vimrc") often maliciously override this option on a filetype-specific
-" basis, this option is globalized under a unique name guaranteed *NOT* to be
-" overridden, permitting such sources to themselves be overridden... by us!
+" basis, this option is persisted to a global variable with which these sources
+" are themselves overridden... by us!
 let g:our_textwidth = 80
 let &textwidth = g:our_textwidth
 
@@ -456,95 +456,3 @@ augroup END
 "highlight ColorColumn ctermbg=232 guibg=#2c2d27
 "highlight CursorLine ctermbg=235 guibg=#2c2d27
 "highlight CursorColumn ctermbg=235 guibg=#2c2d27
-
-" --------------------( WASTELANDS                         )--------------------
-"FUXME: The "lucius" colorscheme and hence our dotfiles implicitly require 256-
-"color terminals, which is bad. Since "lucius" reduces to a pure monochrome
-"colorscheme (and hence does *NOT* gracefully degrade) under terminals with
-"fewer colors, it's our responsibility to:
-"
-"* Detect the *ACTUAL* (rather than reported) number of colors supported by the
-"  current terminal. Note the use of "actual" rather than "reported". This is a
-"  critical distinction. The "reported" number of colors is trivially obtainable
-"  by running "tput colors" from the CLI or by Vim's "t_Co" option (which is
-"  presumably set by running the prior command).
-"
-"  Unfortunately, numerous popular terminals (e.g., "Terminal" under Ubuntu)
-"  report only supporting 8 colours but actually support 256. Can we detect
-"  this? From the CLI, absolutely. From Vim, we have no idea. The core concept,
-"  in Bourne shell, is as follows:
-"
-"  i=0
-"  while true
-"  do
-"      printf '\e]4;%d;?\a' $i
-"      read -d $'\a' -s -t 1 </dev/tty
-"      if [ -z "$REPLY" ]; then
-"          echo $i
-"          exit
-"      fi
-"  done
-"
-"  Yes, that appears to actually print to the terminal -- which is probably
-"  unavoidable, but also unpleasant. Also, we don't need to actually iterate all
-"  possible values in our case; we only need to test whether the color with
-"  index 255 is printable or not, ensuring that at most only one color will be
-"  printed. (Or is it? "$'\a'" is the bell character -- which shouldn't be
-"  visible when printed. Right? Definitely test this.)
-"
-"  For efficiency, such test should *ONLY* be performed if the current terminal
-"  reports itself to be "xterm" (e.g., "if $TERM == 'xterm'"). All other
-"  terminals appear to reliably report their supported number of colors.
-"* If the *ACTUAL* (rather than reported) number of colors supported by the
-"  current terminal is less than 256, the simplest thing to do at the moment
-"  would be to avoid setting "colorscheme" at all. Default Vim colors, while
-"  certainly not the best, are better than a pure-monochrome scheme.
-"* Else if the actual and reported numbers differ, force Vim's "t_Co" option to
-"  be 256. Yes, this is sufficient to get "lucius" working as expected under
-"  such terminals. Which is a special sort of insanity all its own.
-
-    " colorscheme desert-warm-256
-    " silent system("!printf '\\e]4;255;?\\a' >/dev/tty; if ! read -d $'\\a' -r -s -t 0.01 </dev/tty; then printf '\\e[1K\\e[0E'; exit 0; else exit 1; fi")
-    " silent !bash -c "printf '\\e]4;255;?\\a' >/dev/tty; if read -d $'\\a' -r -s -t 0.01 </dev/tty; then exit 0; else exit 1; fi"
-    " 1 if the current terminal supports at least 256 colors or 0
-    " otherwise.
-"     silent let s:is_terminal_colors_256 =
-"       \ system("printf '\\e]4;255;?\\a' >/dev/tty; if ! read -d $'\a' -r -s -t 0.01 </dev/tty; then echo 0; else
-"     # Erase from the start of the current line to the current cursor position.
-"     printf '\e[1K'
-"
-"     # Move the cursor back to the start of the current line.
-"     printf '\e[0E'
-"     echo "Color $i supported."
-" fi
-" exit
-    " echo s:is_terminal_colors_256
-
-    " if v:shell_error
-    "     echo 'No 256.'
-    " else
-    "     set t_Co=256
-    "     echo 'Yes 256!'
-    " endif
-" let g:airline_section_b = airline#section#create(['hunks', 'branch'])
-" let g:airline_section_b = airline#section#create(['branch'])
-" let g:airline_section_b = 'branch'
-
-"FUXME: We can and eventually should do significantly better. airline's default
-"status line is *WAY* too verbose, displaying a variety of information either
-"obtainable elsewhere or easily abbreviatable. Specifically:
-"
-"* Don't bother displaying how far one is through the current buffer (e.g., the
-"  "50%"). That's functionally useless metadata.
-"* Don't bother displaying how the current line number, which is already given
-"  by the line number column.
-"* Don't bother displaying the current filetype. (Maybe? Arguable.)
-"* Prefix the basename of the current buffer's file by all dirnames relative to
-"  the current working directory (e.g., rather than merely "test.py", display
-"  "test/unit/test.py"). Interestingly, airline's tabline extension already
-"  sort-of does this, but reduces directory names to the first character of
-"  such names. (Which makes sense for a tabline.)
-"
-"Happily, airline is *VERY* and readily configurable. For details, see either
-"":h airline" or:
-"    https://github.com/bling/vim-airline/blob/master/doc/airline.txt
