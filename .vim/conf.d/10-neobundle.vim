@@ -270,7 +270,7 @@ if executable('instantRst')
 "FIXME: While warning the user of this condition would be generally useful, Vim
 "appears to provide no means of doing so without requiring the user to manually
 "press a key on *EVERY* Vim startup after displaying this warning. This warning
-"is currently disabled until a less intrusive warning mechanism is found.
+"is currently disabled until a less intrusive warning mechanism is discovered.
 
 " Else, "InstantRst" is *NOT* safely installable. Warn the user appropriately.
 " else

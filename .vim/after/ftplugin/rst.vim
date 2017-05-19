@@ -15,10 +15,10 @@ endif
 " If the optional "InstantRst" bundle enabling reStructuredText buffer previews
 " is available, bind:
 "
-" * <,p> and <,ps> to start previewing the current reStructuredText buffer.
-" * <,pS> to start previewing all reStructuredText buffers.
-" * <,po> to stop previewing the current reStructuredText buffer.
-" * <,pO> to stop previewing all reStructuredText buffers.
+" * <-p> and <-ps> to start previewing the current reStructuredText buffer.
+" * <-pS> to start previewing all reStructuredText buffers.
+" * <-po> to stop previewing the current reStructuredText buffer.
+" * <-pO> to stop previewing all reStructuredText buffers.
 if neobundle#is_sourced('InstantRst')
     nnoremap <buffer> <localleader>p :InstantRst<cr>
     nnoremap <buffer> <localleader>ps :InstantRst<cr>

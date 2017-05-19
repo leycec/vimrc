@@ -15,7 +15,7 @@ endif
 " ....................{ BINDINGS                           }....................
 " If the the external Google Chrom[e|ium] browser is installed, assume that the
 " optional "Markdown Preview Plus" extension is also installed for this browser.
-" In this case, bind <,p> to begin previewing the current Markdown buffer. To
+" In this case, bind <-p> to begin previewing the current Markdown buffer. To
 " update an existing preview, simply hit <F5> or <Ctrl-r> in the open tab.
 "
 " To install this open-source extension, open Chrom[e|ium] and:
@@ -44,9 +44,9 @@ if g:our_is_platform_linux
     " Under Linux distributions, prefer Chromium (a strictly open-source 
     " variant) to Chrome (the partially closed-source default).
     if executable('chromium')
-        noremap <buffer> <localleader>p !command chromium %:p<cr>
+        noremap <buffer> <localleader>p :!command chromium %:p<cr>
     elseif executable('chrome')
-        noremap <buffer> <localleader>p !command chrome %:p<cr>
+        noremap <buffer> <localleader>p :!command chrome %:p<cr>
     endif
 "FIXME: Is the test for this application correct? How *DOES* one test for the
 "existence of an application bundle, anyway?
