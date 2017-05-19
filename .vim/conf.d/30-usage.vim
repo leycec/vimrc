@@ -145,7 +145,11 @@ if has("mksession")
 
         " Deserialize the prior state of the current buffer window on entering
         " that window, overwriting the prior saved state of that window if any.
-        autocmd BufWinEnter ?*
+        " To avoid conflicts with plugin-specific autocommands attempting to
+        " also restore buffer, view, and/or session state, the "VimEnter" rather
+        " than standard "BufWinEnter" event is hooked.
+        " autocmd BufWinEnter ?*
+        autocmd VimEnter ?*
           \ if vimrc#is_buffer_viewable() |
           \     silent! loadview |
           \ endif
@@ -153,7 +157,7 @@ if has("mksession")
 endif
 
 " ....................{ CLIPBOARD                          }....................
-" There exist two fundamentally orthogonal types of "clipboards".
+" There exist two fundamentally orthogonal types of "clipboards":
 "
 " * The system clipboard, accessible outside of Vim via the customary keyboard
 "   shortcuts (e.g., <Ctrl-v> to paste the contents of such clipboard).
@@ -549,10 +553,14 @@ augroup our_filetype_indentation
     " opening new buffers and hence running such plugins.
     autocmd FileType * setlocal shiftwidth=4 softtabstop=4 tabstop=4 expandtab
 
-    " For markup-specific filetypes (e.g., XML), reduce the default tab width.
+    " For markup-heavy filetypes (e.g., YAML), reduce the default tab width.
     " Since markup tends to heavily nest, this helps prevent overly long lines
     " and hence improve readability.
-    autocmd FileType html,yaml setlocal shiftwidth=2 softtabstop=2 tabstop=2
+    autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2 tabstop=2
+
+    " For markup-obsessed filetypes (e.g., XML), minimize the default tab width
+    " to the minimum non-zero width (i.e., 1). XML, what ills hast thou wrought?
+    autocmd FileType html,xml setlocal shiftwidth=1 softtabstop=1 tabstop=1
 
     " For filetypes in which tabs are significant (e.g., ebuilds, makefiles),
     " bind <Tab> to insert tabs rather than spaces.
@@ -580,7 +588,7 @@ set modelines=8
 " Enable terminal mouse support.
 set mouse=a
 
-" ....................{ NAVIGATING                         }....................
+" ....................{ NAVIGATION                         }....................
 " Constrain the cursor to actual characters for all modes *EXCEPT* (i.e., enable
 " virtual editing for) the following:
 "

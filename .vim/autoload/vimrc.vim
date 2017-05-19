@@ -12,8 +12,7 @@
 " functions on the first call to any such function.
 
 " ....................{ TESTERS                            }....................
-" 1 if the current buffer should have a corresponding view serialized to and
-" deserialized from disk or 0 otherwise.
+" 1 if a view should be persisted for the current buffer or 0 otherwise.
 function! vimrc#is_buffer_viewable() abort
     " Filename associated with this buffer.
     let l:filename = expand('%:p')
