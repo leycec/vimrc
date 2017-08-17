@@ -712,7 +712,7 @@ let g:quickrun_config['watchdogs_checker/_'] = {
 
 " ....................{ SYNTAX CHECK ~ watchdogs : python  }....................
 " If both Python 3 *AND* the "pyflakes3" command are available, syntax check
-" Python buffers with such command.
+" Python buffers with this command.
 if g:our_is_python3 && executable('pyflakes3')
     " Define a new "pyflakes3" syntax checker.
     let g:quickrun_config['watchdogs_checker/pyflakes3'] = {
@@ -721,16 +721,38 @@ if g:our_is_python3 && executable('pyflakes3')
       \ 'errorformat': '%f:%l:%m',
       \ }
 
-    " Syntax check Python buffers with such checker.
+    " Syntax check Python buffers with this checker.
     let g:quickrun_config['python/watchdogs_checker'] = {
       \ 'type' : 'watchdogs_checker/pyflakes3',
       \ }
 endif
 
+" ....................{ SYNTAX CHECK ~ watchdogs : shell   }....................
+"FIXME: Emit a non-fatal startup warning if "shellcheck" is unavailable.
+
+" If the "shellcheck" command is available, syntax check Bash, Bourne, and Korn
+" shell buffers with this command. Note that:
+"
+" * While alternative shell script linters exist (e.g., "bashate",
+"   "checkbashisms"), this linter is widely regarded as the best.
+" * While watchdogs *DOES* provide a default "sh/watchdogs_checker"
+"   configuration, this default prefers linting via the standard "sh" command.
+"   Unfortunately, this command appears to fail for non-Bourne shell buffers
+"   (e.g., Bash, Korn) and hence is functionally useless... for most purposes.
+" * As Bash, Bourne, and Korn shell buffers all ambiguously share the same
+"   filetype of "sh" in Vim, disambiguating between these filetypes (e.g., via a
+"   new "bash/watchdogs_checker") is currently infeasible.
+if executable('shellcheck')
+    let g:quickrun_config['sh/watchdogs_checker'] = {
+      \ 'type' : 'watchdogs_checker/shellcheck'
+      \ }
+endif
+
 " ....................{ SYNTAX CHECK ~ watchdogs : stop    }....................
-" Configure watchdogs when lazily loaded.
-if neobundle#tap('vimfiler')
-    function! neobundle#hooks.on_post_source(bundle)
+" When this plugin is lazily loaded by NeoBundle...
+if neobundle#tap('vim-watchdogs')
+    " This hook function is called to finalize this plugin's configuration.
+    function! neobundle#tapped.hooks.on_source(bundle)
         " Initialize watchdogs with the prior "quickrun" configuration
         call watchdogs#setup(g:quickrun_config)
     endfunction
@@ -739,13 +761,13 @@ if neobundle#tap('vimfiler')
 endif
 
 " Syntax check on buffer writes.
-let g:watchdogs_check_BufWritePost_enable = 1 
+let g:watchdogs_check_BufWritePost_enable = 1
 
 " Syntax check on user inactivity.
 " let g:watchdogs_check_CursorHold_enable = 1
 
-" Syntax check the current buffer if *NOT* already running such check. Yes,
-" watchdogs should define such function on your behalf. It doesn't. So be it.
+" Syntax check the current buffer if *NOT* already running this check. Yes,
+" watchdogs should define this function on your behalf. It doesn't. So be it.
 function! s:bundle_watchdogs_run()
     if exists(":WatchdogsRunSilent")
         if exists("*quickrun#is_running")

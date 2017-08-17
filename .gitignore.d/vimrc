@@ -8,6 +8,10 @@
 # Whitelist all files and subdirectories of the current directory matching the
 # following git-specific glob expressions.
 #
+# --------------------( CAVEATS                            )--------------------
+# Whitelisting files or subdirectories of top-level subdirectories requires
+# whitelisting those subdirectories first. See the ".gitignore.d/" whitelist.
+#
 # --------------------( SEE ALSO                           )--------------------
 # For further details, see:
 #
@@ -22,18 +26,18 @@
 
 # ....................{ WHITELIST                          }....................
 # Whitelist the current file.
-!/.gitignore.d
+!/.gitignore.d/
 !/.gitignore.d/vimrc
 
 # Whitelist git hooks of interest to fellow developers.
-!/.githook.d
+!/.githook.d/
 !/.githook.d/vimrc.post-commit
 
 # Whitelist all dotfile-specific paths in the home directory by default. This
 # whitelist may be (and often is) overridden by lower-level ".gitignore" files
 # nested in these paths.
 !/.vimrc
-!/.vim
+!/.vim/
 !/.vim/**/*
 
 # To avoid synchronization issues with the front-facing "github" branch,
