@@ -26,7 +26,7 @@ if !has('python3')
 endif
 
 " If no Python syntax checker supported out-of-the-box by the "vim-watchdogs"
-" bundle is in the current ${PATH}, print a warning. In such case, Python
+" bundle is in the current ${PATH}, print a warning. In this case, Python
 " buffers will be syntax-highlighted but *NOT* checked.
 if !executable('pyflakes') && !executable('flake8')
     echomsg 'Commands "pyflakes" and "flake8" not found. Expect Python syntax checking to fail.'
