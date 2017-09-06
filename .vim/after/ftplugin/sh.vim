@@ -8,7 +8,7 @@
 
 " ....................{ PREAMBLE                           }....................
 " If this plugin has already been loaded for the current buffer, return.
-if exists("b:is_our_ftplugin")
+if exists("b:is_our_ftplugin_sh")
     finish
 endif
 
@@ -22,4 +22,4 @@ endif
 
 " ....................{ POSTAMBLE                          }....................
 " Declare this plugin to have been successfully loaded for the current buffer.
-let b:is_our_ftplugin = 1
+let b:is_our_ftplugin_sh = 1

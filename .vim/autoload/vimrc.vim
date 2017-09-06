@@ -12,6 +12,8 @@
 " functions on the first call to any such function.
 
 " ....................{ TESTERS                            }....................
+" vimrc#is_buffer_viewable() -> bool
+"
 " 1 if a view should be persisted for the current buffer or 0 otherwise.
 function! vimrc#is_buffer_viewable() abort
     " Filename associated with this buffer.
@@ -56,6 +58,9 @@ function! vimrc#is_buffer_viewable() abort
 endfunction
 
 " ....................{ GETTERS ~ script                   }....................
+" vimrc#get_script_function(
+"     script_filename: str, function_name: str) -> FunctionType
+"
 " Get the function with the passed name declared by the script with the passed
 " absolute path.
 "
@@ -71,6 +76,8 @@ function! vimrc#get_script_function(script_filename, function_name) abort
     return function("<SNR>" . l:sid . '_' . a:function_name)
 endfunction
 
+" vimrc#get_script_sid(script_filename: str) -> int
+"
 " Get the script ID (SID) that Vim assigned to the script with the passed
 " absolute path. This function is principally intended to break the thin veneer
 " of privacy provided by "s:", syntactic sugar prefixing function names which
@@ -121,6 +128,8 @@ function! vimrc#get_script_sid(script_filename) abort
 endfunction
 
 " ....................{ DIFFERS                            }....................
+" vimrc#diff_buffer_current_with_file_current() -> None
+"
 " Review all unsaved changes in the current buffer by diffing the current buffer
 " against the corresponding file if any. This function is inspired by the
 " DiffOrig() command defined by Vim's stock "vimrc_example.vim" script.
@@ -134,7 +143,54 @@ function! vimrc#diff_buffer_current_with_file_current() abort
     diffthis
 endfunction
 
+" ....................{ FORMATTERS                         }....................
+" vimrc#sanitize_code_buffer_formatting() -> None
+"
+" Sanitize the "formatoptions" variable for the current code buffer (i.e.,
+" buffer assumed to be currently editing a code-specific filetype).
+"
+" Specifically, this function enables comment-aware text formatting for
+" code-specific filetypes whose syntax supports comments -- regardless of
+" whether the plugins configuring these filetypes do so. Since this is Vim, each
+" option is represented as a single character of the string global
+" "formatoptions". See ":h fo-table" for further details.
+"
+" This function enables the following options:
+"
+" * "c", autowrapping all comment lines longer than "textwidth" on the first
+"   addition, deletion, or edit of a character in those lines with column
+"   greater than "textwidth".
+" * "r", autoinserting comment leaders on <Enter> in Insert mode.
+" * "o", autoinserting comment leaders on <o> and <O> in Normal mode.
+" * "q", autoformatting comments on <gq> in Normal mode.
+" * "n", autoformatting commented lists matched by:
+"   * "formatlistpat", a standard Vim regular expression matching all lists
+"     in comments excluding prefixing comment leader. By default, this
+"     expression matches numbered but *NOT* unnumbered lists. A "|"-prefixed
+"     regular alternative matching all unnumbered lists prefixed by a
+"     Markdown-compatible prefix (i.e., "*", "-", or "+" optionally
+"     prefixed by whitespace and mandatorily suffixed by whitespace) is thus
+"     appended to this option's default value. Note that this mostly only
+"     prevents list items from being concatenated together. In particular,
+"     this does *NOT* autoindent the second lines of list items.
+" * "j", removing comment leaders when joining lines.
+" * "m", breaking long lines at multibyte characters (e.g., for Asian
+"   languages in which characters signify words).
+" * "B", *NOT* inserting whitespace between adjacent multibyte characters
+"   when joining lines.
+"
+" This function disables the following options:
+"
+" * "l", preventing long lines from being autowrapped in Insert mode.
+function! vimrc#sanitize_code_buffer_formatting() abort
+    setlocal formatoptions+=cjmnoqrB
+    setlocal formatoptions-=l
+    setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*\\\|^\\s*[*-+]\\s\\+
+endfunction
+
 " ....................{ PRINTERS ~ buffer                  }....................
+" vimrc#print_buffer_current_byte_offset() -> None
+"
 " Print the 1-based byte offset of the current position in the current buffer.
 "
 " This function returns the same value displayed by the "%o" statusline
@@ -153,6 +209,8 @@ function! vimrc#print_buffer_current_byte_offset() abort
 endfunction
 
 " ....................{ WINDOWS                            }....................
+" vimrc#switch_window(key: char) -> None
+"
 " Contextually navigate to the window associated with the passed single letter.
 "
 " This letter *MUST* be either:
@@ -198,5 +256,3 @@ function! vimrc#switch_window(key) abort
         exec 'wincmd ' . a:key
     endif
 endfunction
-
-" --------------------( WASTELANDS                         )--------------------

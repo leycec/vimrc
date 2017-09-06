@@ -234,6 +234,12 @@ NeoBundleLazy 'thinca/vim-quickrun', {
 NeoBundleLazy 'xolox/vim-misc'
 
 " ....................{ LAZY ~ filetype                    }....................
+" CSS. Since the CSS plugin provided out-of-the-box by Vim lacks support for
+" most CSS3-specific syntactic constructs, external plugins are preferred.
+NeoBundleLazy 'hail2u/vim-css3-syntax', {
+  \ 'autoload': { 'filetypes': 'css' },
+  \ }
+
 " Markdown. There exist a variety of Markdown plugins, including:
 "
 " * "gabrielelana/vim-markdown", implementing GitHub-flavoured Markdown (GFMD),
@@ -243,8 +249,8 @@ NeoBundleLazy 'xolox/vim-misc'
 " * "tpope/vim-markdown", doubling as Vim's default syntax highlighting plugin
 "   for Markdown. Infrequently updated, minimalist, and painfully generic.
 NeoBundleLazy 'gabrielelana/vim-markdown', {
-  \ 'autoload': { 'filetypes': ['markdown', 'mkd'] },
   \ 'depends': [ 'godlygeek/tabular' ],
+  \ 'autoload': { 'filetypes': ['markdown', 'mkd'] },
   \ }
 
 " Python.
@@ -418,7 +424,7 @@ call neobundle#end()
 " ....................{ FILETYPES                          }....................
 " Enable the following four core features (related to filetypes) *AFTER*
 " completing NeoBundle configuration but *BEFORE* subsequent functionality
-" requiring such features. (Attempting to enable such features *BEFORE*
+" requiring such features. (Attempting to enable these features *BEFORE*
 " beginning NeoBundle configuration erroneously overwrites the "formatoptions"
 " option with garbage. Presumably, other horrible things occur as well.)
 "
@@ -427,13 +433,13 @@ call neobundle#end()
 "   any) and/or shebang or modeline lines (if any) at the head of such buffer.
 "   Vim uses filetypes for syntax highlighting and the two features below.
 " * Filetype-dependent plugin files. Different filetypes are commonly associated
-"   with different Vim options. So-called "filetype plugins" ensure such options
-"   are set on opening buffers of such filetype.
+"   with different Vim options. So-called "filetype plugins" ensure these
+"   options are set on opening buffers of these filetypes.
 " * Filetype-dependent indentation files. Different filetypes are commonly
 "   associated with different indentation rules. As with filetype plugins,
-"   these files ensure such rules are set on opening buffers of such filetype.
+"   these files ensure these rules are set on opening buffers of this filetype.
 "
 " Do *NOT* attempt to enable support for filetype-dependent syntax highlighting
-" files. Since doing so here disables such support, do so *AFTER* completing
+" files. Since doing so here disables this support, do so *AFTER* completing
 " all NeoBundle-related tasks below.
 filetype plugin indent on
