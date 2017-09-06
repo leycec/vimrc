@@ -3,19 +3,21 @@
 " See "LICENSE" for further details.
 "
 " --------------------( SYNOPSIS                           )--------------------
-" Dosini-specific settings applied to all INI files of filetype ".ini".
+" Cascading style sheets (CSS)-specific settings.
 
 " ....................{ PREAMBLE                           }....................
 " If this plugin has already been loaded for the current buffer, return.
-if exists("b:is_our_ftplugin_dosini")
+if exists("b:is_our_ftplugin_css")
     finish
 endif
 
-" ....................{ COMMENTS                           }....................
-" Overwrite this mode's default comment leader with that defined by
-" "conf.d/30-usage.vim".
-setlocal comments=:#,fb:-
+" ....................{ HIGHLIGHTING                       }....................
+" Improve highlighting of CSS keywords containing hyphens (e.g.,
+" "vertical-align", "box-shadow"). The following fix comes courtesy the
+" following plugin installation instructions:
+"     https://github.com/hail2u/vim-css3-syntax#notes
+setlocal iskeyword+=-
 
 " ....................{ POSTAMBLE                          }....................
 " Declare this plugin to have been successfully loaded for the current buffer.
-let b:is_our_ftplugin_dosini = 1
+let b:is_our_ftplugin_css = 1

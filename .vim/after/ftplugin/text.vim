@@ -10,7 +10,7 @@
 
 " ....................{ PREAMBLE                           }....................
 " If this plugin has already been loaded for the current buffer, return.
-if exists("b:is_our_ftplugin")
+if exists("b:is_our_ftplugin_text")
     finish
 endif
 
@@ -37,9 +37,4 @@ let &textwidth = g:our_textwidth
 
 " ....................{ POSTAMBLE                          }....................
 " Declare this plugin to have been successfully loaded for the current buffer.
-let b:is_our_ftplugin = 1
-
-" --------------------( WASTELANDS                         )--------------------
-" * "t", autowrapping long lines. Line breaks and the absence thereof are
-"   frequently significant in plaintext files (e.g., to preserve soft-wrapping
-"   in e-mail content) and hence must *NOT* be inserted automatically.
+let b:is_our_ftplugin_text = 1
