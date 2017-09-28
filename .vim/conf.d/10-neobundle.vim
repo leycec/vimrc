@@ -149,7 +149,8 @@ NeoBundle 'coot/EnchantedVim.git', {
 NeoBundle 'jonathanfilip/vim-lucius'
 
 " Statusline theme.
-NeoBundle 'bling/vim-airline'
+NeoBundle 'vim-airline/vim-airline'
+NeoBundle 'vim-airline/vim-airline-themes'
 
 " ....................{ NON-LAZY ~ vcs                     }....................
 " By definition, VCS wrappers *CANNOT* be loaded lazily -- despite the abundance
