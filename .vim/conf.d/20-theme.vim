@@ -146,18 +146,19 @@ set noshowmode
 
 " ....................{ COLOUR                             }....................
 " Avoid "solarized". While the author has clearly invested inordinate effort in
-" designing, prosletyzing, generalizing this scheme for a wide audience and set
-" of operating systems and applications, we personally find it rather abhorent.
+" designing, prosletyzing, and generalizing this scheme for a wide audience and
+" set of platforms and applications, we personally find it rather abhorent.
+"
 " "solarized" adheres to a bizarre heuristic of minimizing the number of palette
 " changes required to shift from a dark-on-light to light-on-dark orientation.
-" While theoretically interesting, such heuristic is functionally useless in the
+" While theoretically interesting, this heuristic is functionally useless in the
 " real world, producing a pair of subjectively unappealing color schemes with
-" minimal differences. While it's good the number of color changes between the
-" two has been minimized, it's bad that the end result is as unappealing as it
-" is. Indeed, such unfortunate results beg the inevitable question: why the
+" minimal differences. While it's good that the number of color changes between
+" these two sub-themes is minimal, it's bad that the end result is unappealing.
+" Indeed, such unfortunate results beg the inevitable question: why the
 " popularity? The answer, we suspect, lies with both marketing and uniformity.
-" The "solarized" website exceptionally well constructed; moreover, the lure of
-" a "one color scheme to rule them all" ubiquity seals the deal.
+" The "solarized" website is exceptionally well-constructed; moreover, the lure
+" of a "one color scheme to rule them all" ubiquity seals the deal.
 
 "FIXME: O.K.; my current thoughts on color schemes are as follows. We should
 "make either lucius *OR* desert-warm-256 our base default. We should prefer
@@ -304,15 +305,24 @@ set laststatus=2
 " See also:
 "
 " * Airline FAQ:
-"   https://github.com/bling/vim-airline/wiki/FAQ
+"   https://github.com/vim-airline/vim-airline/wiki/FAQ
 " * Airline documentation:
-"   https://github.com/bling/vim-airline/blob/master/doc/airline.txt
+"   https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt
 
 "FIXME: Prefix the basename of the current buffer's file by all dirnames
 "relative to the current working directory (e.g., rather than merely "test.py",
 "display "test/unit/test.py"). Interestingly, airline's tabline extension
 "already sort-of does this, but reduces directory names to the first character
 "of such names. (Which makes sense for a tabline.)
+
+" Airline theme, independent but ideally correlated to the Vim theme set above.
+" Airline comes bundled with a variety of themes, most of which are surprisingly
+" well-done. For a full list (complete with animated GIFs), see:
+"     https://github.com/vim-airline/vim-airline/wiki/Screenshots
+let g:airline_theme='lucius'
+" let g:airline_theme='luna'
+" let g:airline_theme='bubblegum'
+" let g:airline_theme='ubaryd'
 
 " To conserve statusline space, delimit sections by background colour changes
 " rather than additional characters.
