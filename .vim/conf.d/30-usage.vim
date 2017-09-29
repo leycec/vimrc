@@ -684,20 +684,29 @@ let g:quickrun_config['watchdogs_checker/_'] = {
   \ }
 
 " ....................{ SYNTAX CHECK ~ watchdogs : python  }....................
-" If both Python 3 *AND* the "pyflakes3" command are available, syntax check
-" Python buffers with this command.
-if g:our_is_python3 && executable('pyflakes3')
-    " Define a new "pyflakes3" syntax checker.
-    let g:quickrun_config['watchdogs_checker/pyflakes3'] = {
-      \ 'command': 'pyflakes3',
-      \ 'exec': '%c %o %s:p',
-      \ 'errorformat': '%f:%l:%m',
-      \ }
+" If Python 3 support is available...
+if g:our_is_python3
+    " If the Python 3-specific "pyflakes3" command is in the current ${PATH},
+    " syntax check Python buffers via this command preferably.
+    if executable('pyflakes3')
+        " Define a new "pyflakes3" syntax checker.
+        let g:quickrun_config['watchdogs_checker/pyflakes3'] = {
+          \ 'command': 'pyflakes3',
+          \ 'exec': '%c %o %s:p',
+          \ 'errorformat': '%f:%l:%m',
+          \ }
 
-    " Syntax check Python buffers with this checker.
-    let g:quickrun_config['python/watchdogs_checker'] = {
-      \ 'type' : 'watchdogs_checker/pyflakes3',
-      \ }
+        " Syntax check Python buffers with this checker.
+        let g:quickrun_config['python/watchdogs_checker'] = {
+          \ 'type' : 'watchdogs_checker/pyflakes3',
+          \ }
+    " If the version-agnostic "pyflakes" command is in the current ${PATH},
+    " syntax check Python buffers via this command as a fallback.
+    elseif executable('pyflakes')
+        let g:quickrun_config['python/watchdogs_checker'] = {
+          \ 'type' : 'watchdogs_checker/pyflakes',
+          \ }
+    endif
 endif
 
 " ....................{ SYNTAX CHECK ~ watchdogs : shell   }....................
