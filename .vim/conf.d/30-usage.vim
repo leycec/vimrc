@@ -457,23 +457,6 @@ augroup our_filetype_format
     autocmd BufWinEnter,BufNewFile
       \ *.css
       \ call vimrc#sanitize_code_buffer_formatting()
-
-    " Option "t" autowraps any line longer than "textwidth" on the first
-    " addition, deletion, or edit of a character in such line with column
-    " greater than "textwidth". It's fairly subtle, but largely useful.
-    "
-    " Enable this option for markup-specific filetypes (e.g., YAML, XML), for
-    " which newlines are largely insignificant and hence automatically
-    " insertable without issue.
-    "
-    " Disable this option for the following filetypes (whose corresponding
-    " plugins typically enable this option by default):
-    "
-    " * Plaintext. Line breaks and the absence thereof are frequently
-    "   significant in plaintext files (e.g., to preserve soft-wrapping of
-    "   e-mail content) and hence must *NOT* be added without user consent.
-    autocmd FileType yaml setlocal formatoptions+=t
-    autocmd FileType text setlocal formatoptions-=t
 augroup END
 
 " ....................{ GLOBBING                           }....................

@@ -181,10 +181,16 @@ endfunction
 "
 " This function disables the following options:
 "
-" * "l", preventing long lines from being autowrapped in Insert mode.
+" * "l", preventing long lines from being autowrapped in Insert mode on the
+"   first entry into this mode within any such line whose length exceeds
+"   "textwidth".
+" * "t", preventing long lines from being autowrapped in Insert mode on the
+"   first addition, deletion, or edit of a character within any such line whose
+"   column exceeds "textwidth".
 function! vimrc#sanitize_code_buffer_formatting() abort
     setlocal formatoptions+=cjmnoqrB
     setlocal formatoptions-=l
+    setlocal formatoptions-=t
     setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*\\\|^\\s*[*-+]\\s\\+
 endfunction
 
