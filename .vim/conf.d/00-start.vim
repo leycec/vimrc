@@ -273,10 +273,20 @@ if g:our_is_display_server_x11 && !has('clipboard')
 endif
 
 " ....................{ CHECKS ~ pathables                 }....................
-" If "git" is not in the current ${PATH}, print a non-fatal warning. Subsequent
+" If "git" is *NOT* in the current ${PATH}, print a non-fatal warning. Subsequent
 " logic (e.g., NeoBundle installation) requires Git as a hard dependency.
 if !executable('git')
     echomsg 'Command "git" not found. Expect NeoBundle installation to fail.'
+endif
+
+" If Python 3 support is available...
+if g:our_is_python3
+    " If neither the "pyflakes" nor "pyflakes3" commands are in the current
+    " ${PATH}, print a non-fatal warning. Python syntax checking falls back to
+    " the "flake8" command in the absence of both, which is much less helpful.
+    if !(executable('pyflakes') || executable('pyflakes3'))
+        echomsg 'Commands "pyflakes" and "pyflakes3" not found. Expect Python syntax checking to fail.'
+    endif
 endif
 
 " If the current operation system is vanilla Microsoft Windows *AND*
