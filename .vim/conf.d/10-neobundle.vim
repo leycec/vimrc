@@ -259,6 +259,11 @@ NeoBundleLazy 'klen/python-mode', {
   \ 'autoload': { 'filetypes': 'python' }
   \ }
 
+" Zeshy.
+NeoBundleLazy 'leycec/vim-zeshy', {
+  \ 'autoload': { 'filetypes': 'zeshy' },
+  \ }
+
 " ....................{ LAZY ~ filetype : rst              }....................
 " reStructuredText (reST).
 NeoBundleLazy 'Rykka/riv.vim', {
@@ -371,11 +376,13 @@ NeoBundleLazy 'Shougo/vimfiler', {
   \ 'autoload': { 'commands': ['VimFiler', 'VimFilerExplorer'] },
   \ }
 
+"FIXME: Temporarily disabled. We don't currently leverage tags functionality
+"terribly much, and there appear to be conflicts with git-based Universal Ctags.
 " Project tags.
-NeoBundleLazy 'xolox/vim-easytags', {
-  \ 'depends': 'xolox/vim-misc',
-  \ 'autoload': { 'filetypes': ['zeshy'] },
-  \ }
+" NeoBundleLazy 'xolox/vim-easytags', {
+"   \ 'depends': 'xolox/vim-misc',
+"   \ 'autoload': { 'filetypes': ['zeshy'] },
+"   \ }
 
 "FIXME: Unconvinced I require a grepping plugin. If I ever do, however, this is
 "undoubtedly the one to uncomment. State of the art.
