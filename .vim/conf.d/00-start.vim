@@ -15,8 +15,17 @@
 set noerrorbells
 set novisualbell
 
+"FIXME: The "More" prompt is essential when listing "messages" but otherwise
+"unhelpful. Perhaps we could conditionally "set nomore" globally and then
+"temporarily disable this setting for the duration of a "messages" call?
+
 " Do *NOT* prompt users to press <Enter> on each screen of long listings.
-set nomore
+" set nomore
+"
+
+" ....................{ PATHABLES                          }....................
+" 1 if this is NeoVim or 0 otherwise (i.e., if this is stock Vim).
+let g:our_is_nvim = has('nvim')
 
 " ....................{ PATHABLES                          }....................
 "FIXME: This implementation assumes no dirname in ${PATH} to contain commas.
@@ -62,7 +71,7 @@ endfunction
 
 " If "bash" is in the current ${PATH}, forcefully set Vim's preferred shell to
 " "bash" *BEFORE* running the first shell command below (e.g., system()). Both
-" Vim startup and numerous bundles assume this shell to be sane (e.g., to print
+" Vim startup and numerous plugins assume this shell to be sane (e.g., to print
 " no output on non-interactive startup and to conform to POSIX shell standards),
 " which may *NOT* necessarily be the case for non-standard shells.
 if executable('bash')
@@ -131,14 +140,25 @@ let g:our_is_platform_windows_cygwin = has("win32unix")
 let g:our_is_platform_windows_vanilla = has("win32")
 
 " ....................{ CHECKS                             }....................
-" If the current version of Vim is insufficient, print a non-fatal warning. This
-" requirement is currently dictated by:
+" If this is NeoVim, then this Vim environment almost certainly supports all
+" requisite features (e.g., asynchronous job support); else, this is stock Vim,
+" in which case these features are only available under sufficiently new
+" versions of Vim. In the latter case, if the current version of Vim is
+" insufficient, print a non-fatal warning.
 "
-" * "vim-gitgutter", a bundle:
+" The exact version required is dictated by the following third-party plugins:
+"
+" * "ale", requiring either NeoVim or Vim >= 8.0.000 for asynchronous syntax
+"   checking -- a vital ingredient of our workflow.
+" * "vim-gitgutter":
 "   * Recommending Vim >= 7.4.427 to avoid random highlighting glitches.
 "   * Requiring Vim >= 7.3.105 for realtime highlighting.
-if v:version < 704
-    echomsg 'Vim version older than 7.4 detected. Expect horror.'
+if ! g:our_is_nvim && v:version < 704
+    if v:version < 800
+        echomsg 'Vim version older than 8.0 detected. Expect absolute horror.'
+    else
+        echomsg 'Vim version older than 7.4 detected. Expect relative horror.'
+    endif
 
     " If the current platform is macOS, suggest use of the CLI-specific "vim"
     " installed with the Homebrew-managed MacVim port. Since the ideal command
@@ -163,6 +183,11 @@ endif
 " 1 if Vim is running under a display server supporting the X11 protocol (e.g.,
 " X.org, XWayland, XMir, Cygwin/X) and 0 otherwise.
 let g:our_is_display_server_x11 = $DISPLAY != ''
+
+" 1 if Vim supports asynchronous job control or 0 otherwise. Specifically, this
+" is 1 if Vim was compiled with job control *AND* is either NeoVim (all versions
+" of which provide asynchronous job control out-of-the-box) or Vim 8 or newer.
+let g:our_is_job_async = has('job') && (g:our_is_nvim || v:version >= 800)
 
 " 1 if Vim was compiled with Python 3 support *AND* "python3" is in the current
 " ${PATH} and 0 otherwise. In the former case, Python 3 is available and
@@ -193,13 +218,13 @@ let g:our_vim_dir = $HOME . '/.vim'
 " Absolute path of the current user's custom Vim dotfile.
 let g:our_vimrc_local_file = $HOME . '/.vimrc.local'
 
-" ....................{ GLOBALS ~ paths : bundle           }....................
-" Absolute path of the directory to install bundles to.
-let g:our_bundle_dir = g:our_vim_dir . '/bundle'
+" ....................{ GLOBALS ~ paths : plugin           }....................
+" Absolute path of the directory to install plugins to.
+let g:our_plugin_dir = g:our_vim_dir . '/dein'
 
-" Absolute path of the directory to install NeoBundle to, allowing NeoBundle to
-" manage itself as a bundle.
-let g:our_neobundle_dir = g:our_bundle_dir . '/neobundle.vim'
+" Absolute path of the directory to install dein to, allowing dein to manage
+" itself as a plugin.
+let g:our_dein_dir = g:our_plugin_dir . '/repos/github.com/Shougo/dein.vim'
 
 " ....................{ GLOBALS ~ paths : cache            }....................
 " Absolute path of the directory to cache temporary paths to.
@@ -221,16 +246,20 @@ let g:our_view_dir = g:our_cache_dir . '/view'
 " ....................{ HELPERS                            }....................
 " Helper functions guaranteed to be called at (and hence unconditionally
 " required by) Vim startup. All other such functions are only conditionally
-" required under certain contexts. For efficiency, such functions are autoloaded
-" in a just-in-time (JIT) manner and hence reside under "~/.vim/autoload".
+" required under certain contexts. For efficiency, these functions are
+" autoloaded in a just-in-time (JIT) manner residing under "~/.vim/autoload".
 
+" void AddRuntimePath(str path)
+"
 " Append the passed directory to Vim's ","-delimited PATH. For safety, all ","
-" characters in such directory will be implicitly escaped.
+" characters in this directory will be implicitly escaped.
 function AddRuntimePath(path) abort
     let &runtimepath .= ',' . escape(a:path, '\,')
 endfunction
 
-" Create the passed directory and all parent directories of such directory as
+" void MakeDirIfNotFound(str path)
+"
+" Create the passed directory and all parent directories of this directory as
 " needed. This function provides a pure-Vim analogue to the external shell
 " command "mkdir -p".
 function MakeDirIfNotFound(path) abort
@@ -244,7 +273,7 @@ endfunction
 " features, print non-fatal warnings:
 "
 " * "+autocmd", required by everything everywhere. (Why is this even optional?)
-" * "+signs", required by the "vim-gitgutter" bundle.
+" * "+signs", required by the "vim-gitgutter" plugin.
 if !has('autocmd')
     echomsg 'Vim feature "autocmd" unavailable. Expect terror.'
 endif
@@ -273,10 +302,10 @@ if g:our_is_display_server_x11 && !has('clipboard')
 endif
 
 " ....................{ CHECKS ~ pathables                 }....................
-" If "git" is *NOT* in the current ${PATH}, print a non-fatal warning. Subsequent
-" logic (e.g., NeoBundle installation) requires Git as a hard dependency.
+" If "git" is *NOT* in the current ${PATH}, print a non-fatal warning.
+" Subsequent logic (e.g., dein installation) expects Git as a hard dependency.
 if !executable('git')
-    echomsg 'Command "git" not found. Expect NeoBundle installation to fail.'
+    echomsg 'Command "git" not found. Expect dein installation to fail.'
 endif
 
 " If Python 3 support is available...
@@ -291,21 +320,21 @@ endif
 
 " If the current operation system is vanilla Microsoft Windows *AND*
 " "mingw32-make" is not in the current ${PATH}, print a non-fatal warning. The
-" "vimproc" bundle runs this command to compile itself under this platform.
+" "vimproc" plugin runs this command to compile itself under this platform.
 if g:our_is_platform_windows_vanilla && !executable('mingw32-make')
-    echomsg 'Command "mingw32-make" not found. Expect NeoBundle installation to fail.'
+    echomsg 'Command "mingw32-make" not found. Expect dein installation to fail.'
 " Else if "make" is not in the current ${PATH}, print a non-fatal warning. While
 " generally unlikely, "make" is *NOT* installed under non-vanilla Cygwin-enabled
-" Microsoft Windows by default. The "vimproc" bundle runs this command to
+" Microsoft Windows by default. The "vimproc" plugin runs this command to
 " compile itself under all platforms that are *NOT* vanilla Microsoft Windows.
 elseif !executable('make')
-    echomsg 'Command "make" not found. Expect NeoBundle installation to fail.'
+    echomsg 'Command "make" not found. Expect dein installation to fail.'
 endif
 
 " ....................{ PATHS ~ make                       }....................
 " Create all requisite subdirectories as needed.
 call MakeDirIfNotFound(g:our_backup_dir)
-call MakeDirIfNotFound(g:our_bundle_dir)
+call MakeDirIfNotFound(g:our_plugin_dir)
 call MakeDirIfNotFound(g:our_swap_dir)
 call MakeDirIfNotFound(g:our_undo_dir)
 call MakeDirIfNotFound(g:our_view_dir)

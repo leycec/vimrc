@@ -4,7 +4,7 @@
 "
 " --------------------( SYNOPSIS                           )--------------------
 " Theme configuration, specifying both the current colour and statusline themes
-" *AND* configuring Vim and bundle functionality pertaining to aesthetic style.
+" *AND* configuring Vim and plugin functionality pertaining to aesthetic style.
 
 "FIXME: Create mode-aware cursors (i.e., cursors changing color based on the
 "current Vim mode) via the "gcr" option.
@@ -118,7 +118,8 @@ if &t_Co < 256 &&
 endif
 
 " ....................{ CORE                               }....................
-" Enable filetype-dependent syntax highlighting *AFTER* NeoBundle logic above.
+" Enable filetype-dependent syntax highlighting *AFTER* all prior dein-specific
+" logic *AND* the above detection for terminal colours.
 syntax on
 
 " Prefer light-on-dark to dark-on-light color schemes *BEFORE* selecting color
@@ -316,7 +317,7 @@ set laststatus=2
 "of such names. (Which makes sense for a tabline.)
 
 " Airline theme, independent but ideally correlated to the Vim theme set above.
-" Airline comes bundled with a variety of themes, most of which are surprisingly
+" Airline comes plugind with a variety of themes, most of which are surprisingly
 " well-done. For a full list (complete with animated GIFs), see:
 "     https://github.com/vim-airline/vim-airline/wiki/Screenshots
 let g:airline_theme='lucius'
@@ -365,6 +366,9 @@ let g:airline#extensions#tabline#left_alt_sep = ''
 " ....................{ STATUSLINE ~ airline : section     }....................
 " For a list of default values for all sections, see:
 "     https://github.com/bling/vim-airline/blob/master/autoload/airline/init.vim
+"
+" for additional lazily loaded sections, see the addition of the following
+" plugins within "10-dein.vim": "vim-qfstatusline".
 
 " Expand the center-rightmost status line section to display the current working
 " directory. By default, such section displays the filetype for the current
@@ -376,21 +380,6 @@ let g:airline_section_x = airline#section#create_right(['%{getcwd()}'])
 " default width of two digits. All other metadata typically displayed in such
 " section (e.g., line numbers) are visible elsewhere and hence redundant here.
 let g:airline_section_z = airline#section#create(['%2c'])
-
-" Configure qfstatusline when lazily loaded.
-if neobundle#tap('vim-qfstatusline')
-    function! neobundle#hooks.on_post_source(bundle)
-        " Conditionally display a rightmost section synopsizing the line and
-        " column number of the first syntax error in the current buffer.
-        let g:airline_section_warning =
-          \ airline#section#create(["%{qfstatusline#Update()}"])
-
-        " Update the statusline on syntax errors.
-        let g:Qfstatusline#UpdateCmd = function('airline#update_statusline')
-    endfunction
-
-    call neobundle#untap()
-endif
 
 " ....................{ WRAPPING                           }....................
 " String prefixing soft-wrapped lines.

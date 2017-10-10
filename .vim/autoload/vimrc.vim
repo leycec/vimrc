@@ -127,6 +127,16 @@ function! vimrc#get_script_sid(script_filename) abort
     return l:script_line + 1
 endfunction
 
+" ....................{ COPIERS                            }....................
+" vimrc#copy_messages_to_clipboard() -> None
+"
+" Copy the contents of all prior Vim messages (i.e., output of the ":messages"
+" command) into the system clipboard.
+function! vimrc#copy_messages_to_clipboard() abort
+    redir @+ | messages | redir END
+    echo 'Copied messages to clipboard.'
+endfunction
+
 " ....................{ DIFFERS                            }....................
 " vimrc#diff_buffer_current_with_file_current() -> None
 "
