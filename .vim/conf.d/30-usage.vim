@@ -3,7 +3,7 @@
 " See "LICENSE" for further details.
 "
 " --------------------( SYNOPSIS                           )--------------------
-" Non-theme configuration, configuring Vim and bundle functionality pertaining
+" Non-theme configuration, configuring Vim and plugin functionality pertaining
 " to actual usage rather than aesthetic style.
 
 "FIXME: "python-mode" provides Rope support, which we should both learn and
@@ -23,7 +23,7 @@
 set hidden
 
 " On opening a new buffer, set such buffer's encoding to the first of the
-" following encodings to successfully decode such buffer's content. This 
+" following encodings to successfully decode such buffer's content. This
 " includes the following Japanese-specific encodings:
 "
 " * "iso-2022-jp", commonly referred to as JIS.
@@ -204,7 +204,7 @@ augroup our_filetype_comments
 
     " Parse "#" characters prefixing any words as comment leaders regardless
     " of whether such characters are immediately followed by whitespace. By
-    " default, the bundles for the following filetypes only parse "#" characters
+    " default, the plugins for the following filetypes only parse "#" characters
     " immediately followed by whitespace as comment leaders -- which, given our
     " glut of "#FIXME" comments, is less than helpful.
     "
@@ -239,48 +239,11 @@ set diffopt=filler,vertical
 command DiffSelf call vimrc#diff_buffer_current_with_file_current()
 
 " ....................{ EXPLORING ~ unite                  }....................
-" Configure Unite when lazily loaded.
-if neobundle#tap('unite.vim')
-    function! neobundle#hooks.on_post_source(bundle)
-        " Match "fuzzily," effectively inserting the nongreedy globbing operator
-        " "*?" between each character of the search pattern (e.g., searching for
-        " "vvrc" in a unite buffer matches both "~/.vim/vimrc" and
-        " "~/.vim/bundle/vundle/startup/rc.vim").
-        call unite#filters#matcher_default#use(['matcher_fuzzy'])
-
-        " Sort unite matches by descending rank.
-        call unite#filters#sorter_default#use(['sorter_rank'])
-
-        " Directory to which unite caches metadata.
-        let g:unite_data_directory = g:our_cache_dir . '/unite'
-
-        " Open unite buffers in Insert Mode by default.
-        let g:unite_enable_start_insert = 1
-
-        " String prefixing the unite input prompt.
-        let g:unite_prompt = '» '
-
-        " Enable unite source "unite-source-history/yank", permitting
-        " exploration of yank history (e.g., via "yankring" or "yankstack").
-        let g:unite_source_history_yank_enable = 1
-    endfunction
-
-    call neobundle#untap()
-endif
+" Common Unite-based exploration commands include:
 
 " ....................{ EXPLORING ~ files                  }....................
 " Common file exploration commands include:
 "     :VimFiler         " run vimfiler
-
-" Configure vimfiler when lazily loaded.
-if neobundle#tap('vimfiler')
-    function! neobundle#hooks.on_post_source(bundle)
-        " Set vimfiler as the default file explorer.
-        let g:vimfiler_as_default_explorer = 1
-    endfunction
-
-    call neobundle#untap()
-endif
 
 " ....................{ FILETYPE ~ markdown : tpope        }....................
 " Tim Pope's Markdown plugin. While no longer used, there's little harm in
@@ -335,7 +298,7 @@ let g:pymode_python = g:our_is_python3 ? 'python3' : 'python'
 let g:pymode_folding = 0
 
 " Prevent "python-mode" from performing syntax checks (e.g., on buffer write),
-" as "watchdogs" already does so in a (frankly) superior manner.
+" as "ale" already does so in a frankly superior manner.
 let g:pymode_lint = 0
 
 " Disable support for rope, a Python refactoring library. In theory, enabling
@@ -371,7 +334,7 @@ let g:pymode_rope_complete_on_dot = 0
 "     :RivSpecification   " read the 'reStructuredText Specification'
 "     :RivQuickStart      " read the 'QuickStart With Riv'
 "     :RivInstruction     " read the 'Riv Instructions'
- 
+
 " ....................{ FILETYPE ~ rest : riv : instantrst }....................
 " Common InstantRst commands include:
 "     :InstantRst         " preview current reST buffer
@@ -635,135 +598,64 @@ augroup our_filetype_spelling
     autocmd!
 
     " Enable spell checking in all buffers of the following filetypes.
-    autocmd FileType md,rst,text,yaml setlocal spell
+    autocmd FileType markdown,mkd,rst,text,yaml setlocal spell
 augroup END
 
-" ....................{ SYNTAX CHECK ~ watchdogs : start   }....................
-" "vim-watchdogs" provides asynchronous syntax checking.
+" ....................{ SYNTAX CHECK ~ ale                 }....................
+" Asynchronous Linting Engine (ALE) provides asynchronous syntax checking.
 
-" Create a "quickrun" configuration if not found. ("quickrun" is a watchdogs
-" dependency providing a high-level API to "vimproc").
-if !exists('g:quickrun_config')
-    let g:quickrun_config = {}
-endif
+" Unconditionally display the sign gutter, regardless of whether the current
+" buffer exhibits one or more linter failures.
+let g:ale_sign_column_always = 1
 
-" Highlight lines containing syntax errors.
-let g:hier_enabled = 1
+" Prefer single-character Unicode symbols to double-character ASCII strings.
+let g:ale_sign_error   = '»'
+let g:ale_sign_warning = '–'
 
-" Configure core watchdogs settings, including:
-"
-" * 'outputter/quickfix/open_cmd', preventing watchdogs from opening a quickfix
-"   window after each syntax check. Syntax results will be displayed in the
-"   current buffer (e.g., via highlighting) and statusline instead.
-let g:quickrun_config['watchdogs_checker/_'] = {
-  \ 'outputter/quickfix/open_cmd': '',
-  \ 'hook/hier_update/enable_exit': 1,
-  \ 'hook/qfstatusline_update/enable_exit': 1,
-  \ 'hook/qfstatusline_update/priority_exit': 4,
-  \ 'hook/unite_quickfix/enable_failure': 1,
-  \ 'hook/unite_quickfix/enable_success': 1,
-  \ 'hook/unite_quickfix/unite_options': '-no-quit -no-empty -auto-resize -resume -buffer-name=quickfix',
-  \ 'runner/vimproc/updatetime': 40,
-  \ }
+" Dictionary mapping from each lintable filetype to the list of all linters with
+" which to asynchronously lint buffers of that filetype. Since ALE defaults to
+" linting filetypes *NOT* specified by this dictionary with all linters
+" available for that filetype, each filetype of interest should typically be
+" explicitly mapped to exactly one desirable linter here.
+let g:ale_linters = {}
 
-" ....................{ SYNTAX CHECK ~ watchdogs : python  }....................
+" let g:ale_run_synchronously = 1
+" let g:ale_history_enabled = 1
+" let g:ale_history_log_output = 1
+
+" ....................{ SYNTAX CHECK ~ ale : python        }....................
 " If Python 3 support is available...
 if g:our_is_python3
-    " If the Python 3-specific "pyflakes3" command is in the current ${PATH},
-    " syntax check Python buffers via this command preferably.
-    if executable('pyflakes3')
-        " Define a new "pyflakes3" syntax checker.
-        let g:quickrun_config['watchdogs_checker/pyflakes3'] = {
-          \ 'command': 'pyflakes3',
-          \ 'exec': '%c %o %s:p',
-          \ 'errorformat': '%f:%l:%m',
-          \ }
+    "FIXME: Reenable after "pyflakes" integration actually works.
 
-        " Syntax check Python buffers with this checker.
-        let g:quickrun_config['python/watchdogs_checker'] = {
-          \ 'type' : 'watchdogs_checker/pyflakes3',
-          \ }
-    " If the version-agnostic "pyflakes" command is in the current ${PATH},
-    " syntax check Python buffers via this command as a fallback.
-    elseif executable('pyflakes')
-        let g:quickrun_config['python/watchdogs_checker'] = {
-          \ 'type' : 'watchdogs_checker/pyflakes',
-          \ }
+    " " If the "pyflakes" linter is available, prefer linting Python with *ONLY*
+    " " "pyflakes", a minimalist (and hence efficient) Python linter.
+    " if executable('pyflakes') || executable('pyflakes3')
+    "     let g:ale_linters['python'] = ['pyflakes']
+
+    " Else if the "pylint" linter is available...
+    if executable('pyflakes')
+        " Fallback to linting Python with this linter.
+        let g:ale_linters['python'] = ['pylint']
+
+        " Squelch ignorable refactor (R) and convention (C) complaints,
+        " preserving only fatal errors and non-fatal severe warnings.
+        let g:ale_python_pylint_options = '--disable=R,C'
+    " Else if the "flake8" linter is available...
+    elseif executable('flake8')
+        " Fallback to linting Python with this linter.
+        let g:ale_linters['python'] = ['flake8']
+
+        " Preserve only fatal errors (F) and non-fatal severe warnings (E).
+        let g:ale_python_flake8_options = '--select=F,E'
     endif
 endif
-
-" ....................{ SYNTAX CHECK ~ watchdogs : shell   }....................
-"FIXME: Emit a non-fatal startup warning if "shellcheck" is unavailable.
-
-" If the "shellcheck" command is available, syntax check Bash, Bourne, and Korn
-" shell buffers with this command. Note that:
-"
-" * While alternative shell script linters exist (e.g., "bashate",
-"   "checkbashisms"), this linter is widely regarded as the best.
-" * While watchdogs *DOES* provide a default "sh/watchdogs_checker"
-"   configuration, this default prefers linting via the standard "sh" command.
-"   Unfortunately, this command appears to fail for non-Bourne shell buffers
-"   (e.g., Bash, Korn) and hence is functionally useless... for most purposes.
-" * As Bash, Bourne, and Korn shell buffers all ambiguously share the same
-"   filetype of "sh" in Vim, disambiguating between these filetypes (e.g., via a
-"   new "bash/watchdogs_checker") is currently infeasible.
-if executable('shellcheck')
-    let g:quickrun_config['sh/watchdogs_checker'] = {
-      \ 'type' : 'watchdogs_checker/shellcheck'
-      \ }
-endif
-
-" ....................{ SYNTAX CHECK ~ watchdogs : stop    }....................
-" When this plugin is lazily loaded by NeoBundle...
-if neobundle#tap('vim-watchdogs')
-    " This hook function is called to finalize this plugin's configuration.
-    function! neobundle#tapped.hooks.on_source(bundle)
-        " Initialize watchdogs with the prior "quickrun" configuration
-        call watchdogs#setup(g:quickrun_config)
-    endfunction
-
-    call neobundle#untap()
-endif
-
-" Syntax check on buffer writes.
-let g:watchdogs_check_BufWritePost_enable = 1
-
-" Syntax check on user inactivity.
-" let g:watchdogs_check_CursorHold_enable = 1
-
-" Syntax check the current buffer if *NOT* already running this check. Yes,
-" watchdogs should define this function on your behalf. It doesn't. So be it.
-function! s:bundle_watchdogs_run()
-    if exists(":WatchdogsRunSilent")
-        if exists("*quickrun#is_running")
-            if quickrun#is_running()
-                return
-            endif
-        elseif g:watchdogs_quickrun_running_check
-            return
-        endif
-
-        WatchdogsRunSilent -hook/watchdogs_quickrun_running_checker/enable 0
-    endif
-endfunction
-
-" Perform syntax checking on any of the following events in buffers with any of
-" the following filetypes:
-"
-" * On entering buffers (e.g., creating new files, reading existing files,
-"   switching back to previously opened buffers).
-" * On leaving Insert mode.
-" * On Normal mode changes.
-augroup our_bundle_watchdogs
-    autocmd!
-    autocmd BufEnter,InsertLeave,TextChanged * call <SID>bundle_watchdogs_run()
-augroup END
 
 " ....................{ TAGS                               }....................
 " Vim supports tags for a wide variety of languages, many of which are
 " unsupported by "Exuberant Ctags" and hence require manual intervention below
 " (e.g., JavaScript). For canonical documentation on doing so, see:
-" 
+"
 "   https://github.com/majutsushi/tagbar/wiki
 "
 " Despite the URL, such documentation is independent of the "tagbar" plugin.
@@ -798,50 +690,51 @@ set tags=./.tags;
 "FIXME: Or perhaps such functionality has already been implemented by now? Look
 "into this, please. It's been over a year since we last examined this.
 
+"FIXME: Refactor to use the new dein-specific "hook_post_source" formalism.
 " Configure easytags when lazily loaded.
-if neobundle#tap('vim-easytags')
-    function! neobundle#hooks.on_post_source(bundle)
-        " Due to an unresolved issue in easytags itself, automatic tag
-        " highlighting is currently inordinantely slow. Until resolved, disable
-        " such automation.
-        let g:easytags_auto_highlight = 0
-
-        " Directory to which filetype-specific global tags will be written. This
-        " is only a fallback for buffers in which project-local tags cannot be
-        " written (e.g., due to insufficient user permissions).
-        let g:easytags_by_filetype = g:our_cache_dir . '/tags'
-
-        " Automatically read project-local tags found according to option "tags"
-        " and write such tags to the current directory if not found.
-        let g:easytags_dynamic_files = 2
-
-        " For efficiency, highlight tags with an external Python script rather
-        " than pure Vimscript.
-        let g:easytags_python_enabled = 1
-
-        " Since "ctags" is no longer actively released (and in any case is
-        " predicate on regex heuristics rather than deterministic parsing),
-        " prefer language-specific commands producing "ctags"-compatible output
-        " to "ctags".
-        "
-        " Note that keys are lowercase "ctags" rather than vim filetypes (e.g.,
-        " "c++" rather than "cpp"). To list all available such filetypes, run:
-        "
-        "     >>> ctags --list-languages
-        "     >>> ctags --list-maps
-        let g:easytags_languages = {
-          \ 'ruby': {
-          \     'cmd': 'ripper-tags',
-          \     'args': [],
-          \     'fileoutput_opt': '-f',
-          \     'stdout_opt': '-f-',
-          \     'recurse_flag': '-R'
-          \     }
-          \ }
-    endfunction
-
-    call neobundle#untap()
-endif
+"if dein#tap('vim-easytags')
+"    function! dein#hooks.on_post_source(plugin)
+"        " Due to an unresolved issue in easytags itself, automatic tag
+"        " highlighting is currently inordinantely slow. Until resolved, disable
+"        " such automation.
+"        let g:easytags_auto_highlight = 0
+"
+"        " Directory to which filetype-specific global tags will be written. This
+"        " is only a fallback for buffers in which project-local tags cannot be
+"        " written (e.g., due to insufficient user permissions).
+"        let g:easytags_by_filetype = g:our_cache_dir . '/tags'
+"
+"        " Automatically read project-local tags found according to option "tags"
+"        " and write such tags to the current directory if not found.
+"        let g:easytags_dynamic_files = 2
+"
+"        " For efficiency, highlight tags with an external Python script rather
+"        " than pure Vimscript.
+"        let g:easytags_python_enabled = 1
+"
+"        " Since "ctags" is no longer actively released (and in any case is
+"        " predicate on regex heuristics rather than deterministic parsing),
+"        " prefer language-specific commands producing "ctags"-compatible output
+"        " to "ctags".
+"        "
+"        " Note that keys are lowercase "ctags" rather than vim filetypes (e.g.,
+"        " "c++" rather than "cpp"). To list all available such filetypes, run:
+"        "
+"        "     >>> ctags --list-languages
+"        "     >>> ctags --list-maps
+"        let g:easytags_languages = {
+"          \ 'ruby': {
+"          \     'cmd': 'ripper-tags',
+"          \     'args': [],
+"          \     'fileoutput_opt': '-f',
+"          \     'stdout_opt': '-f-',
+"          \     'recurse_flag': '-R'
+"          \     }
+"          \ }
+"    endfunction
+"
+"    call dein#untap()
+"endif
 
 " ....................{ VCS ~ fugitive                     }....................
 " Define the following new commands:
