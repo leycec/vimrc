@@ -638,9 +638,28 @@ if g:our_is_python3
         " Fallback to linting Python with this linter.
         let g:ale_linters['python'] = ['pylint']
 
-        " Squelch ignorable refactor (R) and convention (C) complaints,
-        " preserving only fatal errors and non-fatal severe warnings.
-        let g:ale_python_pylint_options = '--disable=R,C'
+        " Configure "pylint" to:
+        "
+        " * "--disable=R,C", squelching ignorable:
+        "   * Refactor (R) complaints.
+        "   * Convention (C) complaints.
+        "   * "E0401" (i.e., "import-error"), preventing "pylint" from
+        "     complaining about importable modules that, for whatever reason,
+        "     are unimportable by "pylint". (Probably a "sys.path" issue.)
+        "   * "E0611" (i.e., "no-name-in-module"), preventing "pylint" from
+        "     complaining about attributes imported from C extensions.
+        "   * "E1101" (i.e., "no-member"), preventing "pylint" from
+        "     complaining about dynamically synthesized attributes (notably,
+        "     the "setter" decorator of properties).
+        "   * "W0511" (i.e., "fixme"), preventing "pylint" from flagging each
+        "     and every "FIXME" comment.
+        "   This preserves only verifiably fatal errors and non-fatal severe.
+        "   warnings (e.g., unused local variable).
+        " * "--jobs=2", minimally parallelizing "pylint" execution.
+        " * 
+        let g:ale_python_pylint_options =
+          \ '--disable=R,C,E0401,E0611,E1101,W0511 ' .
+          \ '--jobs=2'
     " Else if the "flake8" linter is available...
     elseif executable('flake8')
         " Fallback to linting Python with this linter.
