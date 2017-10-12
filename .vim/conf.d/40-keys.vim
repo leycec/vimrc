@@ -73,6 +73,7 @@
 "   Vimscript REPL in Vim.
 "
 " --------------------( SEE ALSO                           )--------------------
+" * "conf.d/10-dein.vim", defining lazily loaded plugin-specific key bindings.
 " * "after/ftplugin/rst.vim", defining reStructuredText-specific key bindings.
 
 " ....................{ NORMAL                             }....................
@@ -130,11 +131,22 @@ nnoremap <silent> <leader>/ :nohlsearch<cr>
 " Bind <,e> to open a new buffer editing a file discovered via Unite.
 nnoremap <leader>e :Unite<cr>
 
-" Bind <,s> to write the current buffer. This avoids the need to otherwise
+" Bind <,w> to write the current buffer. This avoids the need to otherwise
 " confirm this write with a prefixing <Enter>, reducing keystroke load.
-nnoremap <leader>s :w<cr>
+nnoremap <leader>w :w<cr>
 
-" ....................{ LEADER ~ vcs : fugitive            }....................
+" ....................{ LEADER ~ plugin : ale              }....................
+" Bind <,lj> and <,lk> to jump to the next and prior ALE-specific linter error
+" and/or warning in the current buffer. Note that:
+"
+" * By ALE design, these bindings *MUST* be defined recursively.
+" * For unknown reasons, these bindings *MUST* be unconditionally defined
+"   regardless of whether ALE is, was, or will be lazily loaded for the current
+"   buffer. Attempting to lazily define these key bindings on plugin load fails.
+nmap <silent> <leader>lj <Plug>(ale_next_wrap)
+nmap <silent> <leader>lk <Plug>(ale_previous_wrap)
+
+" ....................{ LEADER ~ plugin : vcs : fugitive   }....................
 " Bind <,Gu> to open a new buffer diffing the working Git tree against the index.
 nnoremap <leader>Gu :GdiffUnstaged<cr>
 
@@ -147,7 +159,7 @@ nnoremap <leader>Gs :Gstatus<cr>
 " Bind <,Hs> to open a new buffer viewing and editing Mercurial's DirState.
 nnoremap <leader>Hs :Hgstatus<cr>
 
-" ....................{ LEADER ~ vcs : vimgitlog           }....................
+" ....................{ LEADER ~ plugin : vcs : vimgitlog  }....................
 " Bind <,Gl> to open a new buffer viewing the Git log listing all commits and
 " files changed by those commits (in descending order of commit time).
 nnoremap <leader>Gl :GitLog<cr>
@@ -159,58 +171,58 @@ nnoremap <leader>Gl :GitLog<cr>
 " nnoremap <leader>GL :call GITLOG_FlipWindows()<cr>
 
 " ....................{ LEADER ~ window                    }....................
-" Bind <,wd> to delete (i.e., close) the current window. This key binding has
+" Bind <,nd> to delete (i.e., close) the current window. This key binding has
 " been selected to orthogonally coincide with the ":bd" command deleting (i.e.,
 " closing) the current buffer.
-nnoremap <leader>wd :wincmd q<cr>
+nnoremap <leader>nd :wincmd q<cr>
 
-" Bind <,wo> to delete (i.e., close) all windows except the current window.
-nnoremap <leader>wo :only<cr>
+" Bind <,no> to delete (i.e., close) all windows except the current window.
+nnoremap <leader>no :only<cr>
 
-" Bind <,wj> to either:
+" Bind <,nj> to either:
 "
 " * If a window exists under the current window, switch to that window.
 " * Else, horizontally split the current window and switch to the new window
 "   under the current window.
-nnoremap <leader>wj :SwitchWindowDown<cr>
+nnoremap <leader>nj :SwitchWindowDown<cr>
 
-" Bind <,wk> to either:
+" Bind <,nk> to either:
 "
 " * If a window exists above the current window, switch to that window.
 " * Else, horizontally split the current window and switch to the new window
 "   above the current window.
-nnoremap <leader>wk :SwitchWindowUp<cr>
+nnoremap <leader>nk :SwitchWindowUp<cr>
 
-" Bind <,wh> to either:
+" Bind <,nh> to either:
 "
 " * If a window exists to the left of the current window, switch to that window.
 " * Else, horizontally split the current window and switch to the new window to
 "   the left of the current window.
-nnoremap <leader>wh :SwitchWindowLeft<cr>
+nnoremap <leader>nh :SwitchWindowLeft<cr>
 
-" Bind <,wl> to either:
+" Bind <,nl> to either:
 "
 " * If a window exists to the right of the current window, switch to that
 "   window.
 " * Else, horizontally split the current window and switch to the new window to
 "   the right of the current window.
-nnoremap <leader>wl :SwitchWindowRight<cr>
+nnoremap <leader>nl :SwitchWindowRight<cr>
 
-" Bind <,wJ> to switch the window position of the current window with that of
+" Bind <,nJ> to switch the window position of the current window with that of
 " the bottom-most window.
-nnoremap <leader>wJ :wincmd J<cr>
+nnoremap <leader>nJ :wincmd J<cr>
 
-" Bind <,wK> to switch the window position of the current window with that of
+" Bind <,nK> to switch the window position of the current window with that of
 " the topmost window.
-nnoremap <leader>wK :wincmd K<cr>
+nnoremap <leader>nK :wincmd K<cr>
 
-" Bind <,wH> to switch the window position of the current window with that of
+" Bind <,nH> to switch the window position of the current window with that of
 " the leftmost window.
-nnoremap <leader>wH :wincmd H<cr>
+nnoremap <leader>nH :wincmd H<cr>
 
-" Bind <,wL> to switch the window position of the current window with that of
+" Bind <,nL> to switch the window position of the current window with that of
 " the rightmost window.
-nnoremap <leader>wL :wincmd L<cr>
+nnoremap <leader>nL :wincmd L<cr>
 
 " ....................{ SHAMELESS HACKAGE                  }....................
 "FIXME: Actually, this strikes me as a poor idea. Use the 0 register, instead.
