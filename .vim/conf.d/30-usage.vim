@@ -1,3 +1,4 @@
+scriptencoding utf-8
 " --------------------( LICENSE                            )--------------------
 " Copyright 2015-2017 by Cecil Curry.
 " See "LICENSE" for further details.
@@ -93,7 +94,7 @@ let &directory = g:our_swap_dir . '//'
 " See section "HISTORY" for related settings.
 
 " If Vim supports undo persistence...
-if has("persistent_undo")
+if has('persistent_undo')
     " Directory persisting the undo history trees of edited files to
     " corresponding files. See above for further details on "//".
     let &undodir = g:our_undo_dir . '//'
@@ -109,7 +110,7 @@ endif
 "     http://vim.wikia.com/wiki/Make_views_automatic
 
 " If Vim supports view persistence...
-if has("mksession")
+if has('mksession')
     " Directory persisting views.
     let &viewdir = g:our_view_dir
 
@@ -528,7 +529,7 @@ command SwitchWindowRight call vimrc#switch_window('l')
 " long lines. While "vim-autoformat" provides default options for such
 " reformatter under "plugin/defaults.vim", "autopep8" senselessly ignores option
 " "--max-line-length" unless at least *TWO* aggressive options are also passed.
-let g:formatprg_python = "autopep8"
+let g:formatprg_python = 'autopep8'
 let g:formatprg_args_expr_python = '"- --experimental --aggressive --aggressive --aggressive ".(&textwidth ? "--max-line-length=".&textwidth : "")'
 
 " ....................{ REMOTING                           }....................
@@ -651,14 +652,19 @@ if g:our_is_python3
         "   * "E1101" (i.e., "no-member"), preventing "pylint" from
         "     complaining about dynamically synthesized attributes (notably,
         "     the "setter" decorator of properties).
-        "   * "W0511" (i.e., "fixme"), preventing "pylint" from flagging each
-        "     and every "FIXME" comment.
+        "   * "W0511" (i.e., "fixme"), preventing "pylint" from flagging all
+        "     "FIXME" comments. *sigh*
+        "   * "W0613" (i.e., "unused-argument"), preventing "pylint" from
+        "     flagging callables whose arguments are *NOT* referenced by their
+        "     implementations. While unused attributes (especially imports and
+        "     local variables) do typically imply a cause for concern, unused
+        "     callable arguments are a valid common occurrence (e.g., due to
+        "     abstract base classes) and hence best ignored.
         "   This preserves only verifiably fatal errors and non-fatal severe.
         "   warnings (e.g., unused local variable).
         " * "--jobs=2", minimally parallelizing "pylint" execution.
-        " * 
         let g:ale_python_pylint_options =
-          \ '--disable=R,C,E0401,E0611,E1101,W0511 ' .
+          \ '--disable=R,C,E0401,E0611,E1101,W0511,W0613 ' .
           \ '--jobs=2'
     " Else if the "flake8" linter is available...
     elseif executable('flake8')
