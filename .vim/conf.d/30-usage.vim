@@ -652,6 +652,15 @@ if g:our_is_python3
         "   * "E1101" (i.e., "no-member"), preventing "pylint" from
         "     complaining about dynamically synthesized attributes (notably,
         "     the "setter" decorator of properties).
+        "   * "W0125" (i.e., "using-constant-test"), preventing "pylint" from
+        "     flagging conditional statements branching on constant values
+        "     (e.g., "if False:"). These statements are of use in selectively
+        "     squelching *OTHER* ignorable warnings emitted by Python linters
+        "     (notably, unused import warnings).
+        "   * "W0201" (i.e., "attribute-defined-outside-init"), preventing
+        "     attributes initialized in methods transitively called by
+        "     __init__() methods and hence guaranteed to be defined on object
+        "     instantiation from being incorrectly flagged as problematic.
         "   * "W0511" (i.e., "fixme"), preventing "pylint" from flagging all
         "     "FIXME" comments. *sigh*
         "   * "W0613" (i.e., "unused-argument"), preventing "pylint" from
@@ -660,11 +669,13 @@ if g:our_is_python3
         "     local variables) do typically imply a cause for concern, unused
         "     callable arguments are a valid common occurrence (e.g., due to
         "     abstract base classes) and hence best ignored.
+        "   * "W0703" (i.e., "broad-except"), preventing "catch Exception:"
+        "     clauses from raising ignorable warnings. (Are you kidding me?)
         "   This preserves only verifiably fatal errors and non-fatal severe.
         "   warnings (e.g., unused local variable).
         " * "--jobs=2", minimally parallelizing "pylint" execution.
         let g:ale_python_pylint_options =
-          \ '--disable=R,C,E0401,E0611,E1101,W0511,W0613 ' .
+          \ '--disable=R,C,E0401,E0611,E1101,W0201,W0511,W0613,W0703 ' .
           \ '--jobs=2'
     " Else if the "flake8" linter is available...
     elseif executable('flake8')

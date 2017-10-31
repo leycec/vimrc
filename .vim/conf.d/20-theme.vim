@@ -386,23 +386,6 @@ let g:airline_section_z = airline#section#create(['%2c'])
 " String prefixing soft-wrapped lines.
 set showbreak=↳  " ↺↳↪
 
-" Text formatting options. To permit Vim to provide improved defaults in the
-" future, this list is appended and shifted to with the "+=" and "-=" operators
-" rather than being overwritten with the "=" operator. Dismantled, this is:
-"
-" * "j", removing comment leaders when joining lines.
-" * "n", handling numbered lists.
-"
-" Avoid enabling:
-"
-" * "a", automatically formatting all comments. While this option sounds
-"   pleasant in theory, it behaves unpleasantly destructively in practice,
-"   rendering most comments uneditable.
-" * "t", as the current mode does so on your behalf. Comment autoformatting is
-"   only enabled under modes enabling "t", including most programming modes.
-"
-" See ":h fo-table" for further details.
-
 " Preferred line length, respected by numerous other settings and commands
 " (e.g., "gq{movement}", wrapping all text from the cursor to the end of this
 " movement to this length). Since external sources beyond our control (namely
@@ -411,6 +394,16 @@ set showbreak=↳  " ↺↳↪
 " are themselves overridden... by us!
 let g:our_textwidth = 80
 let &textwidth = g:our_textwidth
+
+"FIXME: Apply this length to HTML and XML as well. See "after/ftplugin/yaml.vim"
+"for an overly simplistic template to DRY.
+
+" Preferred line length for data markup languages only (e.g., HTML, YAML, XML),
+" thus excluding textual markup languages (e.g., Markdown, reStructuredText).
+" Data markup languages tend to demand excessive indentation and hence
+" additional horizontal width. For efficiency, this setting must be lazily
+" applied by filetype plugins (e.g., in the "after/ftplugin" subdirectory).
+let g:our_textwidth_data_markup = 95
 
 " Filetype-specific wrapping.
 augroup our_filetype_wrapping

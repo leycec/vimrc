@@ -162,8 +162,7 @@ endfunction
 " Specifically, this function enables comment-aware text formatting for
 " code-specific filetypes whose syntax supports comments -- regardless of
 " whether the plugins configuring these filetypes do so. Since this is Vim, each
-" option is represented as a single character of the string global
-" "formatoptions". See ":h fo-table" for further details.
+" option is signified by a character of the "formatoptions" string global.
 "
 " This function enables the following options:
 "
@@ -197,6 +196,28 @@ endfunction
 " * "t", preventing long lines from being autowrapped in Insert mode on the
 "   first addition, deletion, or edit of a character within any such line whose
 "   column exceeds "textwidth".
+"
+" This function avoids enabling the following options:
+"
+" * "a", automatically formatting all comments. While this option sounds
+"   pleasant in theory, it behaves unpleasantly destructively in practice,
+"   rendering most comments uneditable.
+"
+" For forward compatibility (e.g., to permit Vim to supply improved defaults in
+" the future), this list is appended and shifted to with the "+=" and "-="
+" operators rather than overwritten with the "=" operator. Note also that:
+"
+" * The "+=" operator may be safely passed multiple format options to enable.
+" * The "-=" operator may *NOT* be safely passed multiple format options to
+"   disable. Why? Because Vim interprets this substring literally and hence
+"   only disables a sequence of multiple format options if that exact sequence
+"   appears in the current sequence of format options. For example,
+"   "setlocal formatoptions-=lt" only disables the "l" and "t" format options if
+"   the current "formatoptions" string global contains a literal "lt" substring.
+"   Since this is horrible, the "-=" operator may only be safely passed a single
+"   format option at a time. Who decided this was a sane idea, Bram?
+"
+" See ":h fo-table" for further details.
 function! vimrc#sanitize_code_buffer_formatting() abort
     setlocal formatoptions+=cjmnoqrB
     setlocal formatoptions-=l
