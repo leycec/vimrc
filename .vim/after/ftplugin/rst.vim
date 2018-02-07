@@ -1,5 +1,5 @@
 " --------------------( LICENSE                            )--------------------
-" Copyright 2015-2017 by Cecil Curry.
+" Copyright 2015-2018 by Cecil Curry.
 " See "LICENSE" for further details.
 "
 " --------------------( SYNOPSIS                           )--------------------
@@ -7,7 +7,7 @@
 
 " ....................{ PREAMBLE                           }....................
 " If this plugin has already been loaded for the current buffer, return.
-if exists("b:is_our_ftplugin_rst")
+if exists('b:is_our_ftplugin_rst')
     finish
 endif
 
@@ -26,6 +26,29 @@ if dein#tap('InstantRst')
     nnoremap <buffer> <localleader>po :StopInstantRst<cr>
     nnoremap <buffer> <localleader>pO :StopInstantRst!<cr>
 endif
+
+" ....................{ COMMENTS                           }....................
+" Parse all ".. #" substrings prefixing any line and suffixed by whitespace as
+" comment leaders. Technically, reStructuredText has *NO* formal comment
+" leaders. In practice, this comment leader conforms with modern expectations
+" (mostly due to the terminating "#", inherited from numerous popular languages)
+" and hence suffices as a suitable default.
+"
+" Dismantled, this is:
+"
+" * "b:", requiring this comment leader to be suffixed by whitespace. This is a
+"   hard constraint imposed by reStructuredText syntax.
+"
+" For further details, see ":help format-comments".
+
+"FIXME: Unfortunately, this does *NOT* behave as expected. It should. In all
+"likelihood, either:
+"
+"* Vim silently fails for comment leaders containing whitespace.
+"* Parsing performed by the reST plugin silently conflicts with this.
+"
+"We suspect the former, frankly.
+let b:comments = 'b:.. #'
 
 " ....................{ POSTAMBLE                          }....................
 " Declare this plugin to have been successfully loaded for the current buffer.

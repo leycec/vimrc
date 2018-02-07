@@ -1,6 +1,6 @@
 scriptencoding utf-8
 " --------------------( LICENSE                            )--------------------
-" Copyright 2015-2017 by Cecil Curry.
+" Copyright 2015-2018 by Cecil Curry.
 " See "LICENSE" for further details.
 "
 " --------------------( SYNOPSIS                           )--------------------
@@ -209,11 +209,27 @@ augroup our_filetype_comments
     " immediately followed by whitespace as comment leaders -- which, given our
     " glut of "#FIXME" comments, is less than helpful.
     "
+    " This option is a comma-delimited string list of all comment leaders, each
+    " formatted as "{flags}:{string}", where:
+    "
+    " * "{flags}" is an undelimited character list of boolean flags modifying
+    "   the parsing of this comment leader from Vim's default behaviour.
+    " * "{string}" is the typically unquoted string of all characters comprising
+    "   this comment leader *EXCLUDING* suffixing whitespace. If such whitespace
+    "   is required, specify the "b" flag instead.
+    "
+    " Dismantled, this is:
+    "
+    " * ":#", defining "#" to be a comment leader with default flags and hence
+    "   *NOT* requiring suffixing whitespace.
+    "
     " Note that this option must set *AFTER* loading the following filetypes,
     " which are thus omitted here:
     "
     " * "python", handled by the third-party "python-mode" plugin.
     " * "dosini", handled by the official "dosini" plugin.
+    "
+    " For further details, see ":help format-comments".
     autocmd FileType ebuild,sh setlocal comments=:#,fb:-
 augroup END
 
@@ -361,7 +377,7 @@ let g:pymode_syntax_print_as_function = 1
 " but does *NOT* perfect syntax highlighting of Python code containing long
 " strings. In particular, single-quoted strings formatted as parens-delimited
 " single-quoted lines will typically *NOT* be highlighted properly, suggesting
-" such strings be reformatted as triple-quoted strings with dedendation: e.g.,
+" these strings be reformatted as triple-quoted strings with dedendation: e.g.,
 "
 "     # This will probably fail to be properly highlighted.
 "     my_bad_string = (
@@ -628,30 +644,43 @@ let g:ale_linters = {}
 " If Python 3 support is available...
 if g:our_is_python3
     "FIXME: Reenable after "pyflakes" integration actually works.
-
     " " If the "pyflakes" linter is available, prefer linting Python with *ONLY*
     " " "pyflakes", a minimalist (and hence efficient) Python linter.
     " if executable('pyflakes') || executable('pyflakes3')
     "     let g:ale_linters['python'] = ['pyflakes']
 
     " Else if the "pylint" linter is available...
-    if executable('pyflakes')
+    if executable('pylint')
         " Fallback to linting Python with this linter.
         let g:ale_linters['python'] = ['pylint']
 
         " Configure "pylint" to:
         "
-        " * "--disable=R,C", squelching ignorable:
-        "   * Refactor (R) complaints.
-        "   * Convention (C) complaints.
+        " * "--disable=", squelching ignorable:
+        "   * "R", refactor complaints.
+        "   * "C", convention complaints.
         "   * "E0401" (i.e., "import-error"), preventing "pylint" from
-        "     complaining about importable modules that, for whatever reason,
-        "     are unimportable by "pylint". (Probably a "sys.path" issue.)
+        "     flagging importable modules that, for whatever reason, are
+        "     unimportable by "pylint". (Probably a "sys.path" issue.)
         "   * "E0611" (i.e., "no-name-in-module"), preventing "pylint" from
-        "     complaining about attributes imported from C extensions.
+        "     flagging attributes imported from C extensions.
+        "   * "E0702" (i.e., "raising-bad-type"), preventing "pylint" from
+        "     flagging "raise" statements whose exception instances "pylint"
+        "     erroneously claims (without evidence) to be "None".
         "   * "E1101" (i.e., "no-member"), preventing "pylint" from
-        "     complaining about dynamically synthesized attributes (notably,
-        "     the "setter" decorator of properties).
+        "     flagging dynamically synthesized attributes (notably, the "setter"
+        "     decorator of properties).
+        "   * "E1133" (i.e., "not-an-iterable"), preventing "pylint" from
+        "     erroneously flagging types that support iteration as not
+        "     supporting iteration (notably, iterable cached properties).
+        "   * "E1135" (i.e., "unsupported-membership-test"), preventing
+        "     "pylint" from erroneously flagging types that support the "in"
+        "     operator as not supporting that operator (notably, cached
+        "     properties).
+        "   * "W0122" (i.e., "exec-used"), preventing "pylint" from flagging all
+        "     exec() statements. While commonly undesirable, there exist
+        "     numerous valid use cases for exec() statements. Flagging all such
+        "     calls is unhelpful.
         "   * "W0125" (i.e., "using-constant-test"), preventing "pylint" from
         "     flagging conditional statements branching on constant values
         "     (e.g., "if False:"). These statements are of use in selectively
@@ -663,19 +692,25 @@ if g:our_is_python3
         "     instantiation from being incorrectly flagged as problematic.
         "   * "W0511" (i.e., "fixme"), preventing "pylint" from flagging all
         "     "FIXME" comments. *sigh*
+        "   * "W0603" (i.e., "global-statement"), preventing "pylint" from
+        "     flagging declaration of "global" variables from within callables.
+        "     While commonly undesirable, there exist numerous valid use cases
+        "     for global variables. Flagging all such uses is unhelpful.
         "   * "W0613" (i.e., "unused-argument"), preventing "pylint" from
         "     flagging callables whose arguments are *NOT* referenced by their
         "     implementations. While unused attributes (especially imports and
         "     local variables) do typically imply a cause for concern, unused
         "     callable arguments are a valid common occurrence (e.g., due to
         "     abstract base classes) and hence best ignored.
+        "   * "W0702" (i.e., "bare-except"), preventing "catch:" clauses from
+        "     raising ignorable warnings. ("pylint", you are clearly retarded.)
         "   * "W0703" (i.e., "broad-except"), preventing "catch Exception:"
         "     clauses from raising ignorable warnings. (Are you kidding me?)
         "   This preserves only verifiably fatal errors and non-fatal severe.
         "   warnings (e.g., unused local variable).
         " * "--jobs=2", minimally parallelizing "pylint" execution.
         let g:ale_python_pylint_options =
-          \ '--disable=R,C,E0401,E0611,E1101,W0201,W0511,W0613,W0703 ' .
+          \ '--disable=R,C,E0401,E0611,E0702,E1101,E1133,E1135,W0122,W0201,W0511,W0603,W0613,W0702,W0703 ' .
           \ '--jobs=2'
     " Else if the "flake8" linter is available...
     elseif executable('flake8')

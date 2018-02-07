@@ -3,18 +3,19 @@
 " See "LICENSE" for further details.
 "
 " --------------------( SYNOPSIS                           )--------------------
-" YAML-specific settings applied to all files of filetype ".yaml".
+" Git commit message-specific settings applied to all files with basenames
+" "COMMIT_EDITMSG".
 
 " ....................{ PREAMBLE                           }....................
 " If this plugin has already been loaded for the current buffer, return.
-if exists('b:is_our_ftplugin_yaml')
+if exists('b:is_our_ftplugin_gitcommit')
     finish
 endif
 
-" ....................{ WRAPPING                           }....................
-" Preferred line length for data markup languages only (e.g., HTML, YAML, XML).
-let &l:textwidth = g:our_textwidth_data_markup
+" ....................{ SPELL CHECKING                     }....................
+" Unconditionally enable spell checking for all Git commit messages.
+setlocal spell
 
 " ....................{ POSTAMBLE                          }....................
 " Declare this plugin to have been successfully loaded for the current buffer.
-let b:is_our_ftplugin_yaml = 1
+let b:is_our_ftplugin_gitcommit = 1

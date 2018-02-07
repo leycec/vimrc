@@ -1,5 +1,5 @@
 " --------------------( LICENSE                            )--------------------
-" Copyright 2015-2017 by Cecil Curry.
+" Copyright 2015-2018 by Cecil Curry.
 " See "LICENSE" for further details.
 "
 " --------------------( SYNOPSIS                           )--------------------
@@ -7,7 +7,7 @@
 
 " ....................{ PREAMBLE                           }....................
 " If this plugin has already been loaded for the current buffer, return.
-if exists("b:is_our_ftplugin_python")
+if exists('b:is_our_ftplugin_python')
     finish
 endif
 
@@ -33,12 +33,21 @@ if !executable('pyflakes') && !executable('flake8')
 endif
 
 " ....................{ COMMENTS                           }....................
-" Parse "#" characters prefixing any words as comment leaders regardless of
-" whether these characters are immediately followed by whitespace or not. By
-" default, the "python-mode" bundle only parses "#" characters immediately
-" followed by whitespace as comment leaders -- which, given our glut of "#FIXME"
-" comments, is less than helpful.
+" Overwrite this mode's default comment leader with that set by "30-usage.vim".
 setlocal comments=:#,fb:-
+
+" Python-specific syntax highlighting is particularly troublesome. While the
+" default "autocmd BufEnter * :syntax sync fromstart" suffices for most
+" filetypes, Python plugins routinely fail to highlight large files under this
+" default. The solution, of course, is to highlight significantly less. A
+" cursory inspection of existing large Python files suggests this compromise.
+augroup our_python_syntax
+    " Buffer-local autocommands require buffer-local autocommond deletion.
+    " Hence, "autocmd!" does *NOT* suffice here. For further details, see:
+    "     https://vi.stackexchange.com/a/13456/16249
+    autocmd! BufEnter <buffer>
+    autocmd  BufEnter <buffer> :syntax sync minlines=1024
+augroup END
 
 " ....................{ WRAPPING                           }....................
 " For readability, visually soft-wrap long lines exceeding the width of the

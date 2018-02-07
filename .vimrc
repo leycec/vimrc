@@ -1,5 +1,6 @@
+scriptencoding utf-8
 " --------------------( LICENSE                            )--------------------
-" Copyright 2015-2017 by Cecil Curry.
+" Copyright 2015-2018 by Cecil Curry.
 " See "LICENSE" for further details.
 "
 " --------------------( SYNOPSIS                           )--------------------
@@ -227,8 +228,8 @@
 
 " ....................{ DEPENDENCIES                       }....................
 " Recursively source all user-specific Vim startup scripts (i.e., ".vim" files
-" under "~/.vim/conf.d"). Such scripts are globbed lexicographically and hence
-" may be ordered with numeric prefixes. Such subdirectory and hence scripts are
+" under "~/.vim/conf.d"). These scripts are globbed lexicographically and hence
+" may be ordered with numeric prefixes. This subdirectory and hence scripts are
 " ignored by Vim by default and hence specific to this custom dotfile.
 "
 " Technically, Vim already performs a similar command on startup (e.g.,
