@@ -1,5 +1,5 @@
 " --------------------( LICENSE                            )--------------------
-" Copyright 2015-2017 by Cecil Curry.
+" Copyright 2015-2018 by Cecil Curry.
 " See "LICENSE" for further details.
 "
 " --------------------( SYNOPSIS                           )--------------------
@@ -12,8 +12,7 @@ if exists("b:is_our_ftplugin_dosini")
 endif
 
 " ....................{ COMMENTS                           }....................
-" Overwrite this mode's default comment leader with that defined by
-" "conf.d/30-usage.vim".
+" Overwrite this mode's default comment leader with that set by "30-usage.vim".
 setlocal comments=:#,fb:-
 
 " ....................{ POSTAMBLE                          }....................

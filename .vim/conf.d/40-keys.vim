@@ -1,6 +1,6 @@
 scriptencoding utf-8
 " --------------------( LICENSE                            )--------------------
-" Copyright 2015-2017 by Cecil Curry.
+" Copyright 2015-2018 by Cecil Curry.
 " See "LICENSE" for further details.
 "
 " --------------------( SYNOPSIS                           )--------------------

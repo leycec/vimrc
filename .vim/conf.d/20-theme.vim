@@ -1,6 +1,6 @@
 scriptencoding utf-8
 " --------------------( LICENSE                            )--------------------
-" Copyright 2015-2017 by Cecil Curry.
+" Copyright 2015-2018 by Cecil Curry.
 " See "LICENSE" for further details.
 "
 " --------------------( SYNOPSIS                           )--------------------
@@ -221,27 +221,27 @@ set wildmode=list:longest,full
 
 " ....................{ HIGHLIGHT                          }....................
 " Map filetypes to syntax highlighting synchronization settings. While Vim
-" already maps most filetypes to such settings, their defaults often fail to
+" already maps most filetypes to these settings, their defaults often fail to
 " suffice for real world files (particularly, files including lengthy comments
 " and/or strings). If opening a buffer fails to properly syntax highlight the
 " currently displayed region, consider increasing the number of prior lines vim
-" vim parses on every buffer movement to syntax highlight such region. Note that
-" large numbers (e.g., >= 2500) may result in significant slowdown.
+" parses on buffer movements to syntax highlight that region. Note that large
+" numbers (e.g., >= 2500) may result in significant slowdown, which largely
+" defeats the purpose. (Get it: largely?)
 "
 " Common settings include:
 "
 " * "syntax sync minlines=${number_of_prior_lines}", inducing Vim to parse that
 "   number of prior lines on every buffer movement.
-" * "syntax sync fromstart", inducing Vim to parse from the beginning of such
+" * "syntax sync fromstart", inducing Vim to parse from the beginning of this
 "   buffer on every buffer movement. This is functionally equivalent to setting
-"   "syntax sync minlines=99999". However, numerous users report such
+"   "syntax sync minlines=99999". However, numerous users report this
 "   synchronization to be faster under certain modes than "minlines"-style
 "   synchronization.
 "
-" Note that the following filetypes are externally synchronized by their plugin
-" and hence should *NOT* be synchronized here:
+" Filetypes intentionally excluded here include:
 "
-" * "python", by "python-mode"'s global variable "g:pymode_syntax_slow_sync".
+" * Python, whose "after/ftplugin" sets this synchronization.
 augroup our_filetype_syntax
     autocmd!
     autocmd FileType html,zsh autocmd BufEnter * :syntax sync fromstart
@@ -403,7 +403,8 @@ let &textwidth = g:our_textwidth
 " Data markup languages tend to demand excessive indentation and hence
 " additional horizontal width. For efficiency, this setting must be lazily
 " applied by filetype plugins (e.g., in the "after/ftplugin" subdirectory).
-let g:our_textwidth_data_markup = 95
+" let g:our_textwidth_data_markup = 80
+let g:our_textwidth_data_markup = 93
 
 " Filetype-specific wrapping.
 augroup our_filetype_wrapping
