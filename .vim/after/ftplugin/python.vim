@@ -36,18 +36,20 @@ endif
 " Overwrite this mode's default comment leader with that set by "30-usage.vim".
 setlocal comments=:#,fb:-
 
+"FIXME: Currently disabled in favour of the default "fromstart" highlighting.
+
 " Python-specific syntax highlighting is particularly troublesome. While the
 " default "autocmd BufEnter * :syntax sync fromstart" suffices for most
 " filetypes, Python plugins routinely fail to highlight large files under this
 " default. The solution, of course, is to highlight significantly less. A
 " cursory inspection of existing large Python files suggests this compromise.
-augroup our_python_syntax
-    " Buffer-local autocommands require buffer-local autocommond deletion.
-    " Hence, "autocmd!" does *NOT* suffice here. For further details, see:
-    "     https://vi.stackexchange.com/a/13456/16249
-    autocmd! BufEnter <buffer>
-    autocmd  BufEnter <buffer> :syntax sync minlines=1024
-augroup END
+" augroup our_python_syntax
+"     " Buffer-local autocommands require buffer-local autocommond deletion.
+"     " Hence, "autocmd!" does *NOT* suffice here. For further details, see:
+"     "     https://vi.stackexchange.com/a/13456/16249
+"     autocmd! BufEnter <buffer>
+"     autocmd  BufEnter <buffer> :syntax sync minlines=1024
+" augroup END
 
 " ....................{ WRAPPING                           }....................
 " For readability, visually soft-wrap long lines exceeding the width of the
