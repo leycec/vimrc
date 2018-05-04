@@ -244,8 +244,12 @@ set wildmode=list:longest,full
 " * Python, whose "after/ftplugin" sets this synchronization.
 augroup our_filetype_syntax
     autocmd!
-    autocmd FileType html,zsh autocmd BufEnter * :syntax sync fromstart
+    autocmd FileType html,python,zsh autocmd BufEnter * :syntax sync fromstart
 augroup END
+
+" ....................{ HIGHLIGHT ~ search                 }....................
+" Avoid persistently highlighting all matches for the prior search pattern.
+set nohlsearch 
 
 " ....................{ HIGHLIGHT ~ unprintable            }....................
 " Syntax highlight unprintable characters. For further details, see:

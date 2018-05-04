@@ -690,6 +690,18 @@ if g:our_is_python3
         "     attributes initialized in methods transitively called by
         "     __init__() methods and hence guaranteed to be defined on object
         "     instantiation from being incorrectly flagged as problematic.
+        "   * "W0212" (i.e., "protected-access"), preventing "pylint" from
+        "     flagging attempts to access protected attributes (i.e., attributes
+        "     whose names are prefixed by "_") from external objects. While such
+        "     access *CAN* be problematic, there exist numerous valid use cases
+        "     for doing so. In particular, implementing comparison operators
+        "     (e.g., the __ge__ special method defining an object's
+        "     implementation for the >= operator) commonly requires accessing
+        "     one or more protected attributes of the passed object; since that
+        "     object is commonly an instance of the same class, no privacy
+        "     violation commonly exists. Since "pylint" unconditionally flags
+        "     *ALL* such access regardless of context, the only sane decision is
+        "     *NOT* to play the game at all.
         "   * "W0511" (i.e., "fixme"), preventing "pylint" from flagging all
         "     "FIXME" comments. *sigh*
         "   * "W0603" (i.e., "global-statement"), preventing "pylint" from
@@ -710,7 +722,7 @@ if g:our_is_python3
         "   warnings (e.g., unused local variable).
         " * "--jobs=2", minimally parallelizing "pylint" execution.
         let g:ale_python_pylint_options =
-          \ '--disable=R,C,E0401,E0611,E0702,E1101,E1133,E1135,W0122,W0201,W0511,W0603,W0613,W0702,W0703 ' .
+          \ '--disable=R,C,E0401,E0611,E0702,E1101,E1133,E1135,W0122,W0201,W0212,W0511,W0603,W0613,W0702,W0703 ' .
           \ '--jobs=2'
     " Else if the "flake8" linter is available...
     elseif executable('flake8')
