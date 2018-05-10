@@ -40,14 +40,13 @@ scriptencoding utf-8
 ":deinClean(). Let us use it!
 
 " ....................{ INSTALL                            }....................
-"FIXME: Most URLs below are artifacts from NeoBundle and hence invalid. *sigh*
-
+" The dein plugin manager must be configured *BEFORE* dein-managed plugins --
+" which means "bloody early in Vim startup."
+"
 " Common startup-related commands include:
 "     :scriptnames      " list the absolute paths of all current startup scripts
 "
-" The dein plugin manager must be configured *BEFORE* dein-managed
-" plugins -- which, in practice, means "bloody early in Vim startup." Common
-" dein commands include:
+" Common dein commands include:
 "     call dein#install()  " install all configured plugins
 "     call dein#update()   " update all installed plugins
 "     :h dein              " peruse documentation
@@ -55,6 +54,8 @@ scriptencoding utf-8
 " For nonstandard Vim plugins requiring post-installation "intervention" (e.g.,
 " "neocomplcache", "unite", "vimproc", "vimshell"), see official recipes (i.e.,
 " Vim configuration snippets) at the following URLs:
+"
+"     FIXME: Sadly, this Github repository no longer appears to exist. *sigh*
 "     https://github.com/Shougo/dein-vim-recipes
 "     https://github.com/Shougo/dein-vim-recipes/tree/master/recipes
 "
@@ -252,7 +253,7 @@ let g:dein#install_process_timeout = 120
     " call dein#add('gabrielelana/vim-markdown')
 
     " Python.
-    call dein#add('klen/python-mode', {'on_ft': 'python'})
+    call dein#add('python-mode/python-mode', {'on_ft': 'python'})
 
     " Zeshy.
     call dein#add('leycec/vim-zeshy', {'on_ft': 'zeshy'})
