@@ -62,7 +62,7 @@ scriptencoding utf-8
 " While these recipes could be preloaded on Vim startup, doing so would probably
 " violate lazy loading and hence unnecessarily increase startup time. That said:
 "
-"     " Leverage official Neoplugin recipes for popular plugins, if available.
+"     " Leverage official dein recipes for popular plugins, if available.
 "     dein 'Shougo/dein-vim-recipes', {'force' : 1}
 
 " If dein is *NOT* installed, do so before doing anything else. dein

@@ -621,6 +621,31 @@ augroup END
 " ....................{ SYNTAX CHECK ~ ale                 }....................
 " Asynchronous Linting Engine (ALE) provides asynchronous syntax checking.
 
+" Dictionary mapping from each lintable filetype to the list of all linters with
+" which to asynchronously lint buffers of that filetype. Since ALE defaults to
+" linting filetypes *NOT* specified by this dictionary with all linters
+" available for that filetype, each filetype of interest should typically be
+" explicitly mapped to exactly one desirable linter here or below.
+let g:ale_linters = {}
+
+" let g:ale_run_synchronously = 1
+" let g:ale_history_enabled = 1
+" let g:ale_history_log_output = 1
+
+" ....................{ SYNTAX CHECK ~ ale : line          }....................
+" Highlight syntactically invalid and suspect lines according to the predefined
+" highlight groups for doing so.
+highlight link ALEErrorLine   SpellBad
+highlight link ALEWarningLine SpellCap
+
+" ....................{ SYNTAX CHECK ~ ale : sign          }....................
+" Unconditionally disable ALE's usage of the sign gutter, which:
+"
+" * Conflicts with that of other bundles -- usually, version control.
+" * Is well-known to impose significant performance penalties in ALE.
+" * Is redundant, given the line-oriented highlight groups defined above.
+let g:ale_set_signs = 0
+
 " Unconditionally display the sign gutter, regardless of whether the current
 " buffer exhibits one or more linter failures.
 let g:ale_sign_column_always = 1
@@ -629,16 +654,24 @@ let g:ale_sign_column_always = 1
 let g:ale_sign_error   = '»'
 let g:ale_sign_warning = '–'
 
-" Dictionary mapping from each lintable filetype to the list of all linters with
-" which to asynchronously lint buffers of that filetype. Since ALE defaults to
-" linting filetypes *NOT* specified by this dictionary with all linters
-" available for that filetype, each filetype of interest should typically be
-" explicitly mapped to exactly one desirable linter here.
-let g:ale_linters = {}
+" ....................{ SYNTAX CHECK ~ ale : speed         }....................
+" Maximum number of ALE-specific signs per buffer. Since signs are well-known to
+" impose significant performance penalties in ALE, instructing ALE to *NOT*
+" maintain an excessive number of signs is a simple (albeit effective)
+" approach to optimizing ALE performance.
+let g:ale_max_signs = 16
 
-" let g:ale_run_synchronously = 1
-" let g:ale_history_enabled = 1
-" let g:ale_history_log_output = 1
+" Maximum filesize in bytes to lint with ALE. Files larger than this size will
+" be silently ignored by ALE. Note that a filesize of:
+"
+" * 200000 bytes (i.e., 200Kb) approximately corresponds to a maximum line
+"   length of 5,000 lines per buffer.
+let g:ale_maximum_file_size = 200000
+
+" Minimum number of milliseconds before ALE echoes messages for issues near the
+" current cursor. Increasing this delay improves performance at a cost of
+" reducing responsiveness.
+let g:ale_echo_delay = 128
 
 " ....................{ SYNTAX CHECK ~ ale : python        }....................
 " If Python 3 support is available...

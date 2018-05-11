@@ -43,13 +43,28 @@ setlocal comments=:#,fb:-
 " filetypes, Python plugins routinely fail to highlight large files under this
 " default. The solution, of course, is to highlight significantly less. A
 " cursory inspection of existing large Python files suggests this compromise.
-" augroup our_python_syntax
-"     " Buffer-local autocommands require buffer-local autocommond deletion.
-"     " Hence, "autocmd!" does *NOT* suffice here. For further details, see:
-"     "     https://vi.stackexchange.com/a/13456/16249
-"     autocmd! BufEnter <buffer>
-"     autocmd  BufEnter <buffer> :syntax sync minlines=1024
-" augroup END
+augroup our_python_syntax
+    " Buffer-local autocommands require buffer-local autocommond deletion.
+    " Hence, "autocmd!" does *NOT* suffice here. For further details, see:
+    "     https://vi.stackexchange.com/a/13456/16249
+    autocmd! BufEnter <buffer>
+
+    " Reparse syntax from a reasonable number of prior lines in this buffer on
+    " every buffer movement. This is more conservative than the default of
+    " reparsing syntax from the beginning of this buffer on every buffer
+    " movement -- which, in theory, *SHOULD* improve the probability of success
+    " in resynchronizing syntax highlighting.
+    "
+    " By inspection, it has been verified that this does indeed improve success
+    " in resynchronizing syntax highlighting. The culprit appears to some
+    " as-yet-undiagnosed combination of Vim 8.0, ALE, and python-mode when
+    " highlighting large buffers. Until resolved, *PLEASE PRESERVE THIS.*
+    "
+    " See also the autoloadable vimrc#synchronize_syntax_highlighting()
+    " function.
+    autocmd BufEnter <buffer> :syntax sync minlines=1024
+    "autocmd BufEnter <buffer> :syntax sync fromstart
+augroup END
 
 " ....................{ WRAPPING                           }....................
 " For readability, visually soft-wrap long lines exceeding the width of the
