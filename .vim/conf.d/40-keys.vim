@@ -122,6 +122,10 @@ nnoremap <silent> <leader>vr load-vim-script $MYVIMRC<cr>
 " from a uniform path to branching tree.)
 nnoremap <leader>u :UndotreeToggle<cr>
 
+" ....................{ LEADER ~ colour                    }....................
+" Bind <,1> to synchronize syntax highlighting in the current buffer.
+nnoremap <silent> <leader>1 :call vimrc#synchronize_syntax_highlighting()<cr>
+
 " Bind <,/> to dehighlight all terms found by the prior search. This preserves
 " the search history and hence is preferable to manually searching for garbage
 " strings (e.g., "/ oeuoeuoeu").

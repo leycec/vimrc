@@ -65,8 +65,8 @@ if &t_Co < 256 &&
     " Dismantled, this is (in order):
     "
     " * Write the xterm-specific ANSI escape sequence "<OSC>4;255;?<BEL>" to the
-    "   current terminal device. If such terminal supports the color with index
-    "   255 and hence at least 256 colors, such terminal writes a string
+    "   current terminal device. If this terminal supports the color with index
+    "   255 and hence at least 256 colors, this terminal writes a string
     "   resembling "^[]4;rgb:eeee/eeee/eeee^G" to itself identifying the current
     "   color value assigned that color index; else, no string is written.
     " * If reading from the current terminal device succeeds with options:
@@ -119,10 +119,6 @@ if &t_Co < 256 &&
 endif
 
 " ....................{ CORE                               }....................
-" Enable filetype-dependent syntax highlighting *AFTER* all prior dein-specific
-" logic *AND* the above detection for terminal colours.
-syntax on
-
 " Prefer light-on-dark to dark-on-light color schemes *BEFORE* selecting color
 " schemes leveraging such settings (e.g., "solarized").
 set background=dark
@@ -147,6 +143,20 @@ set nocursorline
 set noshowmode
 
 " ....................{ COLOUR                             }....................
+" Enable filetype-dependent syntax highlighting *AFTER* all prior dein-specific
+" logic *AND* the above detection for terminal colours.
+syntax on
+
+"FIXME: Enable 24-bit RGB colours in the terminal by uncommenting the following
+"when we have time to properly test this. Note that:
+"
+"* Doing so will necessitate switching from "ctermfg" and "ctermbg" in highlight
+"  groups defined below and elsewhere to "guifg" and "guibg" instead.
+"* The number-of-colour detection defined above probably fails to suffice to
+"  detect 24-bit RGB colour support in terminals. We may not care, of course.
+" set termguicolors
+
+" ....................{ COLOUR ~ theme                     }....................
 " Avoid "solarized". While the author has clearly invested inordinate effort in
 " designing, prosletyzing, and generalizing this scheme for a wide audience and
 " set of platforms and applications, we personally find it rather abhorent.
@@ -192,34 +202,37 @@ if &t_Co >= 256
     colorscheme lucius
 endif
 
-" ....................{ COLOUR ~ highlight                 }....................
-" Custom highlight groups overwriting those defined by the above color scheme.
-" "ctermfg" and "ctermbg" are indices in [1, 256], as visualized here:
-"     http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim
-
-" Syntax errors. Since Vim unhelpfully predefines such group with attribute
-" "cterm=underline", clear such group *BEFORE* redefining such group.
-hi clear SpellBad
-hi SpellBad ctermfg=9 ctermbg=52 guisp=#ff5f5f
-" hi SpellBad term=standout ctermfg=1 cterm=underline
-
-" Syntax warnings.
-hi clear SpellCap
-hi SpellCap ctermfg=11 ctermbg=58 guisp=#5fafd7
-
-" ....................{ EX COMMANDS                        }....................
-" Ex commands are ":"-prefixed commands (e.g., ":help pattern").
-
-" Permit menu-driven <Tab> completion of Ex commands. On the first <Tab>, Vim
-" lists all matching completions. On the second <Tab>, Vim offers interactive
-" selection of these completions horizontally, such that <Left> and <Right>
-" iteratively select completions.
+" ....................{ COLOUR ~ theme : custom            }....................
+" Custom highlight groups overwriting those defined both by the above color
+" scheme *AND* filetype plugins, which frequently overwrite those defined by the
+" current scheme. (Yes, this is awful.)
 "
-" Yes, this is as good as it gets. (We've googled. Extensively.)
-set wildmenu
-set wildmode=list:longest,full
+" Note that "ctermfg" and "ctermbg" are indices in [1, 256], as visualized here:
+"     http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim
+"     https://vignette.wikia.nocookie.net/vim/images/1/16/Xterm-color-table.png/revision/latest?cb=20110121055231
+augroup our_highlight_custom
+    autocmd!
 
-" ....................{ HIGHLIGHT                          }....................
+    " Redefine the following highlight groups:
+    "
+    " * Syntax and spelling errors.
+    " * Syntax and spelling warnings.
+    "
+    " Vim unhelpfully predefines these groups with the "cterm=underline"
+    " attribute; each must be manually cleared *BEFORE* being redefined.
+    autocmd VimEnter *
+      \ highlight clear SpellBad |
+      \ highlight SpellBad ctermbg=52 guisp=#ff5f5f |
+      \ highlight clear SpellCap |
+      \ highlight SpellCap ctermbg=16 guisp=#5fafd7
+augroup END
+
+" highlight clear SpellBad
+" highlight SpellBad ctermfg=9 ctermbg=52 guisp=#ff5f5f
+" highlight clear SpellCap
+" highlight SpellCap ctermfg=11 ctermbg=58 guisp=#5fafd7
+
+" ....................{ COLOUR ~ filetype                  }....................
 " Map filetypes to syntax highlighting synchronization settings. While Vim
 " already maps most filetypes to these settings, their defaults often fail to
 " suffice for real world files (particularly, files including lengthy comments
@@ -244,14 +257,17 @@ set wildmode=list:longest,full
 " * Python, whose "after/ftplugin" sets this synchronization.
 augroup our_filetype_syntax
     autocmd!
-    autocmd FileType html,python,zsh autocmd BufEnter * :syntax sync fromstart
+    autocmd FileType html,zsh autocmd BufEnter * :syntax sync fromstart
+    " autocmd FileType html,python,zsh autocmd BufEnter * :syntax sync fromstart
+    " autocmd BufEnter * :syntax sync fromstart
 augroup END
+" syntax sync fromstart
 
-" ....................{ HIGHLIGHT ~ search                 }....................
+" ....................{ COLOUR ~ search                    }....................
 " Avoid persistently highlighting all matches for the prior search pattern.
 set nohlsearch 
 
-" ....................{ HIGHLIGHT ~ unprintable            }....................
+" ....................{ COLOUR ~ unprintable               }....................
 " Syntax highlight unprintable characters. For further details, see:
 " http://vim.wikia.com/wiki/Highlight_unwanted_spaces
 
@@ -280,6 +296,18 @@ augroup END
 
 " Highlight whitespace characters "nbsp", "tab", and "trail".
 highlight SpecialKey ctermfg=240 guifg=#2c2d27
+
+" ....................{ EX COMMANDS                        }....................
+" Ex commands are ":"-prefixed commands (e.g., ":help pattern").
+
+" Permit menu-driven <Tab> completion of Ex commands. On the first <Tab>, Vim
+" lists all matching completions. On the second <Tab>, Vim offers interactive
+" selection of these completions horizontally, such that <Left> and <Right>
+" iteratively select completions.
+"
+" Yes, this is as good as it gets. (We've googled. Extensively.)
+set wildmenu
+set wildmode=list:longest,full
 
 " ....................{ PROMPT                             }....................
 " Abbreviate canonical Vim prompts and messages as follows:

@@ -226,6 +226,35 @@ function! vimrc#sanitize_code_buffer_formatting() abort
     setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*\\\|^\\s*[*-+]\\s\\+
 endfunction
 
+" ....................{ HIGHLIGHTERS                       }....................
+" vimrc#synchronize_syntax_highlighting() -> None
+"
+" Synchronize syntax highlighting in the current buffer. This function is
+" typically manually called by the user *AFTER* a failure by Vim to properly
+" highlight this buffer.
+function! vimrc#synchronize_syntax_highlighting() abort
+    " Log this attempt.
+    echo 'Synchronize syntax highlighting...'
+
+    " Reparse syntax from a reasonable number of prior lines in this buffer on
+    " every buffer movement. This is more conservative than the default of
+    " reparsing syntax from the beginning of this buffer on every buffer
+    " movement -- which, in theory, *SHOULD* improve the probability of success
+    " in resynchronizing syntax highlighting.
+    syntax sync minlines=1024
+
+    " Reparse syntax from the beginning of this buffer on every buffer movement.
+    " Although this synchronization setting is already the default for this
+    " collection of startup scripts, resetting this setting incurs no penalties
+    " and can in edge cases produce tangible benefits.
+    " syntax sync fromstart
+
+    " Reenable syntax highlighting. Although syntax highlighting is, of course,
+    " already enabled by default by this collection of startup scripts,
+    " reenabling syntax highlighting appears to be required in edge cases.
+    syntax on
+endfunction
+
 " ....................{ PRINTERS ~ buffer                  }....................
 " vimrc#print_buffer_current_byte_offset() -> None
 "
