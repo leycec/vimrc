@@ -263,6 +263,18 @@ augroup our_filetype_syntax
 augroup END
 " syntax sync fromstart
 
+" If the optional +reltime feature is compiled, significantly increase the
+" default maximum time in milliseconds of syntax highlighting that leverages the
+" regex-based :match builtin. The default value of 2000 fails to suffice for
+" sufficiently large buffers for filetypes whose syntax highlighting plugins
+" sufficiently complex calls to the :match builtin (e.g., Python scripts of more
+" than ~1,500 lines). The value set here comes directly from Vim developers. For
+" further details, see the following open issue:
+"     https://github.com/vim/vim/issues/2790#issuecomment-400547834
+if has('reltime')
+    set redrawtime=10000
+endif
+
 " ....................{ COLOUR ~ search                    }....................
 " Avoid persistently highlighting all matches for the prior search pattern.
 set nohlsearch 
