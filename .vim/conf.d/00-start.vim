@@ -114,7 +114,7 @@ endif
 "   Windows platforms.
 " * The "win32unix" feature is available, in which case this in a non-vanilla
 "   Cygwin-enabled Windows CLI environment (e.g., "mintty.exe").
-if has("win32") || has("win32unix")
+if has('win32') || has('win32unix')
     let g:our_platform = 'Windows'
 " Else, the current platform is Unix-like and hence has the "uname" command.
 else
@@ -134,11 +134,11 @@ let g:our_is_platform_windows = g:our_platform == 'Windows'
 
 " 1 if the current Vim process is running under a Cygwin-enabled Windows
 " application (e.g., terminal) or 0 otherwise.
-let g:our_is_platform_windows_cygwin = has("win32unix")
+let g:our_is_platform_windows_cygwin = has('win32unix')
 
 " 1 if the current Vim process is running under a non-Cygwin-enabled Windows
 " application or 0 otherwise.
-let g:our_is_platform_windows_vanilla = has("win32")
+let g:our_is_platform_windows_vanilla = has('win32')
 
 " ....................{ CHECKS                             }....................
 " If this is NeoVim, then this Vim environment almost certainly supports all
