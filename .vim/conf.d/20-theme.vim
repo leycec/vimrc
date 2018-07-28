@@ -1,16 +1,16 @@
 scriptencoding utf-8
-" --------------------( LICENSE                            )--------------------
+" --------------------( LICENSE                           )--------------------
 " Copyright 2015-2018 by Cecil Curry.
 " See "LICENSE" for further details.
 "
-" --------------------( SYNOPSIS                           )--------------------
+" --------------------( SYNOPSIS                          )--------------------
 " Theme configuration, specifying both the current colour and statusline themes
 " *AND* configuring Vim and plugin functionality pertaining to aesthetic style.
 
 "FIXME: Create mode-aware cursors (i.e., cursors changing color based on the
 "current Vim mode) via the "gcr" option.
 
-" ....................{ TERMINAL                           }....................
+" ....................{ TERMINAL                          }....................
 " If the following conditions all hold:
 "
 " * Vim autodetected the current terminal to support less than 256 colors.
@@ -23,8 +23,8 @@ scriptencoding utf-8
 " Then confirm that the current terminal actually supports less than 256 colors
 " and, if this is not the case, instruct Vim of this fact.
 "
-" Presumably, Vim "autodetects" such quantity in a similar manner to that of the
-" command "tput colors" -- which is to say, by querying the local terminfo
+" Presumably, Vim "autodetects" this quantity in a similar manner to that of
+" the command "tput colors" -- which is to say, by querying the local terminfo
 " database for the "Co" attribute of the terminal named "${TERM}".
 " Unfortunately, such attribute is often unreliable -- especially for terminals
 " named "xterm". The GNOME Terminal, for example, is named "xterm" and has a
@@ -43,8 +43,8 @@ scriptencoding utf-8
 " "${TERM_Co}") would have sufficed. Big reality fail, guys.
 "
 " For portability, this detection is implemented as a multiline Bash snippet
-" embedded inline below. This snippet generalizes the following external source,
-" for which we are indecently grateful:
+" embedded inline below. This snippet generalizes the following external
+" source, for which we are indecently grateful:
 "
 " * Gille's stackoverflow answer, published at:
 "   https://unix.stackexchange.com/a/23789/117478
@@ -64,11 +64,12 @@ if &t_Co < 256 &&
 
     " Dismantled, this is (in order):
     "
-    " * Write the xterm-specific ANSI escape sequence "<OSC>4;255;?<BEL>" to the
-    "   current terminal device. If this terminal supports the color with index
-    "   255 and hence at least 256 colors, this terminal writes a string
-    "   resembling "^[]4;rgb:eeee/eeee/eeee^G" to itself identifying the current
-    "   color value assigned that color index; else, no string is written.
+    " * Write the xterm-specific ANSI escape sequence "<OSC>4;255;?<BEL>" to
+    "   the current terminal device. If this terminal supports the color with
+    "   index 255 and hence at least 256 colors, this terminal writes a string
+    "   resembling "^[]4;rgb:eeee/eeee/eeee^G" to itself identifying the
+    "   current color value assigned that color index; else, no string is
+    "   written.
     " * If reading from the current terminal device succeeds with options:
     "   * "-d $'\a'", reading an arbitrary string delimited either by a newline
     "     *OR* by the bell character (i.e., "\a", "^G", <Ctrl-G>, <BEL>).
@@ -118,7 +119,7 @@ if &t_Co < 256 &&
     let &shell = s:shell_old
 endif
 
-" ....................{ CORE                               }....................
+" ....................{ CORE                              }....................
 " Prefer light-on-dark to dark-on-light color schemes *BEFORE* selecting color
 " schemes leveraging such settings (e.g., "solarized").
 set background=dark
@@ -133,7 +134,7 @@ set number
 " the current line.
 set scrolloff=3
 
-" ....................{ CORE ~ disable                     }....................
+" ....................{ CORE ~ disable                    }....................
 " Do *NOT* highlight the current column or line.
 set nocursorcolumn
 set nocursorline
@@ -142,7 +143,7 @@ set nocursorline
 " already does so in a more configurable and aesthetically pleasing manner.
 set noshowmode
 
-" ....................{ COLOUR                             }....................
+" ....................{ COLOUR                            }....................
 " Enable filetype-dependent syntax highlighting *AFTER* all prior dein-specific
 " logic *AND* the above detection for terminal colours.
 syntax on
@@ -156,21 +157,22 @@ syntax on
 "  detect 24-bit RGB colour support in terminals. We may not care, of course.
 " set termguicolors
 
-" ....................{ COLOUR ~ theme                     }....................
+" ....................{ COLOUR ~ theme                    }....................
 " Avoid "solarized". While the author has clearly invested inordinate effort in
 " designing, prosletyzing, and generalizing this scheme for a wide audience and
 " set of platforms and applications, we personally find it rather abhorent.
 "
-" "solarized" adheres to a bizarre heuristic of minimizing the number of palette
-" changes required to shift from a dark-on-light to light-on-dark orientation.
-" While theoretically interesting, this heuristic is functionally useless in the
-" real world, producing a pair of subjectively unappealing color schemes with
-" minimal differences. While it's good that the number of color changes between
-" these two sub-themes is minimal, it's bad that the end result is unappealing.
-" Indeed, such unfortunate results beg the inevitable question: why the
-" popularity? The answer, we suspect, lies with both marketing and uniformity.
-" The "solarized" website is exceptionally well-constructed; moreover, the lure
-" of a "one color scheme to rule them all" ubiquity seals the deal.
+" "solarized" adheres to a bizarre heuristic of minimizing the number of
+" palette changes required to shift from a dark-on-light to light-on-dark
+" orientation. While theoretically interesting, this heuristic is functionally
+" useless in the real world, producing a pair of subjectively unappealing color
+" schemes with minimal differences. While it's good that the number of color
+" changes between these two sub-themes is minimal, it's bad that the end result
+" is unappealing. Indeed, such unfortunate results beg the inevitable question:
+" why the popularity? The answer, we suspect, lies with both marketing and
+" uniformity. The "solarized" website is exceptionally well-constructed;
+" moreover, the lure of a "one color scheme to rule them all" ubiquity seals
+" the deal.
 
 "FIXME: O.K.; my current thoughts on color schemes are as follows. We should
 "make either lucius *OR* desert-warm-256 our base default. We should prefer
@@ -192,20 +194,20 @@ syntax on
 "standard 16 colors, which I'm quite alright with.
 
 " If the current terminal supports at least 256 colors, enable a color scheme
-" requiring such support. Unfortunately, such scheme degrades to pure monochrome
-" under terminals supporting less than 256 colors -- which is substantially
-" worse than Vim's default color scheme. For further details, see:
-" http://www.vim.org/scripts/script.php?script_id=2536
+" requiring such support. Unfortunately, such scheme degrades to pure
+" monochrome under terminals supporting less than 256 colors -- which is
+" substantially worse than Vim's default color scheme. For further details,
+" see: http://www.vim.org/scripts/script.php?script_id=2536
 "
 " Else, preserve Vim's default color scheme as is.
 if &t_Co >= 256
     colorscheme lucius
 endif
 
-" ....................{ COLOUR ~ theme : custom            }....................
+" ....................{ COLOUR ~ theme : custom           }....................
 " Custom highlight groups overwriting those defined both by the above color
-" scheme *AND* filetype plugins, which frequently overwrite those defined by the
-" current scheme. (Yes, this is awful.)
+" scheme *AND* filetype plugins, which frequently overwrite those defined by
+" the current scheme. (Yes, this is awful.)
 "
 " Note that "ctermfg" and "ctermbg" are indices in [1, 256], as visualized here:
 "     http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim
@@ -232,7 +234,7 @@ augroup END
 " highlight clear SpellCap
 " highlight SpellCap ctermfg=11 ctermbg=58 guisp=#5fafd7
 
-" ....................{ COLOUR ~ filetype                  }....................
+" ....................{ COLOUR ~ filetype                 }....................
 " Map filetypes to syntax highlighting synchronization settings. While Vim
 " already maps most filetypes to these settings, their defaults often fail to
 " suffice for real world files (particularly, files including lengthy comments
@@ -264,22 +266,22 @@ augroup END
 " syntax sync fromstart
 
 " If the optional +reltime feature is compiled, significantly increase the
-" default maximum time in milliseconds of syntax highlighting that leverages the
-" regex-based :match builtin. The default value of 2000 fails to suffice for
-" sufficiently large buffers for filetypes whose syntax highlighting plugins
-" sufficiently complex calls to the :match builtin (e.g., Python scripts of more
-" than ~1,500 lines). The value set here comes directly from Vim developers. For
-" further details, see the following open issue:
+" default maximum time in milliseconds of syntax highlighting that leverages
+" the regex-based :match builtin. The default value of 2000 fails to suffice
+" for sufficiently large buffers for filetypes whose syntax highlighting
+" plugins sufficiently complex calls to the :match builtin (e.g., Python
+" scripts of more than ~1,500 lines). The value set here comes directly from
+" Vim developers. For further details, see the following open issue:
 "     https://github.com/vim/vim/issues/2790#issuecomment-400547834
 if has('reltime')
     set redrawtime=10000
 endif
 
-" ....................{ COLOUR ~ search                    }....................
+" ....................{ COLOUR ~ search                   }....................
 " Avoid persistently highlighting all matches for the prior search pattern.
 set nohlsearch 
 
-" ....................{ COLOUR ~ unprintable               }....................
+" ....................{ COLOUR ~ unprintable              }....................
 " Syntax highlight unprintable characters. For further details, see:
 " http://vim.wikia.com/wiki/Highlight_unwanted_spaces
 
@@ -309,7 +311,7 @@ augroup END
 " Highlight whitespace characters "nbsp", "tab", and "trail".
 highlight SpecialKey ctermfg=240 guifg=#2c2d27
 
-" ....................{ EX COMMANDS                        }....................
+" ....................{ EX COMMANDS                       }....................
 " Ex commands are ":"-prefixed commands (e.g., ":help pattern").
 
 " Permit menu-driven <Tab> completion of Ex commands. On the first <Tab>, Vim
@@ -321,7 +323,7 @@ highlight SpecialKey ctermfg=240 guifg=#2c2d27
 set wildmenu
 set wildmode=list:longest,full
 
-" ....................{ PROMPT                             }....................
+" ....................{ PROMPT                            }....................
 " Abbreviate canonical Vim prompts and messages as follows:
 "
 " * "a", enable all of the following flags:
@@ -343,11 +345,11 @@ set wildmode=list:longest,full
 " * "T", truncate messages rather than prompting users to press <Enter>.
 set shortmess=aotT
 
-" ....................{ STATUSLINE                         }....................
+" ....................{ STATUSLINE                        }....................
 " Always show the statusline regardless of the number of currently open windows.
 set laststatus=2
 
-" ....................{ STATUSLINE ~ airline               }....................
+" ....................{ STATUSLINE ~ airline              }....................
 " See also:
 "
 " * Airline FAQ:
@@ -362,8 +364,8 @@ set laststatus=2
 "of such names. (Which makes sense for a tabline.)
 
 " Airline theme, independent but ideally correlated to the Vim theme set above.
-" Airline comes plugind with a variety of themes, most of which are surprisingly
-" well-done. For a full list (complete with animated GIFs), see:
+" Airline comes bundled with a variety of themes, most of which are
+" surprisingly well-done. For a full list (complete with animated GIFs), see:
 "     https://github.com/vim-airline/vim-airline/wiki/Screenshots
 let g:airline_theme='lucius'
 " let g:airline_theme='luna'
@@ -390,7 +392,7 @@ let g:airline_mode_map = {
   \ '' : 'S',
   \ }
 
-" ....................{ STATUSLINE ~ airline : extension   }....................
+" ....................{ STATUSLINE ~ airline : extension  }....................
 " Show the current VCS branch if any.
 let g:airline#extensions#branch#enabled = 1
 
@@ -408,17 +410,18 @@ let g:airline#extensions#tabline#left_alt_sep = ''
 " Enable Powerline-patched font support.
 " let g:airline_powerline_fonts = 1
 
-" ....................{ STATUSLINE ~ airline : section     }....................
+" ....................{ STATUSLINE ~ airline : section    }....................
 " For a list of default values for all sections, see:
 "     https://github.com/bling/vim-airline/blob/master/autoload/airline/init.vim
 "
 " for additional lazily loaded sections, see the addition of the following
 " plugins within "10-dein.vim": "vim-qfstatusline".
 
-" Expand the center-rightmost status line section to display the current working
-" directory. By default, such section displays the filetype for the current
-" buffer; since such filetype rarely (if ever) changes and is readily printable
-" with "set ft" when it does, this strikes us as a better use of scarce space.
+" Expand the center-rightmost status line section to display the current
+" working directory. By default, such section displays the filetype for the
+" current buffer; since such filetype rarely (if ever) changes and is readily
+" printable with "set ft" when it does, this strikes us as a better use of
+" scarce space.
 let g:airline_section_x = airline#section#create_right(['%{getcwd()}'])
 
 " Reduce the rightmost status line section to merely the current column with a
@@ -426,7 +429,7 @@ let g:airline_section_x = airline#section#create_right(['%{getcwd()}'])
 " section (e.g., line numbers) are visible elsewhere and hence redundant here.
 let g:airline_section_z = airline#section#create(['%2c'])
 
-" ....................{ WRAPPING                           }....................
+" ....................{ WRAPPING                          }....................
 " String prefixing soft-wrapped lines.
 set showbreak=↳  " ↺↳↪
 
@@ -436,7 +439,7 @@ set showbreak=↳  " ↺↳↪
 " "/etc/vimrc") often maliciously override this option on a filetype-specific
 " basis, this option is persisted to a global variable with which these sources
 " are themselves overridden... by us!
-let g:our_textwidth = 80
+let g:our_textwidth = 79
 let &textwidth = g:our_textwidth
 
 "FIXME: Apply this length to HTML and XML as well. See "after/ftplugin/yaml.vim"
@@ -450,6 +453,16 @@ let &textwidth = g:our_textwidth
 " let g:our_textwidth_data_markup = 80
 let g:our_textwidth_data_markup = 93
 
+" If Vim supports doing so, display a translucent vertical line at our
+" preferred line length. Dismantled, this is:
+"
+" * "=+1", defining the column to be colored relative to the "textwidth"
+"   setting for the current buffer. In this case, the "+1" is equivalent to:
+"   "colour one column past our preferred line length."
+if vimrc#is_option('colorcolumn')
+    set colorcolumn=+1
+endif
+
 " Filetype-specific wrapping.
 augroup our_filetype_wrapping
     autocmd!
@@ -458,8 +471,8 @@ augroup our_filetype_wrapping
     " current window. Do *NOT* permanently hard-wrap such lines by inserting a
     " newline character into the current buffer, which tends to have miserably
     " unexpected side effects in most languages. To ensure this overwrites
-    " plugin defaults, this option is set *AFTER* opening a new buffer and hence
-    " running such plugins.
+    " plugin defaults, this option is set *AFTER* opening a new buffer and
+    " hence running these plugins.
     "
     " Ideally, the "linebreak" option visually soft-wrapping lines at standard
     " English word delimiters (e.g., spaces, hyphens, punctuation) would also be
@@ -470,27 +483,3 @@ augroup our_filetype_wrapping
     " Unsurprisingly, we do not even bother enabling the "linebreak" option.
     autocmd FileType * setlocal wrap
 augroup END
-
-" ....................{ WRAPPING ~ color                   }....................
-"FIXME: Such functionality behaves a bit badly, unfortunately. Since we
-"highlight such column with a background color *AND* since vim color styles
-"often reverse colors (e.g., for highlighting search results), this inevitably
-"results in search results at or passed such column having a near-black
-"foreground: unreadable! The ideal solution would be to stop using a color
-"scheme that insists on reverse colors (which are terrible, anyway). Until then,
-"this remains.
-"FIXME: After correcting the color scheme, uncomment the next several lines.
-
-" Display a thin vertical line at the ideal line length.
-"set colorcolumn=+1
-
-" Define the set of columns to be colored as:
-"
-" * The column exceeding the ideal line length (i.e., warning).
-" * All columns exceeding 40 columns after the ideal line length (i.e., danger).
-"let &colorcolumn="81,".join(range(120,320),",")
-
-" Highlight such columns as a slightly lighter shade of grey than pure black.
-"highlight ColorColumn ctermbg=232 guibg=#2c2d27
-"highlight CursorLine ctermbg=235 guibg=#2c2d27
-"highlight CursorColumn ctermbg=235 guibg=#2c2d27
