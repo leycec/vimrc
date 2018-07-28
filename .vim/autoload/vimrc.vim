@@ -1,9 +1,9 @@
 scriptencoding utf-8
-" --------------------( LICENSE                            )--------------------
+" --------------------( LICENSE                           )--------------------
 " Copyright 2015-2018 by Cecil Curry.
 " See "LICENSE" for further details.
 "
-" --------------------( SYNOPSIS                           )--------------------
+" --------------------( SYNOPSIS                          )--------------------
 " Dotfile-specific autoloadable functions, providing custom functionality
 " required either conditionally by certain code paths *OR* not at all and hence
 " intended to be called manually by the user as "call "-prefixed Ex commands.
@@ -12,7 +12,7 @@ scriptencoding utf-8
 " "vimrc#". In return, Vim sources this script and hence autoloads all such
 " functions on the first call to any such function.
 
-" ....................{ TESTERS                            }....................
+" ....................{ TESTERS                           }....................
 " vimrc#is_buffer_viewable() -> bool
 "
 " 1 if a view should be persisted for the current buffer or 0 otherwise.
@@ -58,7 +58,20 @@ function! vimrc#is_buffer_viewable() abort
     return 1
 endfunction
 
-" ....................{ GETTERS ~ script                   }....................
+
+" vimrc#is_option(option_name: str) -> bool
+"
+" 1 if a Vim option with the passed name both exists *AND* works (i.e.,
+" behaves as expected) or 0 otherwise.
+function! vimrc#is_option(option_name) abort
+    " Without the preceding "+" sigil, the builtin exists() tester only tests
+    " whether the passed option exists rather than whether that option both
+    " exists *AND* works. Since non-working options are largely useless, we
+    " enforce both conditions.
+    return exists('+' . a:option_name)
+endfunction
+
+" ....................{ GETTERS ~ script                  }....................
 " vimrc#get_script_function(
 "     script_filename: str, function_name: str) -> FunctionType
 "
@@ -76,6 +89,7 @@ function! vimrc#get_script_function(script_filename, function_name) abort
     let l:sid = vimrc#get_script_sid(a:script_filename)
     return function("<SNR>" . l:sid . '_' . a:function_name)
 endfunction
+
 
 " vimrc#get_script_sid(script_filename: str) -> int
 "
@@ -128,7 +142,7 @@ function! vimrc#get_script_sid(script_filename) abort
     return l:script_line + 1
 endfunction
 
-" ....................{ COPIERS                            }....................
+" ....................{ COPIERS                           }....................
 " vimrc#copy_messages_to_clipboard() -> None
 "
 " Copy the contents of all prior Vim messages (i.e., output of the ":messages"
@@ -138,12 +152,12 @@ function! vimrc#copy_messages_to_clipboard() abort
     echo 'Copied messages to clipboard.'
 endfunction
 
-" ....................{ DIFFERS                            }....................
+" ....................{ DIFFERS                           }....................
 " vimrc#diff_buffer_current_with_file_current() -> None
 "
-" Review all unsaved changes in the current buffer by diffing the current buffer
-" against the corresponding file if any. This function is inspired by the
-" DiffOrig() command defined by Vim's stock "vimrc_example.vim" script.
+" Review all unsaved changes in the current buffer by diffing the current
+" buffer against the corresponding file if any. This function is inspired by
+" the DiffOrig() command defined by Vim's stock "vimrc_example.vim" script.
 function! vimrc#diff_buffer_current_with_file_current() abort
     vert new
     set bt=nofile
@@ -154,7 +168,7 @@ function! vimrc#diff_buffer_current_with_file_current() abort
     diffthis
 endfunction
 
-" ....................{ FORMATTERS                         }....................
+" ....................{ FORMATTERS                        }....................
 " vimrc#sanitize_code_buffer_formatting() -> None
 "
 " Sanitize the "formatoptions" variable for the current code buffer (i.e.,
@@ -226,7 +240,7 @@ function! vimrc#sanitize_code_buffer_formatting() abort
     setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*\\\|^\\s*[*-+]\\s\\+
 endfunction
 
-" ....................{ HIGHLIGHTERS                       }....................
+" ....................{ HIGHLIGHTERS                      }....................
 " vimrc#synchronize_syntax_highlighting() -> None
 "
 " Synchronize syntax highlighting in the current buffer. This function is
@@ -243,10 +257,10 @@ function! vimrc#synchronize_syntax_highlighting() abort
     " in resynchronizing syntax highlighting.
     syntax sync minlines=1024
 
-    " Reparse syntax from the beginning of this buffer on every buffer movement.
-    " Although this synchronization setting is already the default for this
-    " collection of startup scripts, resetting this setting incurs no penalties
-    " and can in edge cases produce tangible benefits.
+    " Reparse syntax from the beginning of this buffer on every buffer
+    " movement. Although this synchronization setting is already the default
+    " for this collection of startup scripts, resetting this setting incurs no
+    " penalties and can in edge cases produce tangible benefits.
     " syntax sync fromstart
 
     " Reenable syntax highlighting. Although syntax highlighting is, of course,
@@ -255,7 +269,7 @@ function! vimrc#synchronize_syntax_highlighting() abort
     syntax on
 endfunction
 
-" ....................{ PRINTERS ~ buffer                  }....................
+" ....................{ PRINTERS ~ buffer                 }....................
 " vimrc#print_buffer_current_byte_offset() -> None
 "
 " Print the 1-based byte offset of the current position in the current buffer.
@@ -275,7 +289,7 @@ function! vimrc#print_buffer_current_byte_offset() abort
     echo line2byte(line('.')) + col('.') - 1
 endfunction
 
-" ....................{ WINDOWS                            }....................
+" ....................{ WINDOWS                           }....................
 " vimrc#switch_window(key: char) -> None
 "
 " Contextually navigate to the window associated with the passed single letter.
@@ -287,10 +301,10 @@ endfunction
 " * "h", switching to the window to the left of the current window.
 " * "k", switching to the window to the right of the current window.
 "
-" If the window to be navigated to exists, this function simply switches to that
-" window; else, this function splits the current window (horizontally if the
-" passed keystroke is either "j" or "k" and vertically otherwise) and switch to
-" the new window.
+" If the window to be navigated to exists, this function simply switches to
+" that window; else, this function splits the current window (horizontally if
+" the passed keystroke is either "j" or "k" and vertically otherwise) and
+" switch to the new window.
 "
 " This function was gratefully inspired by the following external source:
 "
