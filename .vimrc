@@ -1,9 +1,9 @@
 scriptencoding utf-8
-" --------------------( LICENSE                            )--------------------
+" --------------------( LICENSE                           )--------------------
 " Copyright 2015-2018 by Cecil Curry.
 " See "LICENSE" for further details.
 "
-" --------------------( SYNOPSIS                           )--------------------
+" --------------------( SYNOPSIS                          )--------------------
 " Vi[M], now with more IDE-osity. Whenever Vimscript questions arise, see:
 "
 " * "Learn Vimscript the Hard Way."
@@ -12,22 +12,22 @@ scriptencoding utf-8
 " Don't believe the title. This is absolutely the best book on Vimscript. It's
 " concise; it's free; it's jocular. There is no better nor shall e'er be.
 "
-" --------------------( CHEATSHEET                         )--------------------
+" --------------------( CHEATSHEET                        )--------------------
 " Vi[M] is not necessarily the most intuitive editor, even under gVi[m].
 "
 "   " Show the filetype plugin associated with the current file.
 "   :ft?         " this and...
 "   :echo &ft    " this both work
 "
-" --------------------( AUTOCOMMANDS                       )--------------------
-" Builtin autocmd() dynamically executes code on Vim events. Unfortunately, such
-" builtin is low-level and hence does *NOT* test whether the same event handler
-" has already been registered (e.g., by the same call to autocmd() after
-" resourcing "~/.vimrc"). To correct this, *ALL* calls to autocmd() should be
-" wrapped in an augroup with unique name specific to only a contiguous run of
-" such calls. The autocmd!() call clears such group (i.e., undoes all prior
-" autocmd() calls for such group), preventing duplicate registration. Such
-" syntax resembles:
+" --------------------( AUTOCOMMANDS                      )--------------------
+" Builtin autocmd() dynamically executes code on Vim events. Unfortunately,
+" such builtin is low-level and hence does *NOT* test whether the same event
+" handler has already been registered (e.g., by the same call to autocmd()
+" after resourcing "~/.vimrc"). To correct this, *ALL* calls to autocmd()
+" should be wrapped in an augroup with unique name specific to only a
+" contiguous run of such calls. The autocmd!() call clears such group (i.e.,
+" undoes all prior autocmd() calls for such group), preventing duplicate
+" registration. Such syntax resembles:
 "
 "     augroup {unique_name}
 "         autocmd!
@@ -35,7 +35,7 @@ scriptencoding utf-8
 "         autocmd ...
 "     augroup END
 "
-" --------------------( AUTOCOMMANDS ~ events              )--------------------
+" --------------------( AUTOCOMMANDS ~ events             )--------------------
 " autocmd() accepts a ","-delimited list of case-insensitive event names. These
 " include:
 "
@@ -56,12 +56,12 @@ scriptencoding utf-8
 "
 " See ":h autocmd-events" for further details.
 "
-" --------------------( FUNCTIONS                          )--------------------
+" --------------------( FUNCTIONS                         )--------------------
 " To call a function and ignore the return value of such function, prefix such
 " call with call(); else, Vim erroneously treats such function as the name of a
 " builtin Vim command and throws a fatal error on failing to find such command.
 "
-" --------------------( FUNCTIONS ~ scope                  )--------------------
+" --------------------( FUNCTIONS ~ scope                 )--------------------
 " Vim functions are scoped by prefixing such function names with:
 "
 " * [A-Z], global functions accessible anywhere. Such functions must *ALWAYS*
@@ -70,16 +70,16 @@ scriptencoding utf-8
 "   function() builtin to ensure fatal errors when another script attempts to
 "   redefine the same function.
 " * "s:", script-local functions accessible anywhere in a given script file.
-"   Such functions need *NOT* begin with a capital letter, since there exists no
-"   possibility of conflict with Vim's standard library in this case. Such
+"   Such functions need *NOT* begin with a capital letter, since there exists
+"   no possibility of conflict with Vim's standard library in this case. Such
 "   functions should be declared with the function!() builtin to prevent Vim
 "   from throwing fatal errors when such script is reloaded and such function
 "   thus redefined.
 "
-" --------------------( FUNCTIONS ~ scope : mangling       )--------------------
-" Technically, there *ARE* no function scopes. Internally, all Vim functions are
-" global. Vim simply performs name mangling to convert between externally scoped
-" function names and internally global function names. Specifically, Vim
+" --------------------( FUNCTIONS ~ scope : mangling      )--------------------
+" Technically, there *ARE* no function scopes. Internally, all Vim functions
+" are global. Vim simply performs name mangling to convert between externally
+" scoped function names and internally global function names. Specifically, Vim
 " converts the "s:" prefixing function names (but *NOT* variable names, which
 " are mangled in a different manner) to the macro "<SID>" (i.e., script
 " identifier) expanding to "<SNR>{N}_", where:
@@ -93,7 +93,8 @@ scriptencoding utf-8
 " construct and hence dynamically expanded at runtime, "<SID>" is a macro and
 " hence statically expanded at the point of use. Hence, Vim prohibits use of
 " ":s" but *NOT* "<SID>" when creating objects (e.g., autocommands, mappings)
-" that will *NOT* necessarily be run in the context of the current script: e.g.,
+" that will *NOT* necessarily be run in the context of the current script:
+" e.g.,
 "
 "     " Note use of '<SID>' rather than ':s' below.
 "     function s:foobar()
@@ -101,7 +102,7 @@ scriptencoding utf-8
 "     endfunction
 "     :map <Leader>FB :call <SID>foobar()
 "
-" --------------------( VARIABLES ~ scope                  )--------------------
+" --------------------( VARIABLES ~ scope                 )--------------------
 " Vim variables are scoped by prefixing such variable names with:
 "
 " * "", defaulting to either:
@@ -111,16 +112,16 @@ scriptencoding utf-8
 " * "s:", script-local variables accessible anywhere in a given script file.
 " * "l:", function-local variables only accessible in the defining function.
 " * "a:", function arguments only accessible in the defining function.
-" * "w:", window-local variables accessible anywhere but specific to the current
-"   window (i.e., each window maintains a separate copy of such variable).
+" * "w:", window-local variables accessible anywhere but specific to the
+"   current window. Each window maintains a separate copy of these variables.
 " * "t:", tab-local variables accessible anywhere but specific to the current
 "   tab (i.e., each tab maintains a separate copy of such variable).
-" * "b:", buffer-local variables accessible anywhere but specific to the current
-"   buffer (i.e., each buffer maintains a separate copy of such variable).
-" * "v:", special variables predefined by Vim. Since such variables are specific
-"   to particular contexts, see the help entries for such variables.
+" * "b:", buffer-local variables accessible anywhere but specific to the
+"   current buffer. Each buffer maintains a separate copy of these variables.
+" * "v:", special variables predefined by Vim. Since such variables are
+"   specific to particular contexts, see the help entries for such variables.
 "
-" --------------------( VARIABLES ~ pseudo                 )--------------------
+" --------------------( VARIABLES ~ pseudo                )--------------------
 " Vim provides the following canonical pseudo-variables:
 "
 " * "&var", the Vim option named "var".
@@ -129,7 +130,7 @@ scriptencoding utf-8
 " * "@var", the Vim register named "var".
 " * "$var", the external environment variable named "var".
 "
-" --------------------( VARIABLES ~ comparison             )--------------------
+" --------------------( VARIABLES ~ comparison            )--------------------
 " Vim provides numerous variable comparison operators, two of which should
 " *NEVER* appear in third-party plugins intended to be used by others:
 "
@@ -144,7 +145,7 @@ scriptencoding utf-8
 " * "==#" and "!=#", unconditionally case-sensitive comparators. These are
 "   almost *ALWAYS* the ones you want.
 "
-" --------------------( OPERATORS ~ string list            )--------------------
+" --------------------( OPERATORS ~ string list           )--------------------
 " String list variable names (e.g., backupdir) may be suffixed by the following
 " operators and string argument as follows:
 "
@@ -152,9 +153,9 @@ scriptencoding utf-8
 " * ".=", appending the argument to such list.
 " * "^=", prepending the argument to such list.
 "
-" --------------------( SEE ALSO                           )--------------------
-" * "Diff and merge using vim (or gvim)", a fantastically concise cheat sheet on
-"   interactive vim merging; great!
+" --------------------( SEE ALSO                          )--------------------
+" * "Diff and merge using vim (or gvim)", a fantastically concise cheat sheet
+"   on interactive vim merging; great!
 "   http://mindspill.net/computing/linux-notes/diff-and-merge-using-vim-or-gvim
 
 "FIXME: Installing Powerline faults is troublesome due to rxvt-unicode's failure
@@ -218,7 +219,7 @@ scriptencoding utf-8
 "particularly as most Japanese plugins provide implicit support for "lightline"
 "but *NOT* "airline" or "powerline".
 
-" ....................{ DEBUGGING                          }....................
+" ....................{ DEBUGGING                         }....................
 " Uncomment the following two lines to append critical debug messages to the
 " following log file. After debugging, recomment such lines. The same effect
 " is also achievable by running "vim" at the CLI as follows:
@@ -226,10 +227,10 @@ scriptencoding utf-8
 " set verbose=9
 " set verbosefile=~/.vim/cache/vim.log
 
-" ....................{ DEPENDENCIES                       }....................
+" ....................{ DEPENDENCIES                      }....................
 " Recursively source all user-specific Vim startup scripts (i.e., ".vim" files
-" under "~/.vim/conf.d"). These scripts are globbed lexicographically and hence
-" may be ordered with numeric prefixes. This subdirectory and hence scripts are
+" residing in "~/.vim/conf.d"), which are globbed lexicographically and hence
+" ordered by numeric prefix. Both this subdirectory and these scripts are
 " ignored by Vim by default and hence specific to this custom dotfile.
 "
 " Technically, Vim already performs a similar command on startup (e.g.,

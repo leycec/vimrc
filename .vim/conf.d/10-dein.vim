@@ -1,9 +1,9 @@
 scriptencoding utf-8
-" --------------------( LICENSE                            )--------------------
+" --------------------( LICENSE                           )--------------------
 " Copyright 2015-2018 by Cecil Curry.
 " See "LICENSE" for further details.
 "
-" --------------------( SYNOPSIS                           )--------------------
+" --------------------( SYNOPSIS                          )--------------------
 " dein configuration, defining the set of all dein-managed third-party
 " Github-hosted plugins to be used.
 
@@ -14,11 +14,11 @@ scriptencoding utf-8
 "FIXME: Install https://github.com/mhinz/vim-signify, an alternative to
 "gitgutter generally applicable to *ALL* VCSs. Do we want both? Simply, *YES*.
 "gitgutter is more feature-full and hence preferable for git, thus relegating
-"signify as a backup applicable to all other VCSs. Naturally, we would then need
-"to conditionally disable signify for git buffers. Certainly feasible.
+"signify as a backup applicable to all other VCSs. Naturally, we would then
+"need to conditionally disable signify for git buffers. Certainly feasible.
 
 "FIXME: Unite integration should be substantially improved. The best
-"introduction to Unite as of this writing is probably the following repo readme:
+"introduction to Unite as of this writing might be the following repo readme:
 "    https://github.com/joedicastro/dotfiles/tree/master/vim
 "After integrating Unite, excise airline's tagbar, which Unite (of course) also
 "offers a facsimile of. "One plugin to unplugin them all!"
@@ -39,12 +39,12 @@ scriptencoding utf-8
 "dein does appear to provide an automated cleaning command:
 ":deinClean(). Let us use it!
 
-" ....................{ INSTALL                            }....................
+" ....................{ INSTALL                           }....................
 " The dein plugin manager must be configured *BEFORE* dein-managed plugins --
 " which means "bloody early in Vim startup."
 "
 " Common startup-related commands include:
-"     :scriptnames      " list the absolute paths of all current startup scripts
+"     :scriptnames         " list absolute paths of all startup scripts
 "
 " Common dein commands include:
 "     call dein#install()  " install all configured plugins
@@ -59,8 +59,9 @@ scriptencoding utf-8
 "     https://github.com/Shougo/dein-vim-recipes
 "     https://github.com/Shougo/dein-vim-recipes/tree/master/recipes
 "
-" While these recipes could be preloaded on Vim startup, doing so would probably
-" violate lazy loading and hence unnecessarily increase startup time. That said:
+" While these recipes could be preloaded on Vim startup, doing so would
+" probably violate lazy loading and hence unnecessarily increase startup time.
+" That said:
 "
 "     " Leverage official dein recipes for popular plugins, if available.
 "     dein 'Shougo/dein-vim-recipes', {'force' : 1}
@@ -85,13 +86,13 @@ if has('vim_starting')
     call AddRuntimePath(g:our_dein_dir)
 endif
 
-" ....................{ OPTIONS                            }....................
+" ....................{ OPTIONS                           }....................
 " Number of seconds after which to timeout plugin installation and upgrades.
 " Since the default is insufficient for installing large plugins on slow
-" connections, slightly increase such default.
+" connections, this default is slightly increased.
 let g:dein#install_process_timeout = 120
 
-" ....................{ CONFIGURE                          }....................
+" ....................{ CONFIGURE                         }....................
 " If dein's cache is either:
 "
 " * Stale (i.e., desynchronized from either current plugins or the plugin
@@ -99,7 +100,7 @@ let g:dein#install_process_timeout = 120
 " * Non-existent (e.g., due to this being a fresh installation of dein).
 " * Invalid, for whatever edge-case reason.
 "
-" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 " WARNING: To reduce startup speed, dein does *NOT* automatically synchronize
 " the contents of the source "~/.vim/dein/repos" directory with the target
 " "~/.vim/dein/.cache" directory. Instead, users *MUST* manually run the
@@ -107,22 +108,23 @@ let g:dein#install_process_timeout = 120
 "
 "     call dein#recache_runtimepath()
 "
-" Yes, this sucks. No, there's nothing we can do about it. Yes, that sucks, too.
-" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+" Yes, this sucks. No, there's nothing we can do about it. Yes, that sucks.
+" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 "FIXME: Unconvinced this is actually working. So much for efficiency. *sigh*
-" if dein#load_state(g:our_plugin_dir)
+if dein#load_state(g:our_plugin_dir)
     " Initialize dein, installing new plugins to and loading installed plugins
     " from the plugin subdirectory. Since dein adopts the whitelist approach
     " to plugin management, plugins *NOT* explicitly passed to dein#add() will
     " be disabled and hence *NOT* loaded.
     call dein#begin(g:our_plugin_dir)
+    call dein#add  (g:our_plugin_dir)
 
-    " ..................{ CORE                               }..................
+    " ..................{ CORE                              }..................
     " Install dein with dein itself, completing the self-referential loop.
     call dein#add('Shougo/dein.vim')
 
-    " ..................{ NON-LAZY ~ theme                   }..................
+    " ..................{ NON-LAZY ~ theme                  }..................
     "FIXME: I'm not entirely fond of either the comment or documentation colors.
     "Contemplate corrections.
 
@@ -133,26 +135,26 @@ let g:dein#install_process_timeout = 120
     call dein#add('vim-airline/vim-airline')
     call dein#add('vim-airline/vim-airline-themes')
 
-    " ..................{ NON-LAZY ~ vcs                     }..................
-    " By definition, VCS wrappers *CANNOT* be loaded lazily -- despite the abundance
-    " of online ".vimrc" examples erroneously suggesting they can. Since VCS wrapper
-    " hooks *MUST* be run on buffer switches to detect whether that buffer is under
-    " VCS control, VCS wrappers *MUST* be sourced before such switches. Then since
-    " the first file to be opened constitutes a buffer switch *AND* since at least
-    " one file is (typically) always open, VCS wrappers *MUST* be non-lazily sourced
-    " on every Vim startup.
+    " ..................{ NON-LAZY ~ vcs                    }..................
+    " By definition, VCS wrappers *CANNOT* be loaded lazily -- despite the
+    " abundance of online ".vimrc" examples erroneously suggesting they can.
+    " Since VCS wrapper hooks *MUST* be run on buffer switches to detect
+    " whether that buffer is under VCS control, VCS wrappers *MUST* be sourced
+    " before such switches. Then since the first file to be opened constitutes
+    " a buffer switch *AND* since at least one file is (typically) always open,
+    " VCS wrappers *MUST* be non-lazily sourced on every Vim startup.
     "
     " Technically, this requirement is somewhat circumventable by defining
     " on_post_hook() hooks for the plugins installing such VCS wrappers that
     " explicitly call such VCS wrapper detection hooks. However:
     "
-    " * Such detection hooks are often privatized to script-local functions. While
-    "   such privacy is trivially breakable (and our dotfiles define utility
-    "   functions for doing just that), the resulting logic depends on script
-    "   internals *NOT* intended for public use and is hence liable to break without
-    "   public notice.
-    " * Such circumventions prevent display of VCS metadata in the Vim UI (e.g., the
-    "   name of the current VCS branch in a statusline section).
+    " * Such detection hooks are often privatized to script-local functions.
+    "   While such privacy is trivially breakable (and our dotfiles define
+    "   utility functions for doing just that), the resulting logic depends on
+    "   script internals *NOT* intended for public use and is hence liable to
+    "   break without public notice.
+    " * Such circumventions prevent display of VCS metadata in the Vim UI
+    "   (e.g., the name of the current VCS branch in a statusline section).
     "
     " The costs are considerably higher than the negligible efficiency gains.
 
@@ -162,7 +164,7 @@ let g:dein#install_process_timeout = 120
     " Mercurial wrapper.
     call dein#add('ludovicchabant/vim-lawrencium')
 
-    " ..................{ LAZY ~ dependencies                }..................
+    " ..................{ LAZY ~ dependencies               }..................
     " Pure dependencies (i.e., plugins only dependencies of other plugins) are
     " lazily loadable without autoload specifications. Which is a good thing.
     "
@@ -187,26 +189,30 @@ let g:dein#install_process_timeout = 120
     call dein#add('godlygeek/tabular', {'lazy' : 1})
 
     " Low-level asynchronous Vim support.
-    call dein#add('Shougo/vimproc.vim', {
-      \ 'hook_post_update': "
-      \ if dein#util#_is_windows()\n
-      \     let cmd = 'tools\\update-dll-mingw'\n
-      \ elseif dein#util#_is_cygwin()\n
-      \     let cmd = 'make -f make_cygwin.mak'\n
-      \ elseif executable('gmake')\n
-      \     let cmd = 'gmake'\n
-      \ else\n
-      \     let cmd = 'make'\n
-      \ endif\n
-      \ let g:dein#plugin.build = cmd\n
-      \ "})
+    call dein#add('Shougo/vimproc.vim', {'build' : 'make'})
+
+    "FIXME: While more portable, the following alternative "vimproc"
+    "installation instructions now appear to silently fail. *sigh* 
+"    call dein#add('Shougo/vimproc.vim', {
+"      \ 'hook_post_update': "
+"      \ if dein#util#_is_windows()\n
+"      \     let cmd = 'tools\\update-dll-mingw'\n
+"      \ elseif dein#util#_is_cygwin()\n
+"      \     let cmd = 'make -f make_cygwin.mak'\n
+"      \ elseif executable('gmake')\n
+"      \     let cmd = 'gmake'\n
+"      \ else\n
+"      \     let cmd = 'make'\n
+"      \ endif\n
+"      \ let g:dein#plugin.build = cmd\n
+"      \ "})
 
     " Arbitrary information harvester.
     call dein#add('Shougo/unite.vim', {
       \ 'lazy' : 1,
       \ 'on_cmd': ['Unite', 'UniteResume'],
       \ 'hook_post_source': '
-      \ " Match "fuzzily," effectively inserting the nongreedy globbing operator\n
+      \ " Match fuzzily, effectively inserting the nongreedy globbing operator\n
       \ " "*?" between each character of the search pattern (e.g., searching for\n
       \ " "vvrc" in a unite buffer matches both "~/.vim/vimrc" and\n
       \ " "~/.vim/plugin/vundle/startup/rc.vim").\n
@@ -233,19 +239,20 @@ let g:dein#install_process_timeout = 120
     " easytags dependency.
     "call dein#add('xolox/vim-misc')
 
-    " ....................{ LAZY ~ filetype                    }....................
-    " CSS. Since the CSS plugin provided out-of-the-box by Vim lacks support for
+    " ..................{ LAZY ~ filetype                   }..................
+    " CSS. As the CSS plugin provided out-of-the-box by Vim lacks support for
     " most CSS3-specific syntactic constructs, external plugins are preferred.
     call dein#add('hail2u/vim-css3-syntax', {'on_ft': 'css'})
 
     " Markdown. There exist a variety of Markdown plugins, including:
     "
-    " * "gabrielelana/vim-markdown", implementing GitHub-flavoured Markdown (GFMD),
-    "   my preferred Markdown flavour. Frequently updated and fast on large buffers.
+    " * "gabrielelana/vim-markdown", implementing GitHub-flavoured Markdown
+    "   (GFMD), my preferred Markdown flavour. Frequently updated and fast on
+    "   large buffers.
     " * "plasticboy/vim-markdown", implementing a generic flavour of Markdown.
     "   Frequently updated but slow on large buffers.
-    " * "tpope/vim-markdown", doubling as Vim's default syntax highlighting plugin
-    "   for Markdown. Infrequently updated, minimalist, and painfully generic.
+    " * "tpope/vim-markdown", doubling as Vim's default syntax highlighting
+    "   plugin for Markdown. Infrequently updated, minimalist, and generic.
     call dein#add('gabrielelana/vim-markdown', {
       \ 'on_ft': ['markdown', 'mkd'],
       \ })
@@ -258,7 +265,7 @@ let g:dein#install_process_timeout = 120
     " Zeshy.
     call dein#add('leycec/vim-zeshy', {'on_ft': 'zeshy'})
 
-    " ..................{ LAZY ~ key                         }..................
+    " ..................{ LAZY ~ key                        }..................
     " Bind <gc-> (e.g., <gcc>) to perform buffer commenting and uncommenting.
     call dein#add('tomtom/tcomment_vim', {
       \ 'on_map': {'nx': ['gc', 'g<', 'g>', '<C-_>', '<Leader>_']},
@@ -283,43 +290,47 @@ let g:dein#install_process_timeout = 120
     call dein#add('coot/EnchantedVim.git')
     " call dein#add('coot/EnchantedVim.git', {'depends': 'coot/CRDispatcher.git'})
 
-    " ..................{ LAZY ~ filetype : rst              }..................
+    " ..................{ LAZY ~ filetype : rst             }..................
     " reStructuredText (reST).
     call dein#add('Rykka/riv.vim', {'on_ft': 'rst'})
 
-    " If the external "instantRst" command is installed, the external "instant_rst"
-    " Python package is assumed to also be installed, in which case the "InstantRst"
-    " plugin by the same author integrating with the "riv.vim" plugin installed
-    " above is both safely installable *AND* usable.
+    " If the external "instantRst" command is installed, the external
+    " "instant_rst" Python package is assumed to also be installed, in which
+    " case the "InstantRst" plugin by the same author integrating with the
+    " "riv.vim" plugin installed above is both safely installable *AND* usable.
     if executable('instantRst')
         call dein#add('Rykka/InstantRst', {'on_ft': 'rst'})
 
-    "FIXME: While warning the user of this condition would be generally useful, Vim
-    "appears to provide no means of doing so without requiring the user to manually
-    "press a key on *EVERY* Vim startup after displaying this warning. This warning
-    "is currently disabled until a less intrusive warning mechanism is discovered.
+    "FIXME: While warning the user of this condition would be generally useful,
+    "Vim appears to provide no means of doing so without requiring the user to
+    "manually press a key on *EVERY* Vim startup after displaying this warning.
+    "This warning is currently disabled until a less intrusive warning
+    "mechanism is discovered.
 
-    " Else, "InstantRst" is *NOT* safely installable. Warn the user appropriately.
+    " Else, "InstantRst" is *NOT* safely installable. Warn the user
+    " appropriately.
     " else
-    "     echomsg '"instantRst" command not found; reStructuredText buffers not previewable.'
+    "     call PrintError(
+    "       \ '"instantRst" command not found; reStructuredText buffers not previewable.')
     endif
 
-    " ..................{ LAZY ~ syntax                      }..................
+    " ..................{ LAZY ~ syntax                     }..................
     " CSS-specific syntax highlighting.
     call dein#add('ap/vim-css-color', {'on_ft': ['css', 'scss', 'sass']})
 
-    "FIXME: Fantastic plugin for reformatting. There's only one issue: we only want
-    "to make the ":Autoformat" command available. Unfortunately, this plugin also
-    "forcefully overrides Vim's builtin "gq" functionality with its filetype-
-    "specific logic. This works tolerably for some filetypes, but utterly fails on
-    "others. In particular, "autopep8" for Python refuses to wrap long comments
-    "appropriately. Consequently, this plugin must be temporarily enabled *ONLY* for
-    "the duration of edits requiring the ":Autoformat" command. *sigh*
+    "FIXME: Fantastic plugin for reformatting. There's only one issue: we only
+    "want to make the ":Autoformat" command available. Unfortunately, this
+    "plugin also forcefully overrides Vim's builtin "gq" functionality with its
+    "filetype- specific logic. This works tolerably for some filetypes, but
+    "utterly fails on others. In particular, "autopep8" for Python refuses to
+    "wrap long comments appropriately. Consequently, this plugin must be
+    "temporarily enabled *ONLY* for the duration of edits requiring the
+    "":Autoformat" command. *sigh*
 
     " Filetype-aware syntax reformatting, augmenting "gq" with intelligent
-    " reformatting specific to language standards. This plugin inspects the external
-    " environment for commands in the current ${PATH} and hence typically requires
-    " *NO* manual configuration. Such commands include:
+    " reformatting specific to language standards. This plugin inspects the
+    " external environment for commands in the current ${PATH} and hence
+    " typically requires *NO* manual configuration. Such commands include:
     "
     " * For filetype "python", command "autopep8".
     " call dein#add('Chiel92/vim-autoformat', {
@@ -367,7 +378,7 @@ let g:dein#install_process_timeout = 120
     "   \ 'autoload': { 'filetypes': ['vim'] }
     "   \ }
 
-    " ..................{ LAZY ~ vcs                         }..................
+    " ..................{ LAZY ~ vcs                        }..................
     " Git log wrapper. While otherwise excellent, "vim-fugitive" particularly
     " lacks in this department.
     call dein#add('kablamo/vim-git-log', {'on_cmd': 'GitLog'})
@@ -382,7 +393,7 @@ let g:dein#install_process_timeout = 120
     "   \     'functions': [ 'GITLOG_ToggleWindows', 'GITLOG_FlipWindows',]
     "   \ }}
 
-    " ..................{ LAZY ~ rest                        }..................
+    " ..................{ LAZY ~ rest                       }..................
     " Buffer undo/redo.
     "
     " Navigate the undo history tree.
@@ -399,16 +410,17 @@ let g:dein#install_process_timeout = 120
       " \ 'on_cmd': ['VimFiler', 'VimFilerExplorer'],
       " \ })
 
-    "FIXME: Temporarily disabled. We don't currently leverage tags functionality
-    "terribly much, and there appear to be conflicts with git-based Universal Ctags.
+    "FIXME: Temporarily disabled. We don't currently leverage tags
+    "functionality terribly much, and there appear to be conflicts with
+    "git-based Universal Ctags.
     " Project tags.
     " call dein#add('xolox/vim-easytags', {
     "   \ 'depends': 'xolox/vim-misc',
     "   \ 'autoload': { 'filetypes': ['zeshy'] },
     "   \ }
 
-    "FIXME: Unconvinced I require a grepping plugin. If I ever do, however, this is
-    "undoubtedly the one to uncomment. State of the art.
+    "FIXME: Unconvinced I require a grepping plugin. If I ever do, however,
+    "this is undoubtedly the one to uncomment. State of the art.
     " File grepping.
     "call dein#add('rking/ag.vim', { 'autoload': {
     "            \ 'commands': [{'name': 'Ag', 'complete': 'file'}] }}
@@ -419,9 +431,9 @@ let g:dein#install_process_timeout = 120
     "FIXME: Unconvinced this is actually working. So much for efficiency. *sigh*
     " Finalize dein's on-disk cache.
     call dein#save_state()
-" endif
+endif
 
-" ....................{ STOP                               }....................
+" ....................{ STOP                              }....................
 " If one or more plugins are *NOT* currently installed, do so.
 if dein#check_install()
     echo "Installing dein plugins...\n"
@@ -440,7 +452,7 @@ endif
 "     autocmd VimEnter * call auto_dein#update_weekly()
 " augroup END
 
-" ....................{ FILETYPES                          }....................
+" ....................{ FILETYPES                         }....................
 " Enable the following four core features (related to filetypes) *AFTER*
 " completing dein configuration but *BEFORE* subsequent functionality
 " requiring such features. (Attempting to enable these features *BEFORE*
@@ -451,9 +463,9 @@ endif
 "   filetype for such buffer from the filename associated with such buffer (if
 "   any) and/or shebang or modeline lines (if any) at the head of such buffer.
 "   Vim uses filetypes for syntax highlighting and the two features below.
-" * Filetype-dependent plugin files. Different filetypes are commonly associated
-"   with different Vim options. So-called "filetype plugins" ensure these
-"   options are set on opening buffers of these filetypes.
+" * Filetype-dependent plugin files. Different filetypes are commonly
+"   associated with different Vim options. So-called "filetype plugins" ensure
+"   these options are set on opening buffers of these filetypes.
 " * Filetype-dependent indentation files. Different filetypes are commonly
 "   associated with different indentation rules. As with filetype plugins,
 "   these files ensure these rules are set on opening buffers of this filetype.

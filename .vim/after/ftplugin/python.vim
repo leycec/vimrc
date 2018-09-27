@@ -1,38 +1,41 @@
-" --------------------( LICENSE                            )--------------------
+" --------------------( LICENSE                           )--------------------
 " Copyright 2015-2018 by Cecil Curry.
 " See "LICENSE" for further details.
 "
-" --------------------( SYNOPSIS                           )--------------------
+" --------------------( SYNOPSIS                          )--------------------
 " Python-specific settings.
 
-" ....................{ PREAMBLE                           }....................
+" ....................{ PREAMBLE                          }....................
 " If this plugin has already been loaded for the current buffer, return.
 if exists('b:is_our_ftplugin_python')
     finish
 endif
 
-" ....................{ CHECKS                             }....................
+" ....................{ CHECKS                            }....................
 " If Vim was *NOT* compiled with Python 3 support...
 if !has('python3')
     " If Vim was also *NOT* compiled with Python 2 support, print a warning.
     " Since enabling the "python3" feature disables the "python" feature, test
     " this only after ensuring the former is disabled.
     if !has('python')
-        echomsg 'Vim features "python" and "python3" unavailable. Expect Python syntax checking to fail.'
+        call PrintError(
+          \ 'Vim features "python" and "python3" unavailable. Expect Python syntax checking to fail.')
     " Else, Vim was compiled with only Python 2 support. Print a warning.
     else
-        echomsg 'Vim feature "python3" unavailable. Expect Python 3 syntax checking to fail.'
+        call PrintError(
+          \ 'Vim feature "python3" unavailable. Expect Python 3 syntax checking to fail.')
     endif
 endif
 
 " If no Python syntax checker supported out-of-the-box by the "vim-watchdogs"
-" bundle is in the current ${PATH}, print a warning. In this case, Python
+" plugin is in the current ${PATH}, print a warning. In this case, Python
 " buffers will be syntax-highlighted but *NOT* checked.
 if !executable('pyflakes') && !executable('flake8')
-    echomsg 'Commands "pyflakes" and "flake8" not found. Expect Python syntax checking to fail.'
+    call PrintError(
+      \ 'Commands "pyflakes" and "flake8" not found. Expect Python syntax checking to fail.')
 endif
 
-" ....................{ COMMENTS                           }....................
+" ....................{ COMMENTS                          }....................
 " Overwrite this mode's default comment leader with that set by "30-usage.vim".
 setlocal comments=:#,fb:-
 
@@ -66,7 +69,7 @@ augroup our_python_syntax
     "autocmd BufEnter <buffer> :syntax sync fromstart
 augroup END
 
-" ....................{ WRAPPING                           }....................
+" ....................{ WRAPPING                          }....................
 " For readability, visually soft-wrap long lines exceeding the width of the
 " current window. Since the "python-mode" bundle explicitly disables this, only
 " explicitly enabling this after loading that bundle suffices to re-enable this.
@@ -74,6 +77,6 @@ augroup END
 " See the same subsection of "conf.d/20-theme.vim".
 setlocal wrap
 
-" ....................{ POSTAMBLE                          }....................
+" ....................{ POSTAMBLE                         }....................
 " Declare this plugin to have been successfully loaded for the current buffer.
 let b:is_our_ftplugin_python = 1
