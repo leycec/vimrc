@@ -1,19 +1,19 @@
 scriptencoding utf-8
-" --------------------( LICENSE                            )--------------------
+" --------------------( LICENSE                           )--------------------
 " Copyright 2015-2018 by Cecil Curry.
 " See "LICENSE" for further details.
 "
-" --------------------( SYNOPSIS                           )--------------------
+" --------------------( SYNOPSIS                          )--------------------
 " Non-theme configuration, configuring Vim and plugin functionality pertaining
 " to actual usage rather than aesthetic style.
 
 "FIXME: "python-mode" provides Rope support, which we should both learn and
 "configure appropriately. Rope is basically PyCharm for Vim, providing deep
-"introspection, analysis, and refactoring of Python on a project-wide basis from
-"within Vim -- without use of external tag files. Yeah; it's friggin' sweet.
-"See: https://github.com/klen/python-mode
+"introspection, analysis, and refactoring of Python on a project-wide basis
+"from within Vim -- without use of external tag files. Yeah; it's friggin'
+"sweet. See: https://github.com/klen/python-mode
 
-" ....................{ BUFFERS                            }....................
+" ....................{ BUFFERS                           }....................
 " Common buffer commands include:
 "     :b{number}        " switch to the buffer with that number
 "     :ls               " list all buffers
@@ -36,7 +36,7 @@ set hidden
 set fileencodings=utf8,iso-2022-jp,euc-jp,cp932,default,latin1
 " set fileencodings=iso-2022-jp,euc-jp,cp932,utf8,default,latin1
 
-" ....................{ CACHING                            }....................
+" ....................{ CACHING                           }....................
 " ","-delimited list of context persisted for the current editing session.
 " Dismantled, this is:
 "
@@ -47,18 +47,18 @@ set fileencodings=utf8,iso-2022-jp,euc-jp,cp932,default,latin1
 " * "'", saving and restoring marks for at most the passed number of files.
 " * "h", preventing search matches highlighted under the prior session from
 "   being highlighted on restoring such session.
-" * "s", *NOT* saving or restoring items (currently, only registers) larger than
-"   the passed number of kilobytes.
+" * "s", *NOT* saving or restoring items (currently, only registers) larger
+"   than the passed number of kilobytes.
 " * "n", persisting all such metadata to and from the passed filename.
 let &viminfo = '%,<1024,/64,''64,h,s8,n' . g:our_cache_dir . '/viminfo'
 
-" ....................{ CACHING ~ backup                   }....................
+" ....................{ CACHING ~ backup                  }....................
 " Backup files to the directory specified below.
 set backup
 
-" Directory persisting backups of edited files to corresponding files. Since Vim
-" offers a builtin means of uniquifying swap and undo but *NOT* backup files, we
-" unroll our own for the latter below.
+" Directory persisting backups of edited files to corresponding files. Since
+" Vim offers a builtin means of uniquifying swap and undo but *NOT* backup
+" files, we unroll our own for the latter below.
 let &backupdir = g:our_backup_dir
 
 augroup our_backup_uniquification
@@ -68,12 +68,12 @@ augroup our_backup_uniquification
     "currently have no idea how to generalize this to the Windows directory
     "separator "\". Such is code life.
 
-    " Uniquify the basename of the backup file corresponding to the current file
-    " *BEFORE* backing up such file *BEFORE* ovewriting such file with the
+    " Uniquify the basename of the backup file corresponding to the current
+    " file *BEFORE* backing up such file *BEFORE* ovewriting such file with the
     " contents of the current buffer. Specifically, to ensure the uniqueness of
-    " all backup files in the backup directory, each such file's filetype is the
-    " absolute path of the parent directory of the corresponding file with all
-    " directory separators "/" replaced by "%" (e.g., when edited,
+    " all backup files in the backup directory, each such file's filetype is
+    " the absolute path of the parent directory of the corresponding file with
+    " all directory separators "/" replaced by "%" (e.g., when edited,
     " "/the/pharmacratic/inquisition.ott" will be backed up as
     " "~/.vim/cache/backup/inquisition.ott%the%pharmacratic"). While the
     " resulting basenames are less than ideal, they *ARE* guaranteeably unique
@@ -82,15 +82,15 @@ augroup our_backup_uniquification
       \ let &backupext = substitute(expand('%:p:h'), '/', '%', 'g')
 augroup END
 
-" ....................{ CACHING ~ swap                     }....................
-" Directory persisting swap files (i.e., recoverable backups) of edited files to
-" corresponding files. To ensure the uniqueness of such files in such directory,
-" such directory is suffixed by "//"; in this case, the basenames of swap files
-" will be the absolute paths of the original files with all directory separators
-" (e.g., "/" under POSIX-compatible systems) replaced by "%".
+" ....................{ CACHING ~ swap                    }....................
+" Directory persisting swap files (i.e., recoverable backups) of edited files
+" to corresponding files. To ensure the uniqueness of such files in such
+" directory, such directory is suffixed by "//"; in this case, the basenames of
+" swap files will be the absolute paths of the original files with all
+" directory separators (e.g., "/" on POSIX-compatible systems) replaced by "%".
 let &directory = g:our_swap_dir . '//'
 
-" ....................{ CACHING ~ undo                     }....................
+" ....................{ CACHING ~ undo                    }....................
 " See section "HISTORY" for related settings.
 
 " If Vim supports undo persistence...
@@ -101,9 +101,9 @@ if has('persistent_undo')
     set undofile
 endif
 
-" ....................{ CACHING ~ view                     }....................
-" The following logic is highly inspired by Yichao Zhou's compact "restore_view"
-" plugin available at:
+" ....................{ CACHING ~ view                    }....................
+" The following logic is highly inspired by Yichao Zhou's compact
+" "restore_view" plugin available at:
 "     http://www.vim.org/scripts/download_script.php?src_id=22634
 "
 " This plugin itself was highly inspired by the corresponding Vim wiki page at:
@@ -137,8 +137,8 @@ if has('mksession')
         "   buffer created by Vim when run without arguments.
         "
         " The "BufWinLeave" event is explicitly avoided here, as leveraging
-        " that event here induces errors when closing the current buffer and the
-        " next buffer is nameless.
+        " that event here induces errors when closing the current buffer and
+        " the next buffer is nameless.
         autocmd BufWritePre,BufWinLeave ?*
           \ if vimrc#is_buffer_viewable() |
           \     silent! mkview |
@@ -147,8 +147,8 @@ if has('mksession')
         " Deserialize the prior state of the current buffer window on entering
         " that window, overwriting the prior saved state of that window if any.
         " To avoid conflicts with plugin-specific autocommands attempting to
-        " also restore buffer, view, and/or session state, the "VimEnter" rather
-        " than standard "BufWinEnter" event is hooked.
+        " also restore buffer, view, and/or session state, the "VimEnter"
+        " rather than standard "BufWinEnter" event is hooked.
         " autocmd BufWinEnter ?*
         autocmd VimEnter ?*
           \ if vimrc#is_buffer_viewable() |
@@ -157,12 +157,13 @@ if has('mksession')
     augroup END
 endif
 
-" ....................{ CLIPBOARD                          }....................
+" ....................{ CLIPBOARD                         }....................
 " There exist two fundamentally orthogonal types of "clipboards":
 "
 " * The system clipboard, accessible outside of Vim via the customary keyboard
 "   shortcuts (e.g., <Ctrl-v> to paste the contents of such clipboard).
-" * The X11 primary selection, accessible outside of Vim via the mouse, whereby:
+" * The X11 primary selection, accessible outside of Vim via the mouse,
+"   whereby:
 "   * Selecting a substring of text implicitly yanks that substring into the
 "     primary selection.
 "   * The right mouse button pastes such substring from the primary selection.
@@ -173,8 +174,8 @@ endif
 "
 " * The "+clipboard" feature is available:
 "   * The system clipboard is accessible via the "*" register.
-"   * But the "-xterm_clipboard" feature is unavailable, the system clipboard is
-"     also accessible via the "+" register.
+"   * But the "-xterm_clipboard" feature is unavailable, the system clipboard
+"     is also accessible via the "+" register.
 " * The "+xterm_clipboard" feature is available, the xterm-specific primary
 "   selection is accessible via the "+" register.
 
@@ -197,26 +198,26 @@ elseif has('unnamedplus')
     set clipboard=unnamedplus
 endif
 
-" ....................{ COMMENTS                           }....................
+" ....................{ COMMENTS                          }....................
 " Filetype-specific comment settings. See the "FORMATTING" section below for
 " related formatting settings.
 augroup our_filetype_comments
     autocmd!
 
-    " Parse "#" characters prefixing any words as comment leaders regardless
-    " of whether such characters are immediately followed by whitespace. By
-    " default, the plugins for the following filetypes only parse "#" characters
-    " immediately followed by whitespace as comment leaders -- which, given our
-    " glut of "#FIXME" comments, is less than helpful.
+    " Parse "#" characters prefixing any words as comment leaders regardless of
+    " whether such characters are immediately followed by whitespace. By
+    " default, the plugins for the following filetypes only parse "#"
+    " characters immediately followed by whitespace as comment leaders --
+    " which, given our glut of "#FIXME" comments, is less than helpful.
     "
     " This option is a comma-delimited string list of all comment leaders, each
     " formatted as "{flags}:{string}", where:
     "
     " * "{flags}" is an undelimited character list of boolean flags modifying
     "   the parsing of this comment leader from Vim's default behaviour.
-    " * "{string}" is the typically unquoted string of all characters comprising
-    "   this comment leader *EXCLUDING* suffixing whitespace. If such whitespace
-    "   is required, specify the "b" flag instead.
+    " * "{string}" is the typically unquoted string of all characters
+    "   comprising this comment leader *EXCLUDING* suffixing whitespace. If
+    "   such whitespace is required, specify the "b" flag instead.
     "
     " Dismantled, this is:
     "
@@ -233,20 +234,20 @@ augroup our_filetype_comments
     autocmd FileType ebuild,sh setlocal comments=:#,fb:-
 augroup END
 
-" ....................{ COMMENTS ~ tcomment                }....................
+" ....................{ COMMENTS ~ tcomment               }....................
 "FIXME: Configure us up the bomb. Yes, we went there.
 
-" ....................{ DELETING                           }....................
+" ....................{ DELETING                          }....................
 "FIXME: Specifically? What does this do? I like it, but I'd like to know more.
 
 " Sanitize <Backspace>.
 set backspace=indent,eol,start
 
-" ....................{ DIFFING                            }....................
+" ....................{ DIFFING                           }....................
 " Enable the following diffing options by default:
 "
-" * "filler", display filler lines (i.e., contextual lines whose sole purpose is
-"   to synchronize vertically-split diff buffers).
+" * "filler", display filler lines (i.e., contextual lines whose sole purpose
+"   is to synchronize vertically-split diff buffers).
 " * "vertical", opening "diff" mode with vertical rather than horizontal splits.
 "   (Horizontal splits? Seriously, Bram. Who does that? *NO ONE*. That's who.)
 set diffopt=filler,vertical
@@ -255,14 +256,14 @@ set diffopt=filler,vertical
 " buffer by diffing the current buffer against the corresponding file if any.
 command DiffSelf call vimrc#diff_buffer_current_with_file_current()
 
-" ....................{ EXPLORING ~ unite                  }....................
+" ....................{ EXPLORING ~ unite                 }....................
 " Common Unite-based exploration commands include:
 
-" ....................{ EXPLORING ~ files                  }....................
+" ....................{ EXPLORING ~ files                 }....................
 " Common file exploration commands include:
 "     :VimFiler         " run vimfiler
 
-" ....................{ FILETYPE ~ markdown : tpope        }....................
+" ....................{ FILETYPE ~ markdown : tpope       }....................
 " Tim Pope's Markdown plugin. While no longer used, there's little harm in
 " preserving the following variable.
 
@@ -272,8 +273,8 @@ command DiffSelf call vimrc#diff_buffer_current_with_file_current()
 " case this plugin recognizes and syntax highlights such blocks accordingly.
 "
 " If the Github- and hence Linguist-specific language name differs from the
-" corresponding Vim filetype, the former must be explicitly mapped to the latter
-" with an "="-delimited item; else, simply listing such name suffices.
+" corresponding Vim filetype, the former must be explicitly mapped to the
+" latter with an "="-delimited item; else, simply listing such name suffices.
 "
 " For the full list of Github-specific language names, see:
 " https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
@@ -286,8 +287,8 @@ let g:markdown_fenced_languages = [
   \ 'zsh',
   \ ]
 
-" For readability, indent "*"-prefixed list items by two rather than the default
-" four spaces: e.g.,
+" For readability, indent "*"-prefixed list items by two rather than the
+" default four spaces: e.g.,
 "
 "     * This is...
 "       * good.
@@ -295,7 +296,7 @@ let g:markdown_fenced_languages = [
 "         * not good, however.
 let g:vim_markdown_new_list_item_indent = 2
 
-" ....................{ FILETYPE ~ python-mode             }....................
+" ....................{ FILETYPE ~ python-mode            }....................
 "FIXME: "python-mode" currently indents line continuations by one level more of
 "indentation than seems reasonable. The culprit appears to be the block
 "commented by "If this line is explicitly joined..." in
@@ -343,7 +344,7 @@ endif
 " plugin also hooking Insert mode events (e.g., "watchdogs").
 let g:pymode_rope_complete_on_dot = 0
 
-" ....................{ FILETYPE ~ rest : riv              }....................
+" ....................{ FILETYPE ~ rest : riv             }....................
 " Common riv commands include:
 "     :RivInstruction     " list all available Riv.vim options
 "     :RivCheatSheet      " read the 'reStructuredText Cheatsheet'
@@ -352,7 +353,7 @@ let g:pymode_rope_complete_on_dot = 0
 "     :RivQuickStart      " read the 'QuickStart With Riv'
 "     :RivInstruction     " read the 'Riv Instructions'
 
-" ....................{ FILETYPE ~ rest : riv : instantrst }....................
+" ....................{ FILETYPE ~ rest : riv : instantrst}....................
 " Common InstantRst commands include:
 "     :InstantRst         " preview current reST buffer
 "     :InstantRst!        " preview all reST buffers
@@ -363,7 +364,7 @@ let g:pymode_rope_complete_on_dot = 0
 " previews are non-essential and hence deprioritizable.
 let g:instant_rst_slow = 1
 
-" ....................{ FILETYPE ~ syntax                  }....................
+" ....................{ FILETYPE ~ syntax                 }....................
 " Enable Python-specific syntax highlighting.
 let g:pymode_syntax = 1
 
@@ -397,7 +398,7 @@ let g:pymode_syntax_print_as_function = 1
 "         Hundredth line.'''
 let g:pymode_syntax_slow_sync = 1
 
-" ....................{ FOLDING                            }....................
+" ....................{ FOLDING                           }....................
 " Disable folding globally. However, intentionally or accidentally performing a
 " folding action (e.g., by typing <zc>) implicitly undoes this by re-enabling
 " folding globally. Hence, this alone is *NOT* sufficient to disable folding.
@@ -409,7 +410,7 @@ set nofoldenable
 set foldlevelstart=99
 set foldlevel=99
 
-" ....................{ FORMATTING                         }....................
+" ....................{ FORMATTING                        }....................
 " Filetype-specific formatting. For safety, append and shift list
 " "formatoptions" with the "+=" and "-=" operators rather than overwriting such
 " list (and hence sane Vim defaults) with the "=" operator. See ":h fo-table".
@@ -439,11 +440,11 @@ augroup our_filetype_format
       \ call vimrc#sanitize_code_buffer_formatting()
 augroup END
 
-" ....................{ GLOBBING                           }....................
+" ....................{ GLOBBING                          }....................
 " When globbing, ignore files matching the following glob patterns.
 set wildignore=*.class,*.dll,*.exe,*.gif,*.jpg,*.o,*.obj,*.png,*.py[co],*.so,*.swp
 
-" ....................{ HISTORY                            }....................
+" ....................{ HISTORY                           }....................
 " See section "TEMPORARY PATHS" for related settings.
 
 " Maximum number of per-session ex commands and search patterns to be persisted.
@@ -452,7 +453,7 @@ set history=1000
 " Maximum number of per-buffer undos to be persisted.
 set undolevels=1000
 
-" ....................{ INDENTATION                        }....................
+" ....................{ INDENTATION                       }....................
 " Common indentation commands include:
 "     :retab            " convert all tabs in the current buffer to spaces
 "     :set paste        " disable auto-identation when pasting text
@@ -473,7 +474,7 @@ set copyindent
 " * Else, such integer signifies a number of literal spaces.
 "set cinoptions+=+0.5s
 
-" ....................{ INDENTATION ~ filetype             }....................
+" ....................{ INDENTATION ~ filetype            }....................
 " Filetype-specific indentation.
 augroup our_filetype_indentation
     autocmd!
@@ -495,7 +496,7 @@ augroup our_filetype_indentation
     autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2 tabstop=2
 
     " For markup-obsessed filetypes (e.g., XML), minimize the default tab width
-    " to the minimum non-zero width (i.e., 1). XML, what ills hast thou wrought?
+    " to the minimum non-zero width (i.e., 1). XML, what ills has thou wrought?
     autocmd FileType html,xml setlocal shiftwidth=1 softtabstop=1 tabstop=1
 
     " For filetypes in which tabs are significant (e.g., ebuilds, makefiles),
@@ -503,15 +504,15 @@ augroup our_filetype_indentation
     autocmd FileType ebuild,make setlocal noexpandtab
 augroup END
 
-" ....................{ INDENTATION ~ vim                  }....................
+" ....................{ INDENTATION ~ vim                 }....................
 " Indent "\"-prefixed continuation lines by half of the shiftwidth.
 let g:vim_indent_cont = 2
 
-" ....................{ MACROS                             }....................
+" ....................{ MACROS                            }....................
 " When executing macros, redraw the screen only after such macros complete.
 set lazyredraw
 
-" ....................{ MODES                              }....................
+" ....................{ MODES                             }....................
 " Check the first 8 lines of new buffers for Vim modelines. By default, Gentoo
 " and other distributions disable such checking. Typically, modelines resemble:
 "
@@ -520,13 +521,13 @@ set lazyredraw
 set modeline
 set modelines=8
 
-" ....................{ MOUSE                              }....................
+" ....................{ MOUSE                             }....................
 " Enable terminal mouse support.
 set mouse=a
 
-" ....................{ NAVIGATION                         }....................
-" Constrain the cursor to actual characters for all modes *EXCEPT* (i.e., enable
-" virtual editing for) the following:
+" ....................{ NAVIGATION                        }....................
+" Constrain the cursor to actual characters for all modes *EXCEPT* (i.e.,
+" enable virtual editing for) the following:
 "
 " * "block", Visual block mode.
 " * "insert", Insert mode.
@@ -540,15 +541,16 @@ command SwitchWindowDown  call vimrc#switch_window('j')
 command SwitchWindowLeft  call vimrc#switch_window('h')
 command SwitchWindowRight call vimrc#switch_window('l')
 
-" ....................{ REFORMATTING ~ vim-autoformat      }....................
+" ....................{ REFORMATTING ~ vim-autoformat     }....................
 " Permit the Python-specific "autopep8" reformatter to aggressively reformat
 " long lines. While "vim-autoformat" provides default options for such
-" reformatter under "plugin/defaults.vim", "autopep8" senselessly ignores option
-" "--max-line-length" unless at least *TWO* aggressive options are also passed.
+" reformatter under "plugin/defaults.vim", "autopep8" senselessly ignores
+" option "--max-line-length" unless at least *TWO* aggressive options are also
+" passed.
 let g:formatprg_python = 'autopep8'
 let g:formatprg_args_expr_python = '"- --experimental --aggressive --aggressive --aggressive ".(&textwidth ? "--max-line-length=".&textwidth : "")'
 
-" ....................{ REMOTING                           }....................
+" ....................{ REMOTING                          }....................
 " Prevent the default "netrw" plugin from littering working trees with
 " ".netrwhist" files caching history and bookmarks for remotely edited files.
 " While it would probably be better to reconfigure "netrw" to add such files to
@@ -556,7 +558,7 @@ let g:formatprg_args_expr_python = '"- --experimental --aggressive --aggressive 
 " currently disable them entirely.
 let g:netrw_dirhistmax = 0
 
-" ....................{ SEARCHING                          }....................
+" ....................{ SEARCHING                         }....................
 " Highlight all matching substrings in the current buffer.
 set hlsearch
 
@@ -571,7 +573,7 @@ set incsearch
 " Instead, selectively enable such option only for searching with "\c" above.
 set smartcase
 
-" ....................{ SEARCHING ~ magic                  }....................
+" ....................{ SEARCHING ~ magic                 }....................
 " Enable the following per-regex options globally:
 "
 " * "\v" when both searching and substituting, enabling "very magic" regex
@@ -600,13 +602,13 @@ let g:VeryMagicRange = 1
 let g:VeryMagicSubstitute = 1
 let g:VeryMagicVimGrep = 1
 
-" ....................{ SEARCHING ~ replace                }....................
+" ....................{ SEARCHING ~ replace               }....................
 " Enable global substitutions by default (i.e., implicitly append "/g" to all
 " substitutions). Appending "/g" to a substitution now disables global
 " substitution, as expected.
 set gdefault
 
-" ....................{ SPELLING                           }....................
+" ....................{ SPELLING                          }....................
 " Spell check in English when enabled on a buffer-specific basis.
 set spelllang=en
 
@@ -618,27 +620,23 @@ augroup our_filetype_spelling
     autocmd FileType markdown,mkd,rst,text,yaml setlocal spell
 augroup END
 
-" ....................{ SYNTAX CHECK ~ ale                 }....................
+" ....................{ SYNTAX CHECK ~ ale                }....................
 " Asynchronous Linting Engine (ALE) provides asynchronous syntax checking.
 
-" Dictionary mapping from each lintable filetype to the list of all linters with
-" which to asynchronously lint buffers of that filetype. Since ALE defaults to
-" linting filetypes *NOT* specified by this dictionary with all linters
-" available for that filetype, each filetype of interest should typically be
-" explicitly mapped to exactly one desirable linter here or below.
+" Dictionary mapping from each lintable filetype to the list of all linters
+" with which to asynchronously lint buffers of that filetype. Since ALE
+" defaults to linting filetypes *NOT* specified by this dictionary with all
+" linters available for that filetype, each filetype of interest should
+" typically be explicitly mapped to exactly one desirable linter here or below.
 let g:ale_linters = {}
 
-" let g:ale_run_synchronously = 1
-" let g:ale_history_enabled = 1
-" let g:ale_history_log_output = 1
-
-" ....................{ SYNTAX CHECK ~ ale : line          }....................
+" ....................{ SYNTAX CHECK ~ ale : line         }....................
 " Highlight syntactically invalid and suspect lines according to the predefined
 " highlight groups for doing so.
 highlight link ALEErrorLine   SpellBad
 highlight link ALEWarningLine SpellCap
 
-" ....................{ SYNTAX CHECK ~ ale : sign          }....................
+" ....................{ SYNTAX CHECK ~ ale : sign         }....................
 " Unconditionally disable ALE's usage of the sign gutter, which:
 "
 " * Conflicts with that of other bundles -- usually, version control.
@@ -654,11 +652,11 @@ let g:ale_sign_column_always = 1
 let g:ale_sign_error   = '»'
 let g:ale_sign_warning = '–'
 
-" ....................{ SYNTAX CHECK ~ ale : speed         }....................
-" Maximum number of ALE-specific signs per buffer. Since signs are well-known to
-" impose significant performance penalties in ALE, instructing ALE to *NOT*
-" maintain an excessive number of signs is a simple (albeit effective)
-" approach to optimizing ALE performance.
+" ....................{ SYNTAX CHECK ~ ale : speed        }....................
+" Maximum number of ALE-specific signs per buffer. Since signs are well-known
+" to impose significant performance penalties in ALE, instructing ALE to *NOT*
+" maintain an excessive number of signs is a simple (albeit effective) approach
+" to optimizing ALE performance.
 let g:ale_max_signs = 16
 
 " Maximum filesize in bytes to lint with ALE. Files larger than this size will
@@ -673,21 +671,35 @@ let g:ale_maximum_file_size = 200000
 " reducing responsiveness.
 let g:ale_echo_delay = 128
 
-" ....................{ SYNTAX CHECK ~ ale : python        }....................
+" ....................{ SYNTAX CHECK ~ ale : python       }....................
 " If Python 3 support is available...
 if g:our_is_python3
-    "FIXME: Reenable after "pyflakes" integration actually works.
-    " " If the "pyflakes" linter is available, prefer linting Python with *ONLY*
-    " " "pyflakes", a minimalist (and hence efficient) Python linter.
-    " if executable('pyflakes') || executable('pyflakes3')
-    "     let g:ale_linters['python'] = ['pyflakes']
+    " Defailt to linting Python with *NO* linters.
+    let g:ale_linters['python'] = []
 
-    " Else if the "pylint" linter is available...
-    if executable('pylint')
-        " Fallback to linting Python with this linter.
-        let g:ale_linters['python'] = ['pylint']
+    " If the "pyflakes3" command is available...
+    if executable('pyflakes3')
+        " Prefer linting Python with "pyflakes", a minimalist (and hence
+        " fairly efficient) Python linter.
+        call add(g:ale_linters['python'], 'pyflakes')
 
-        " Configure "pylint" to:
+        " Lint via the Python 3-specific "pyflakes3" command rather than the
+        " Python 2-specific "pyflakes" command defaulted to by this linter.
+        let g:ale_python_pyflakes_executable = 'pyflakes3'
+    endif
+
+    " If the "pylint3" command is also available...
+    if executable('pylint3')
+        " Additionally lint Python with this linter. Since this linter is
+        " maximalist (and hence inefficient), do so *AFTER* appending the
+        " minimalist "pyflakes" linter above.
+        call add(g:ale_linters['python'], 'pylint')
+
+        " Lint via the Python 3-specific "pylint3" command rather than the
+        " Python 2-specific "pylint" command defaulted to by this linter.
+        let g:ale_python_pylint_executable = 'pylint3'
+
+        " Configure this linter with:
         "
         " * "--disable=", squelching ignorable:
         "   * "R", refactor complaints.
@@ -701,8 +713,8 @@ if g:our_is_python3
         "     flagging "raise" statements whose exception instances "pylint"
         "     erroneously claims (without evidence) to be "None".
         "   * "E1101" (i.e., "no-member"), preventing "pylint" from
-        "     flagging dynamically synthesized attributes (notably, the "setter"
-        "     decorator of properties).
+        "     flagging dynamically synthesized attributes (notably, the
+        "     "setter" decorator of properties).
         "   * "E1133" (i.e., "not-an-iterable"), preventing "pylint" from
         "     erroneously flagging types that support iteration as not
         "     supporting iteration (notably, iterable cached properties).
@@ -710,8 +722,8 @@ if g:our_is_python3
         "     "pylint" from erroneously flagging types that support the "in"
         "     operator as not supporting that operator (notably, cached
         "     properties).
-        "   * "W0122" (i.e., "exec-used"), preventing "pylint" from flagging all
-        "     exec() statements. While commonly undesirable, there exist
+        "   * "W0122" (i.e., "exec-used"), preventing "pylint" from flagging
+        "     all exec() statements. While commonly undesirable, there exist
         "     numerous valid use cases for exec() statements. Flagging all such
         "     calls is unhelpful.
         "   * "W0125" (i.e., "using-constant-test"), preventing "pylint" from
@@ -724,17 +736,17 @@ if g:our_is_python3
         "     __init__() methods and hence guaranteed to be defined on object
         "     instantiation from being incorrectly flagged as problematic.
         "   * "W0212" (i.e., "protected-access"), preventing "pylint" from
-        "     flagging attempts to access protected attributes (i.e., attributes
-        "     whose names are prefixed by "_") from external objects. While such
-        "     access *CAN* be problematic, there exist numerous valid use cases
-        "     for doing so. In particular, implementing comparison operators
-        "     (e.g., the __ge__ special method defining an object's
-        "     implementation for the >= operator) commonly requires accessing
-        "     one or more protected attributes of the passed object; since that
-        "     object is commonly an instance of the same class, no privacy
-        "     violation commonly exists. Since "pylint" unconditionally flags
-        "     *ALL* such access regardless of context, the only sane decision is
-        "     *NOT* to play the game at all.
+        "     flagging attempts to access protected attributes (i.e.,
+        "     attributes whose names are prefixed by "_") from external
+        "     objects. While such access *CAN* be problematic, there exist
+        "     numerous valid use cases for doing so. In particular,
+        "     implementing comparison operators (e.g., the __ge__ special
+        "     method defining an object's implementation for the >= operator)
+        "     commonly requires accessing one or more protected attributes of
+        "     the passed object; since that object is commonly an instance of
+        "     the same class, no privacy violation commonly exists. Since
+        "     "pylint" unconditionally flags *ALL* such access regardless of
+        "     context, the only sane decision is *NOT* to play the game at all.
         "   * "W0511" (i.e., "fixme"), preventing "pylint" from flagging all
         "     "FIXME" comments. *sigh*
         "   * "W0603" (i.e., "global-statement"), preventing "pylint" from
@@ -759,15 +771,17 @@ if g:our_is_python3
           \ '--jobs=2'
     " Else if the "flake8" linter is available...
     elseif executable('flake8')
-        " Fallback to linting Python with this linter.
-        let g:ale_linters['python'] = ['flake8']
+        " Additionally lint Python with this linter. Since this linter is
+        " maximalist (but less so than "pylint"), do so *AFTER* appending the
+        " minimalist "pyflakes" linter above.
+        call add(g:ale_linters['python'], 'flake8')
 
         " Preserve only fatal errors (F) and non-fatal severe warnings (E).
         let g:ale_python_flake8_options = '--select=F,E'
     endif
 endif
 
-" ....................{ TAGS                               }....................
+" ....................{ TAGS                              }....................
 " Vim supports tags for a wide variety of languages, many of which are
 " unsupported by "Exuberant Ctags" and hence require manual intervention below
 " (e.g., JavaScript). For canonical documentation on doing so, see:
@@ -783,7 +797,7 @@ endif
 " indefinitely upward for filenames suffixed by ";".
 set tags=./.tags;
 
-" ....................{ TAGS ~ easytags                    }....................
+" ....................{ TAGS ~ easytags                   }....................
 " Common easytags commands include:
 "     :UpdateTags            " update tags only for the current file
 "     :UpdateTags -R {path}  " update tags recursively for the passed path
@@ -852,7 +866,7 @@ set tags=./.tags;
 "    call dein#untap()
 "endif
 
-" ....................{ VCS ~ fugitive                     }....................
+" ....................{ VCS ~ fugitive                    }....................
 " Define the following new commands:
 "
 " * GdiffUnstaged(), reviewing all unstaged changes by diffing the working
@@ -862,7 +876,7 @@ set tags=./.tags;
 command GdiffUnstaged :Git! diff
 command GdiffStaged :Git! diff --staged
 
-" ....................{ VCS ~ vimgitlog                    }....................
+" ....................{ VCS ~ vimgitlog                   }....................
 "FIXME: Currently disabled, due to "vimgitlog" being basically broken. That
 "said, it's the only currently maintained Vim plugin purporting to do this.
 
@@ -880,7 +894,7 @@ command GdiffStaged :Git! diff --staged
 " " Enable tree walking, substantially optimizing the tree view.
 " let g:GITLOG_walk_full_tree = 1
 
-" ....................{ PROJECTS                           }....................
+" ....................{ PROJECTS                          }....................
 " Associate project roots (i.e., top-level subdirectories of the current user's
 " home directory, containing all content for such projects) with project-
 " specific settings, typically enforcing coding conventions.

@@ -31,9 +31,7 @@ let g:our_is_startup = 1
 " ....................{ OUTPUT                            }....................
 " str PrintError(str message)
 "
-" Print the passed string as a non-fatal error message.
-"
-" Specifically:
+" Print the passed string as a non-fatal error message. Specifically:
 "
 " * If Vim is currently starting up, this string is printed *AFTER* Vim has
 "   completed starting up. Why? Because attempting to print strings during
@@ -225,9 +223,7 @@ if ! g:our_is_nvim && v:version < 742
         " If MacVim is unavailable, recommend its installation.
         if !executable('mvim')
             call PrintError(
-              \ 'Consider installing the Homebrew-managed MacVim port as follows:')
-            call PrintError(
-              \ '    brew install macvim --with-override-system-vim --with-python3')
+              \ 'Consider installing the Homebrew-managed MacVim port as follows: brew install macvim --with-override-system-vim --with-python3')
         endif
     endif
 endif
@@ -348,15 +344,11 @@ if g:our_is_display_server_x11 && !has('clipboard')
     " "+xterm_clipboard" feature is *NOT* required for clipboard use.
     if g:our_is_platform_macos
         call PrintError(
-          \ 'Vim feature "clipboard" unavailable, but running under macOS. Expect clipboard')
-        call PrintError(
-          \ 'integration to fail.')
+          \ 'Vim feature "clipboard" unavailable. Expect clipboard integration to fail.')
     " Else, the "+xterm_clipboard" feature is required for clipboard use.
     elseif !has('xterm_clipboard')
         call PrintError(
-          \ 'Vim features "clipboard" and "xterm_clipboard" unavailable, but running under')
-        call PrintError(
-          \ 'X11. Expect clipboard integration to fail.')
+          \ 'Vim features "clipboard" and "xterm_clipboard" unavailable. Expect clipboard integration to fail.')
     endif
 endif
 
@@ -366,17 +358,6 @@ endif
 if !executable('git')
     call PrintError(
       \ 'Command "git" not found. Expect dein installation to fail.')
-endif
-
-" If Python 3 support is available...
-if g:our_is_python3
-    " If neither the "pyflakes" nor "pyflakes3" commands are in the current
-    " ${PATH}, print a non-fatal warning. Python syntax checking falls back to
-    " the "flake8" command in the absence of both, which is much less helpful.
-    if !(executable('pyflakes') || executable('pyflakes3'))
-        call PrintError(
-          \ 'Commands "pyflakes" and "pyflakes3" not found. Expect Python syntax checking to fail.')
-    endif
 endif
 
 " If the current operation system is vanilla Microsoft Windows *AND*
