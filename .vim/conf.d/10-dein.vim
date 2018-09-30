@@ -366,8 +366,8 @@ if dein#load_state(g:our_plugin_dir)
     endif
 
     "FIXME: Currently disabled. One of the plugins mentioned below leverages
-    ""vimparser"; the other does not. Since "vimparser" is awesome, enable whichever
-    "of the two leverages this plugin.
+    ""vimparser"; the other does not. Since "vimparser" is awesome, enable
+    "whichever of the two leverages this plugin.
 
     " Filetype-specific syntax checking.
     "

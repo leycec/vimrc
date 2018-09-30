@@ -27,12 +27,12 @@ if !has('python3')
     endif
 endif
 
-" If no Python syntax checker supported out-of-the-box by the "vim-watchdogs"
-" plugin is in the current ${PATH}, print a warning. In this case, Python
-" buffers will be syntax-highlighted but *NOT* checked.
-if !executable('pyflakes') && !executable('flake8')
+" If no Python syntax checker supported out-of-the-box by the Asynchronous
+" Linting Engine (ALE) is in the current ${PATH}, print a warning. In this
+" case, Python buffers will be syntax-highlighted but *NOT* checked.
+if !executable('pyflakes3') && !executable('pylint3') && !executable('flake8')
     call PrintError(
-      \ 'Commands "pyflakes" and "flake8" not found. Expect Python syntax checking to fail.')
+      \ 'Commands "pyflakes3", "pylint3", and "flake8" not found. Expect Python syntax checking to fail.')
 endif
 
 " ....................{ COMMENTS                          }....................
@@ -72,7 +72,7 @@ augroup END
 " ....................{ WRAPPING                          }....................
 " For readability, visually soft-wrap long lines exceeding the width of the
 " current window. Since the "python-mode" bundle explicitly disables this, only
-" explicitly enabling this after loading that bundle suffices to re-enable this.
+" explicitly enabling this after loading that bundle suffices to reenable this.
 "
 " See the same subsection of "conf.d/20-theme.vim".
 setlocal wrap
