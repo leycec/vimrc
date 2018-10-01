@@ -17,11 +17,6 @@ scriptencoding utf-8
 "signify as a backup applicable to all other VCSs. Naturally, we would then
 "need to conditionally disable signify for git buffers. Certainly feasible.
 
-"FIXME: Unite integration should be substantially improved. The best
-"introduction to Unite as of this writing might be the following repo readme:
-"    https://github.com/joedicastro/dotfiles/tree/master/vim
-"After integrating Unite, excise airline's tagbar, which Unite (of course) also
-"offers a facsimile of. "One plugin to unplugin them all!"
 "FIXME: Refactor according to Shougo's ".vimrc", implementing (among other tasty
 "things) a cache optimizing loading of dein dependencies on startup:
 "
@@ -207,37 +202,25 @@ if dein#load_state(g:our_plugin_dir)
 "      \ let g:dein#plugin.build = cmd\n
 "      \ "})
 
-    " Arbitrary information harvester.
-    call dein#add('Shougo/unite.vim', {
-      \ 'lazy' : 1,
-      \ 'on_cmd': ['Unite', 'UniteResume'],
-      \ 'hook_post_source': '
-      \ " Match fuzzily, effectively inserting the nongreedy globbing operator\n
-      \ " "*?" between each character of the search pattern (e.g., searching for\n
-      \ " "vvrc" in a unite buffer matches both "~/.vim/vimrc" and\n
-      \ " "~/.vim/plugin/vundle/startup/rc.vim").\n
-      \ call unite#filters#matcher_default#use(["matcher_fuzzy"])\n
-      \ \n
-      \ " Sort unite matches by descending rank.\n
-      \ call unite#filters#sorter_default#use(["sorter_rank"])\n
-      \ \n
-      \ " Directory to which unite caches metadata.\n
-      \ let g:unite_data_directory = g:our_cache_dir . "/unite"\n
-      \ \n
-      \ " Open unite buffers in Insert Mode by default.\n
-      \ let g:unite_enable_start_insert = 1\n
-      \ \n
-      \ " String prefixing the unite input prompt.\n
-      \ let g:unite_prompt = "» "\n
-      \ \n
-      \ " Enable unite source "unite-source-history/yank", permitting\n
-      \ " exploration of yank history (e.g., via "yankring" or "yankstack").\n
-      \ let g:unite_source_history_yank_enable = 1\n
-      \ '})
-      " \ 'depends': 'Shougo/vimproc',
-
     " easytags dependency.
     "call dein#add('xolox/vim-misc')
+
+    " ..................{ LAZY ~ file : fzf                 }..................
+    " Low-level Fast Fuzzy Finder (FZF), including both the "fzf" command *AND*
+    " low-level Vim "fzf" integration. For portability, this installs the "fzf"
+    " command in a reasonably cross-platform manner isolated to dein's cache
+    " directory and hence Vim usage only. Dismantled, this is:
+    " 
+    " * "./install --all", preventing the FZF makefile from blocking.
+    " * "'merged': 0", preventing dein from attempting to merge this dependency
+    "   as a Vim plugin into its internal plugin cache.
+    call dein#add('junegunn/fzf', {
+      \ 'build': './install --all',
+      \ 'merged': 0
+      \ })
+
+    " High-level Vim "fzf" integration.
+    call dein#add('junegunn/fzf.vim', {'depends': 'fzf'})
 
     " ..................{ LAZY ~ filetype                   }..................
     " CSS. As the CSS plugin provided out-of-the-box by Vim lacks support for
@@ -265,6 +248,30 @@ if dein#load_state(g:our_plugin_dir)
     " Zeshy.
     call dein#add('leycec/vim-zeshy', {'on_ft': 'zeshy'})
 
+    " ..................{ LAZY ~ filetype : rst             }..................
+    " reStructuredText (reST).
+    call dein#add('Rykka/riv.vim', {'on_ft': 'rst'})
+
+    " If the external "instantRst" command is installed, the external
+    " "instant_rst" Python package is assumed to also be installed, in which
+    " case the "InstantRst" plugin by the same author integrating with the
+    " "riv.vim" plugin installed above is both safely installable *AND* usable.
+    if executable('instantRst')
+        call dein#add('Rykka/InstantRst', {'on_ft': 'rst'})
+
+    "FIXME: While warning the user of this condition would be generally useful,
+    "Vim appears to provide no means of doing so without requiring the user to
+    "manually press a key on *EVERY* Vim startup after displaying this warning.
+    "This warning is currently disabled until a less intrusive warning
+    "mechanism is discovered.
+
+    " Else, "InstantRst" is *NOT* safely installable. Warn the user
+    " appropriately.
+    " else
+    "     call PrintError(
+    "       \ '"instantRst" command not found; reStructuredText buffers not previewable.')
+    endif
+
     " ..................{ LAZY ~ key                        }..................
     " Bind <gc-> (e.g., <gcc>) to perform buffer commenting and uncommenting.
     call dein#add('tomtom/tcomment_vim', {
@@ -289,30 +296,6 @@ if dein#load_state(g:our_plugin_dir)
     " Coerce <Enter> to inject '\v' magic on search-and-replacements.
     call dein#add('coot/EnchantedVim.git')
     " call dein#add('coot/EnchantedVim.git', {'depends': 'coot/CRDispatcher.git'})
-
-    " ..................{ LAZY ~ filetype : rst             }..................
-    " reStructuredText (reST).
-    call dein#add('Rykka/riv.vim', {'on_ft': 'rst'})
-
-    " If the external "instantRst" command is installed, the external
-    " "instant_rst" Python package is assumed to also be installed, in which
-    " case the "InstantRst" plugin by the same author integrating with the
-    " "riv.vim" plugin installed above is both safely installable *AND* usable.
-    if executable('instantRst')
-        call dein#add('Rykka/InstantRst', {'on_ft': 'rst'})
-
-    "FIXME: While warning the user of this condition would be generally useful,
-    "Vim appears to provide no means of doing so without requiring the user to
-    "manually press a key on *EVERY* Vim startup after displaying this warning.
-    "This warning is currently disabled until a less intrusive warning
-    "mechanism is discovered.
-
-    " Else, "InstantRst" is *NOT* safely installable. Warn the user
-    " appropriately.
-    " else
-    "     call PrintError(
-    "       \ '"instantRst" command not found; reStructuredText buffers not previewable.')
-    endif
 
     " ..................{ LAZY ~ syntax                     }..................
     " CSS-specific syntax highlighting.
