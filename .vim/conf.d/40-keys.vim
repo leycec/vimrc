@@ -134,10 +134,6 @@ nnoremap <silent> <leader>1 :call vimrc#synchronize_syntax_highlighting()<cr>
 nnoremap <silent> <leader>/ :nohlsearch<cr>
 
 " ....................{ LEADER ~ buffer                   }....................
-"FIXME: This probably isn't quite right.
-" Bind <,e> to open a new buffer editing a file discovered via Unite.
-nnoremap <leader>e :Unite<cr>
-
 " Bind <,w> to write the current buffer. This avoids the need to otherwise
 " confirm this write with a prefixing <Enter>, reducing keystroke load.
 nnoremap <leader>w :w<cr>

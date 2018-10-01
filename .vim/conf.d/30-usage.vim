@@ -256,9 +256,6 @@ set diffopt=filler,vertical
 " buffer by diffing the current buffer against the corresponding file if any.
 command DiffSelf call vimrc#diff_buffer_current_with_file_current()
 
-" ....................{ EXPLORING ~ unite                 }....................
-" Common Unite-based exploration commands include:
-
 " ....................{ EXPLORING ~ files                 }....................
 " Common file exploration commands include:
 "     :VimFiler         " run vimfiler
