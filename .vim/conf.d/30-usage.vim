@@ -408,6 +408,11 @@ set foldlevelstart=99
 set foldlevel=99
 
 " ....................{ FORMATTING                        }....................
+" Prevent Vim from appending an extraneous space after periods when either
+" joining or formatting text in comments. Archaic aesthetics have no place in
+" modern parlance, Brad.
+set nojoinspaces
+
 " Filetype-specific formatting. For safety, append and shift list
 " "formatoptions" with the "+=" and "-=" operators rather than overwriting such
 " list (and hence sane Vim defaults) with the "=" operator. See ":h fo-table".
