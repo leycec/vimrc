@@ -71,6 +71,21 @@ function! vimrc#is_option(option_name) abort
     return exists('+' . a:option_name)
 endfunction
 
+" ....................{ TESTERS ~ path                    }....................
+" vimrc#is_path(pathname: str) -> bool
+"
+" 1 if a directory or file with the passed absolute or relative pathname
+" (possibly prefixed by an optional "~/", expanding to the absolute dirname of
+" the home directory for the current user) exists or 0 otherwise.
+"
+" This function was gratefully inspired by the following external source:
+"
+" * brianmearns's code snippet, published at:
+"   https://stackoverflow.com/a/23496813/2809027
+function! vimrc#is_path(pathname) abort
+    return !empty(glob(a:pathname))  " ...pithy one-liners for great justice.
+endfunction
+
 " ....................{ GETTERS ~ script                  }....................
 " vimrc#get_script_function(
 "     script_filename: str, function_name: str) -> FunctionType

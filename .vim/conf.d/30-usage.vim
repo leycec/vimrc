@@ -9,9 +9,9 @@ scriptencoding utf-8
 
 "FIXME: "python-mode" provides Rope support, which we should both learn and
 "configure appropriately. Rope is basically PyCharm for Vim, providing deep
-"introspection, analysis, and refactoring of Python on a project-wide basis
-"from within Vim -- without use of external tag files. Yeah; it's friggin'
-"sweet. See: https://github.com/klen/python-mode
+"introspection, analysis, and refactoring of Python on a project-wide basis from
+"within Vim -- without use of external tag files. Yeah; it's friggin' sweet.
+"See: https://github.com/klen/python-mode
 
 " ....................{ BUFFERS                           }....................
 " Common buffer commands include:
@@ -204,8 +204,8 @@ endif
 augroup our_filetype_comments
     autocmd!
 
-    " Parse "#" characters prefixing any words as comment leaders regardless of
-    " whether such characters are immediately followed by whitespace. By
+    " Parse "#" characters prefixing any words as comment leaders regardless
+    " of whether such characters are immediately followed by whitespace. By
     " default, the plugins for the following filetypes only parse "#"
     " characters immediately followed by whitespace as comment leaders --
     " which, given our glut of "#FIXME" comments, is less than helpful.
@@ -248,13 +248,17 @@ set backspace=indent,eol,start
 "
 " * "filler", display filler lines (i.e., contextual lines whose sole purpose
 "   is to synchronize vertically-split diff buffers).
-" * "vertical", opening "diff" mode with vertical rather than horizontal splits.
-"   (Horizontal splits? Seriously, Bram. Who does that? *NO ONE*. That's who.)
+" * "vertical", opening "diff" mode with vertical rather than horizontal
+"   splits.  (Horizontal splits? Seriously, Bram. Who does that? *NO ONE*.
+"   That's who.)
 set diffopt=filler,vertical
 
 " Define the DiffSelf() command to review all unsaved changes in the current
 " buffer by diffing the current buffer against the corresponding file if any.
 command DiffSelf call vimrc#diff_buffer_current_with_file_current()
+
+" ....................{ EXPLORING ~ unite                 }....................
+" Common Unite-based exploration commands include:
 
 " ....................{ EXPLORING ~ files                 }....................
 " Common file exploration commands include:
@@ -349,9 +353,8 @@ let g:pymode_rope_complete_on_dot = 0
 "     :RivSpecification   " read the 'reStructuredText Specification'
 "     :RivQuickStart      " read the 'QuickStart With Riv'
 "     :RivInstruction     " read the 'Riv Instructions'
-
-" ....................{ FILETYPE ~ rest : riv : instantrst}....................
-" Common InstantRst commands include:
+"
+" Likewise, common InstantRst commands include:
 "     :InstantRst         " preview current reST buffer
 "     :InstantRst!        " preview all reST buffers
 "     :StopInstantRst     " stop previewing current reST buffer
@@ -408,11 +411,6 @@ set foldlevelstart=99
 set foldlevel=99
 
 " ....................{ FORMATTING                        }....................
-" Prevent Vim from appending an extraneous space after periods when either
-" joining or formatting text in comments. Archaic aesthetics have no place in
-" modern parlance, Brad.
-set nojoinspaces
-
 " Filetype-specific formatting. For safety, append and shift list
 " "formatoptions" with the "+=" and "-=" operators rather than overwriting such
 " list (and hence sane Vim defaults) with the "=" operator. See ":h fo-table".
@@ -430,7 +428,7 @@ augroup our_filetype_format
     " * "zeshy", handled by the third-party "zeshy" plugin. This formatting is
     "   already applied by this plugin and need not be repeated here.
     autocmd FileType
-      \ dosini,ebuild,gitcommit,markdown,mkd,python,sh,vim,yaml,zsh
+      \ dosini,ebuild,fstab,gitcommit,markdown,mkd,python,sh,vim,yaml,zsh
       \ call vimrc#sanitize_code_buffer_formatting()
 
     " Enable comment-aware text formatting for *ALL* code-specific
@@ -449,10 +447,10 @@ set wildignore=*.class,*.dll,*.exe,*.gif,*.jpg,*.o,*.obj,*.png,*.py[co],*.so,*.s
 " ....................{ HISTORY                           }....................
 " See section "TEMPORARY PATHS" for related settings.
 
-" Maximum number of per-session ex commands and search patterns to be persisted.
+" Maximum number of per-session ex commands and search patterns to persist.
 set history=1000
 
-" Maximum number of per-buffer undos to be persisted.
+" Maximum number of per-buffer undos to persist.
 set undolevels=1000
 
 " ....................{ INDENTATION                       }....................
@@ -498,7 +496,7 @@ augroup our_filetype_indentation
     autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2 tabstop=2
 
     " For markup-obsessed filetypes (e.g., XML), minimize the default tab width
-    " to the minimum non-zero width (i.e., 1). XML, what ills has thou wrought?
+    " to the minimum non-zero width (i.e., 1). XML, what ills do thou wrought?
     autocmd FileType html,xml setlocal shiftwidth=1 softtabstop=1 tabstop=1
 
     " For filetypes in which tabs are significant (e.g., ebuilds, makefiles),
@@ -547,8 +545,7 @@ command SwitchWindowRight call vimrc#switch_window('l')
 " Permit the Python-specific "autopep8" reformatter to aggressively reformat
 " long lines. While "vim-autoformat" provides default options for such
 " reformatter under "plugin/defaults.vim", "autopep8" senselessly ignores
-" option "--max-line-length" unless at least *TWO* aggressive options are also
-" passed.
+" option "--max-line-length" unless at least two aggressive options are passed.
 let g:formatprg_python = 'autopep8'
 let g:formatprg_args_expr_python = '"- --experimental --aggressive --aggressive --aggressive ".(&textwidth ? "--max-line-length=".&textwidth : "")'
 
@@ -632,6 +629,10 @@ augroup END
 " typically be explicitly mapped to exactly one desirable linter here or below.
 let g:ale_linters = {}
 
+" let g:ale_run_synchronously = 1
+" let g:ale_history_enabled = 1
+" let g:ale_history_log_output = 1
+
 " ....................{ SYNTAX CHECK ~ ale : line         }....................
 " Highlight syntactically invalid and suspect lines according to the predefined
 " highlight groups for doing so.
@@ -676,32 +677,18 @@ let g:ale_echo_delay = 128
 " ....................{ SYNTAX CHECK ~ ale : python       }....................
 " If Python 3 support is available...
 if g:our_is_python3
-    " Defailt to linting Python with *NO* linters.
-    let g:ale_linters['python'] = []
+    "FIXME: Reenable after "pyflakes" integration actually works.
+    " " If the "pyflakes" linter is available, prefer linting Python with *ONLY*
+    " " "pyflakes", a minimalist (and hence efficient) Python linter.
+    " if executable('pyflakes') || executable('pyflakes3')
+    "     let g:ale_linters['python'] = ['pyflakes']
 
-    " If the "pyflakes3" command is available...
-    if executable('pyflakes3')
-        " Prefer linting Python with "pyflakes", a minimalist (and hence
-        " fairly efficient) Python linter.
-        call add(g:ale_linters['python'], 'pyflakes')
+    " Else if the "pylint" linter is available...
+    if executable('pylint')
+        " Fallback to linting Python with this linter.
+        let g:ale_linters['python'] = ['pylint']
 
-        " Lint via the Python 3-specific "pyflakes3" command rather than the
-        " Python 2-specific "pyflakes" command defaulted to by this linter.
-        let g:ale_python_pyflakes_executable = 'pyflakes3'
-    endif
-
-    " If the "pylint3" command is also available...
-    if executable('pylint3')
-        " Additionally lint Python with this linter. Since this linter is
-        " maximalist (and hence inefficient), do so *AFTER* appending the
-        " minimalist "pyflakes" linter above.
-        call add(g:ale_linters['python'], 'pylint')
-
-        " Lint via the Python 3-specific "pylint3" command rather than the
-        " Python 2-specific "pylint" command defaulted to by this linter.
-        let g:ale_python_pylint_executable = 'pylint3'
-
-        " Configure this linter with:
+        " Configure "pylint" to:
         "
         " * "--disable=", squelching ignorable:
         "   * "R", refactor complaints.
@@ -773,10 +760,8 @@ if g:our_is_python3
           \ '--jobs=2'
     " Else if the "flake8" linter is available...
     elseif executable('flake8')
-        " Additionally lint Python with this linter. Since this linter is
-        " maximalist (but less so than "pylint"), do so *AFTER* appending the
-        " minimalist "pyflakes" linter above.
-        call add(g:ale_linters['python'], 'flake8')
+        " Fallback to linting Python with this linter.
+        let g:ale_linters['python'] = ['flake8']
 
         " Preserve only fatal errors (F) and non-fatal severe warnings (E).
         let g:ale_python_flake8_options = '--select=F,E'

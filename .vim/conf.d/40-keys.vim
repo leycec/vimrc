@@ -17,8 +17,8 @@ scriptencoding utf-8
 "   for ex command mode (i.e., the command prompt entered via <:>).
 " * lmap() and lnoremap(), recursively and nonrecursively defining a mapping
 "   for *ALL* insertion modes (e.g., ex command mode, insert mode,
-"   regexp-search
-"   mode). The "l" purportedly stands for "[L]ang-Arg pseudo-mode." (Ugh.)
+"   regexp-search mode). The "l" purportedly stands for "[L]ang-Arg
+"   pseudo-mode." (Ugh.)
 " * nmap() and nnoremap(), recursively and nonrecursively defining a mapping
 "   for normal mode.
 " * imap() and inoremap(), recursively and nonrecursively defining a mapping
@@ -40,7 +40,7 @@ scriptencoding utf-8
 "
 " --------------------( BINDINGS ~ debug                  )--------------------
 " To list all custom key bindings, call the ":map" Ex command with no
-" arguments. To show the command associated with an existing:
+" arguments.  To show the command associated with an existing:
 "
 " * Builtin key bindings, pass that binding to the ":help" Ex command (e.g.,
 "   ":help dd"). Both printable (e.g., "j") and non-printable characters (e.g.,
@@ -120,8 +120,8 @@ let maplocalleader="-"
 " Bind <,vr> to reload Vim's startup scripts (e.g., this file).
 nnoremap <silent> <leader>vr load-vim-script $MYVIMRC<cr>
 
-" Bind <,u> to toggle the undo-tree panel. (Vim 7.0 generalized the undo history
-" from a uniform path to branching tree.)
+" Bind <,u> to toggle the undo-tree panel. (Vim 7.0 generalized the undo
+" history from a uniform path to branching tree.)
 nnoremap <leader>u :UndotreeToggle<cr>
 
 " ....................{ LEADER ~ colour                   }....................
@@ -134,6 +134,10 @@ nnoremap <silent> <leader>1 :call vimrc#synchronize_syntax_highlighting()<cr>
 nnoremap <silent> <leader>/ :nohlsearch<cr>
 
 " ....................{ LEADER ~ buffer                   }....................
+"FIXME: This probably isn't quite right.
+" Bind <,e> to open a new buffer editing a file discovered via Unite.
+nnoremap <leader>e :Unite<cr>
+
 " Bind <,w> to write the current buffer. This avoids the need to otherwise
 " confirm this write with a prefixing <Enter>, reducing keystroke load.
 nnoremap <leader>w :w<cr>
@@ -145,18 +149,17 @@ nnoremap <leader>w :w<cr>
 " * By ALE design, these bindings *MUST* be defined recursively.
 " * For unknown reasons, these bindings *MUST* be unconditionally defined
 "   regardless of whether ALE is, was, or will be lazily loaded for the current
-"   buffer. Attempting to lazily define these key bindings at plugin load time
-"   spuriously fails. *shrug*
+"   buffer. Attempting to lazily define these key bindings on plugin load fails.
 nmap <silent> <leader>lj <Plug>(ale_next_wrap)
 nmap <silent> <leader>lk <Plug>(ale_previous_wrap)
 
 " ....................{ LEADER ~ plugin : vcs : fugitive  }....................
-" Bind <,Gu> to open a new buffer diffing the working Git tree against the
-" index.
+" Bind <,Gu> to open a new buffer diffing the working Git tree against that
+" tree's index.
 nnoremap <leader>Gu :GdiffUnstaged<cr>
 
-" Bind <,Gt> to open a new buffer diffing the Git index against the current
-" HEAD.
+" Bind <,Gt> to open a new buffer diffing the working Git index against the
+" current HEAD for the working Git tree.
 nnoremap <leader>Gt :GdiffStaged<cr>
 
 " Bind <,Gs> to open a new buffer viewing and editing the Git index.

@@ -14,9 +14,14 @@ scriptencoding utf-8
 "FIXME: Install https://github.com/mhinz/vim-signify, an alternative to
 "gitgutter generally applicable to *ALL* VCSs. Do we want both? Simply, *YES*.
 "gitgutter is more feature-full and hence preferable for git, thus relegating
-"signify as a backup applicable to all other VCSs. Naturally, we would then
-"need to conditionally disable signify for git buffers. Certainly feasible.
+"signify as a backup applicable to all other VCSs. Naturally, we would then need
+"to conditionally disable signify for git buffers. Certainly feasible.
 
+"FIXME: Unite integration should be substantially improved. The best
+"introduction to Unite as of this writing is probably the following repo readme:
+"    https://github.com/joedicastro/dotfiles/tree/master/vim
+"After integrating Unite, excise airline's tagbar, which Unite (of course) also
+"offers a facsimile of. "One plugin to unplugin them all!"
 "FIXME: Refactor according to Shougo's ".vimrc", implementing (among other tasty
 "things) a cache optimizing loading of dein dependencies on startup:
 "
@@ -39,11 +44,12 @@ scriptencoding utf-8
 " which means "bloody early in Vim startup."
 "
 " Common startup-related commands include:
-"     :scriptnames         " list absolute paths of all startup scripts
+"     :scriptnames      " list the absolute paths of all current startup scripts
 "
 " Common dein commands include:
-"     call dein#install()  " install all configured plugins
-"     call dein#update()   " update all installed plugins
+"     :DeinUpdate           " install and/or update all plugins as needed
+"     :call dein#install()  " install all uninstalled plugins
+"     :call dein#update()   " update all installed plugins
 "     :h dein              " peruse documentation
 "
 " For nonstandard Vim plugins requiring post-installation "intervention" (e.g.,
@@ -54,9 +60,8 @@ scriptencoding utf-8
 "     https://github.com/Shougo/dein-vim-recipes
 "     https://github.com/Shougo/dein-vim-recipes/tree/master/recipes
 "
-" While these recipes could be preloaded on Vim startup, doing so would
-" probably violate lazy loading and hence unnecessarily increase startup time.
-" That said:
+" While these recipes could be preloaded on Vim startup, doing so would probably
+" violate lazy loading and hence unnecessarily increase startup time. That said:
 "
 "     " Leverage official dein recipes for popular plugins, if available.
 "     dein 'Shougo/dein-vim-recipes', {'force' : 1}
@@ -84,7 +89,7 @@ endif
 " ....................{ OPTIONS                           }....................
 " Number of seconds after which to timeout plugin installation and upgrades.
 " Since the default is insufficient for installing large plugins on slow
-" connections, this default is slightly increased.
+" connections, slightly increase such default.
 let g:dein#install_process_timeout = 120
 
 " ....................{ CONFIGURE                         }....................
@@ -103,7 +108,7 @@ let g:dein#install_process_timeout = 120
 "
 "     call dein#recache_runtimepath()
 "
-" Yes, this sucks. No, there's nothing we can do about it. Yes, that sucks.
+" Yes, this sucks. No, there's nothing we can do about it. Yes, that sucks, too.
 " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 "FIXME: Unconvinced this is actually working. So much for efficiency. *sigh*
@@ -111,13 +116,31 @@ if dein#load_state(g:our_plugin_dir)
     " Initialize dein, installing new plugins to and loading installed plugins
     " from the plugin subdirectory. Since dein adopts the whitelist approach
     " to plugin management, plugins *NOT* explicitly passed to dein#add() will
-    " be disabled and hence *NOT* loaded.
-    call dein#begin(g:our_plugin_dir)
-    call dein#add  (g:our_plugin_dir)
+    " be disabled and hence *NOT* loaded. Dismantled, this is:
+    "
+    " * "[...]", listing the absolute filenames of all Vim scripts whose
+    "   modification times are to be internally tested by dein against
+    "   previously cached versions of these scripts. On detecting a
+    "   discrepancy (e.g., due to the additional, removal, or modification of a
+    "   plugin configured by this Vim script), dein recaches everything.
+    "   Naturally, this list defaults to "[$MYVIMRC]", the absolute filename of
+    "   the root Vim script (e.g., "~/.vimrc"). While sufficient in the common
+    "   case, this default fails to account for Vimrc configurations
+    "   disaggregated across multiple files. Ergo, the current approach.
+    " * "$MYVIMRC", the absolute filename of the root Vim script (e.g.,
+    "   "~/.vimrc").
+    " * "expand('<sfile>:p')", the absolute filename of the current Vim script
+    "   (e.g., "~/.vimrc/conf.d/10-dein.vim").
+    call dein#begin(g:our_plugin_dir, [expand('<sfile>:p')])
+    "call dein#begin(g:our_plugin_dir, [$MYVIMRC, expand('<sfile>:p')])
 
     " ..................{ CORE                              }..................
     " Install dein with dein itself, completing the self-referential loop.
     call dein#add('Shougo/dein.vim')
+
+    " Third-party dein plugin providing the :DeinUpdate command, a substantial
+    " improvement over dein's vanilla workflow for installation and updates.
+    call dein#add('wsdjeg/dein-ui.vim')
 
     " ..................{ NON-LAZY ~ theme                  }..................
     "FIXME: I'm not entirely fond of either the comment or documentation colors.
@@ -130,7 +153,7 @@ if dein#load_state(g:our_plugin_dir)
     call dein#add('vim-airline/vim-airline')
     call dein#add('vim-airline/vim-airline-themes')
 
-    " ..................{ NON-LAZY ~ vcs                    }..................
+    " ..................{ NON-LAZY ~ vcs                   }..................
     " By definition, VCS wrappers *CANNOT* be loaded lazily -- despite the
     " abundance of online ".vimrc" examples erroneously suggesting they can.
     " Since VCS wrapper hooks *MUST* be run on buffer switches to detect
@@ -184,45 +207,53 @@ if dein#load_state(g:our_plugin_dir)
     call dein#add('godlygeek/tabular', {'lazy' : 1})
 
     " Low-level asynchronous Vim support.
-    call dein#add('Shougo/vimproc.vim', {'build' : 'make'})
+    call dein#add('Shougo/vimproc.vim', {
+      \ 'hook_post_update': "
+      \ if dein#util#_is_windows()\n
+      \     let cmd = 'tools\\update-dll-mingw'\n
+      \ elseif dein#util#_is_cygwin()\n
+      \     let cmd = 'make -f make_cygwin.mak'\n
+      \ elseif executable('gmake')\n
+      \     let cmd = 'gmake'\n
+      \ else\n
+      \     let cmd = 'make'\n
+      \ endif\n
+      \ let g:dein#plugin.build = cmd\n
+      \ "})
 
-    "FIXME: While more portable, the following alternative "vimproc"
-    "installation instructions now appear to silently fail. *sigh* 
-"    call dein#add('Shougo/vimproc.vim', {
-"      \ 'hook_post_update': "
-"      \ if dein#util#_is_windows()\n
-"      \     let cmd = 'tools\\update-dll-mingw'\n
-"      \ elseif dein#util#_is_cygwin()\n
-"      \     let cmd = 'make -f make_cygwin.mak'\n
-"      \ elseif executable('gmake')\n
-"      \     let cmd = 'gmake'\n
-"      \ else\n
-"      \     let cmd = 'make'\n
-"      \ endif\n
-"      \ let g:dein#plugin.build = cmd\n
-"      \ "})
+    " Arbitrary information harvester.
+    call dein#add('Shougo/unite.vim', {
+      \ 'lazy' : 1,
+      \ 'on_cmd': ['Unite', 'UniteResume'],
+      \ 'hook_post_source': '
+      \ " Match "fuzzily," effectively inserting the nongreedy globbing operator\n
+      \ " "*?" between each character of the search pattern (e.g., searching for\n
+      \ " "vvrc" in a unite buffer matches both "~/.vim/vimrc" and\n
+      \ " "~/.vim/plugin/vundle/startup/rc.vim").\n
+      \ call unite#filters#matcher_default#use(["matcher_fuzzy"])\n
+      \ \n
+      \ " Sort unite matches by descending rank.\n
+      \ call unite#filters#sorter_default#use(["sorter_rank"])\n
+      \ \n
+      \ " Directory to which unite caches metadata.\n
+      \ let g:unite_data_directory = g:our_cache_dir . "/unite"\n
+      \ \n
+      \ " Open unite buffers in Insert Mode by default.\n
+      \ let g:unite_enable_start_insert = 1\n
+      \ \n
+      \ " String prefixing the unite input prompt.\n
+      \ let g:unite_prompt = "» "\n
+      \ \n
+      \ " Enable unite source "unite-source-history/yank", permitting\n
+      \ " exploration of yank history (e.g., via "yankring" or "yankstack").\n
+      \ let g:unite_source_history_yank_enable = 1\n
+      \ '})
+      " \ 'depends': 'Shougo/vimproc',
 
     " easytags dependency.
     "call dein#add('xolox/vim-misc')
 
-    " ..................{ LAZY ~ file : fzf                 }..................
-    " Low-level Fast Fuzzy Finder (FZF), including both the "fzf" command *AND*
-    " low-level Vim "fzf" integration. For portability, this installs the "fzf"
-    " command in a reasonably cross-platform manner isolated to dein's cache
-    " directory and hence Vim usage only. Dismantled, this is:
-    " 
-    " * "./install --all", preventing the FZF makefile from blocking.
-    " * "'merged': 0", preventing dein from attempting to merge this dependency
-    "   as a Vim plugin into its internal plugin cache.
-    call dein#add('junegunn/fzf', {
-      \ 'build': './install --all',
-      \ 'merged': 0
-      \ })
-
-    " High-level Vim "fzf" integration.
-    call dein#add('junegunn/fzf.vim', {'depends': 'fzf'})
-
-    " ..................{ LAZY ~ filetype                   }..................
+    " ....................{ LAZY ~ filetype               }....................
     " CSS. As the CSS plugin provided out-of-the-box by Vim lacks support for
     " most CSS3-specific syntactic constructs, external plugins are preferred.
     call dein#add('hail2u/vim-css3-syntax', {'on_ft': 'css'})
@@ -247,30 +278,6 @@ if dein#load_state(g:our_plugin_dir)
 
     " Zeshy.
     call dein#add('leycec/vim-zeshy', {'on_ft': 'zeshy'})
-
-    " ..................{ LAZY ~ filetype : rst             }..................
-    " reStructuredText (reST).
-    call dein#add('Rykka/riv.vim', {'on_ft': 'rst'})
-
-    " If the external "instantRst" command is installed, the external
-    " "instant_rst" Python package is assumed to also be installed, in which
-    " case the "InstantRst" plugin by the same author integrating with the
-    " "riv.vim" plugin installed above is both safely installable *AND* usable.
-    if executable('instantRst')
-        call dein#add('Rykka/InstantRst', {'on_ft': 'rst'})
-
-    "FIXME: While warning the user of this condition would be generally useful,
-    "Vim appears to provide no means of doing so without requiring the user to
-    "manually press a key on *EVERY* Vim startup after displaying this warning.
-    "This warning is currently disabled until a less intrusive warning
-    "mechanism is discovered.
-
-    " Else, "InstantRst" is *NOT* safely installable. Warn the user
-    " appropriately.
-    " else
-    "     call PrintError(
-    "       \ '"instantRst" command not found; reStructuredText buffers not previewable.')
-    endif
 
     " ..................{ LAZY ~ key                        }..................
     " Bind <gc-> (e.g., <gcc>) to perform buffer commenting and uncommenting.
@@ -297,18 +304,81 @@ if dein#load_state(g:our_plugin_dir)
     call dein#add('coot/EnchantedVim.git')
     " call dein#add('coot/EnchantedVim.git', {'depends': 'coot/CRDispatcher.git'})
 
+    " ..................{ LAZY ~ filetype : rst             }..................
+    " reStructuredText (reST).
+    call dein#add('Rykka/riv.vim', {'on_ft': 'rst'})
+
+    " If the external "instantRst" command is installed, the external
+    " "instant_rst" Python package is assumed to also be installed, in which
+    " case the "InstantRst" plugin by the same author integrating with the
+    " "riv.vim" plugin installed above is both safely installable *AND* usable.
+    if executable('instantRst')
+        call dein#add('Rykka/InstantRst', {'on_ft': 'rst'})
+
+    "FIXME: While warning the user of this condition would be generally useful, Vim
+    "appears to provide no means of doing so without requiring the user to manually
+    "press a key on *EVERY* Vim startup after displaying this warning. This warning
+    "is currently disabled until a less intrusive warning mechanism is discovered.
+
+    " Else, "InstantRst" is *NOT* safely installable. Warn the user appropriately.
+    " else
+    "     echomsg '"instantRst" command not found; reStructuredText buffers not previewable.'
+    endif
+
+    " ..................{ LAZY ~ path                       }..................
+    " File exploration.
+    call dein#add('Shougo/vimfiler', {
+      \ 'on_cmd': ['VimFiler', 'VimFilerExplorer'],
+      \ 'hook_post_source': '
+      \ " Set vimfiler as the default file explorer.\n
+      \ let g:vimfiler_as_default_explorer = 1\n
+      \ '})
+      " \ 'depends': 'Shougo/unite.vim',
+      " \ 'on_cmd': ['VimFiler', 'VimFilerExplorer'],
+      " \ })
+
+    " If the canonical "~/.fzf.bash" script installed by the Fast Fuzzy Finder
+    " (FZF) exists, assume for simplicity that the low-level Vim plugin bundled
+    " with FZF is also installed; else, assume that both require installation.
+    " Dismantled, this is:
+    "
+    " * "./install --all", preventing dein from blocking on this installation.
+    " * "'merged': 0", preventing dein from caching the low-level FZF plugin.
+    "   Why? Because dein internally caches plugins by basename excluding
+    "   suffixing filetype. Ergo, the "fzf" plugin installed by this statement
+    "   and the "fzf.vim" plugin installed by the following statement are
+    "   internally cached to the same directory by dein, inducing non-trivial
+    "   namespace clashes throughout the clumsy entirety of existence.
+    "
+    " See also:
+    "     https://github.com/Shougo/dein.vim/issues/74#issuecomment-237198717
+    "     https://github.com/junegunn/fzf.vim/issues/722
+    if !vimrc#is_path('~/.fzf.bash')
+        call dein#add('junegunn/fzf', {
+          \ 'build': './install --all', 'merged': 0 }) 
+    endif
+
+    " In either case, unconditionally install the high-level "fzf.vim" API...
+    " tragically also prefixed by "junegunn/fzf". (See above.)
+    call dein#add('junegunn/fzf.vim', { 'depends': 'fzf' })
+
+    "FIXME: Unconvinced I require a grepping plugin. If I ever do, however, this is
+    "undoubtedly the one to uncomment. State of the art.
+    " File grepping.
+    "call dein#add('rking/ag.vim', { 'autoload': {
+    "            \ 'commands': [{'name': 'Ag', 'complete': 'file'}] }}
+
     " ..................{ LAZY ~ syntax                     }..................
     " CSS-specific syntax highlighting.
     call dein#add('ap/vim-css-color', {'on_ft': ['css', 'scss', 'sass']})
 
-    "FIXME: Fantastic plugin for reformatting. There's only one issue: we only
-    "want to make the ":Autoformat" command available. Unfortunately, this
-    "plugin also forcefully overrides Vim's builtin "gq" functionality with its
-    "filetype- specific logic. This works tolerably for some filetypes, but
-    "utterly fails on others. In particular, "autopep8" for Python refuses to
-    "wrap long comments appropriately. Consequently, this plugin must be
-    "temporarily enabled *ONLY* for the duration of edits requiring the
-    "":Autoformat" command. *sigh*
+    "FIXME: Fantastic plugin for reformatting. There's only one issue: we only want
+    "to make the ":Autoformat" command available. Unfortunately, this plugin also
+    "forcefully overrides Vim's builtin "gq" functionality with its filetype-
+    "specific logic. This works tolerably for some filetypes, but utterly fails on
+    "others. In particular, "autopep8" for Python refuses to wrap long comments
+    "appropriately. Consequently, this plugin must be temporarily enabled *ONLY* for
+    "the duration of edits requiring the ":Autoformat" command. *sigh*
 
     " Filetype-aware syntax reformatting, augmenting "gq" with intelligent
     " reformatting specific to language standards. This plugin inspects the
@@ -349,8 +419,8 @@ if dein#load_state(g:our_plugin_dir)
     endif
 
     "FIXME: Currently disabled. One of the plugins mentioned below leverages
-    ""vimparser"; the other does not. Since "vimparser" is awesome, enable
-    "whichever of the two leverages this plugin.
+    ""vimparser"; the other does not. Since "vimparser" is awesome, enable whichever
+    "of the two leverages this plugin.
 
     " Filetype-specific syntax checking.
     "
@@ -382,31 +452,13 @@ if dein#load_state(g:our_plugin_dir)
     " Navigate the undo history tree.
     call dein#add('mbbill/undotree', {'on_cmd': 'UndotreeToggle'})
 
-    " File exploring.
-    call dein#add('Shougo/vimfiler', {
-      \ 'on_cmd': ['VimFiler', 'VimFilerExplorer'],
-      \ 'hook_post_source': '
-      \ " Set vimfiler as the default file explorer.\n
-      \ let g:vimfiler_as_default_explorer = 1\n
-      \ '})
-      " \ 'depends': 'Shougo/unite.vim',
-      " \ 'on_cmd': ['VimFiler', 'VimFilerExplorer'],
-      " \ })
-
-    "FIXME: Temporarily disabled. We don't currently leverage tags
-    "functionality terribly much, and there appear to be conflicts with
-    "git-based Universal Ctags.
+    "FIXME: Temporarily disabled. We don't currently leverage tags functionality
+    "terribly much, and there appear to be conflicts with git-based Universal Ctags.
     " Project tags.
     " call dein#add('xolox/vim-easytags', {
     "   \ 'depends': 'xolox/vim-misc',
     "   \ 'autoload': { 'filetypes': ['zeshy'] },
     "   \ }
-
-    "FIXME: Unconvinced I require a grepping plugin. If I ever do, however,
-    "this is undoubtedly the one to uncomment. State of the art.
-    " File grepping.
-    "call dein#add('rking/ag.vim', { 'autoload': {
-    "            \ 'commands': [{'name': 'Ag', 'complete': 'file'}] }}
 
     " Finalize dein's in-memory configuration.
     call dein#end()

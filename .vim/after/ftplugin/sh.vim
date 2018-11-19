@@ -1,26 +1,25 @@
-" --------------------( LICENSE                           )--------------------
+" --------------------( LICENSE                            )--------------------
 " Copyright 2015-2018 by Cecil Curry.
 " See "LICENSE" for further details.
 "
-" --------------------( SYNOPSIS                          )--------------------
+" --------------------( SYNOPSIS                           )--------------------
 " Shell script-specific settings ambiguously applicable to all Bash, Bourne, and
 " Korn buffers.
 
-" ....................{ PREAMBLE                          }....................
+" ....................{ PREAMBLE                           }....................
 " If this plugin has already been loaded for the current buffer, return.
 if exists("b:is_our_ftplugin_sh")
     finish
 endif
 
-" ....................{ CHECKS                            }....................
+" ....................{ CHECKS                             }....................
 " If our preferred syntax checker for shell scripts supported out-of-the-box by
 " the "vim-watchdogs" bundle is *NOT* in the current ${PATH}, print a warning.
 " In this case, shell buffers will be syntax-highlighted but *NOT* checked.
 if !executable('shellcheck')
-    call PrintError(
-      \ 'Command "shellcheck" not found. Expect shell script syntax checking to fail.')
+    echomsg 'Command "shellcheck" not found. Expect shell script syntax checking to fail.'
 endif
 
-" ....................{ POSTAMBLE                         }....................
+" ....................{ POSTAMBLE                          }....................
 " Declare this plugin to have been successfully loaded for the current buffer.
 let b:is_our_ftplugin_sh = 1
