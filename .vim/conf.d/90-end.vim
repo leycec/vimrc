@@ -1,19 +1,16 @@
 scriptencoding utf-8
-" --------------------( LICENSE                           )--------------------
+" --------------------( LICENSE                            )--------------------
 " Copyright 2015-2018 by Cecil Curry.
 " See "LICENSE" for further details.
 "
-" --------------------( SYNOPSIS                          )--------------------
+" --------------------( SYNOPSIS                           )--------------------
 " Dotfile closure, typically cleaning up after prior logic.
 
-" ....................{ LOCAL                             }....................
+" ....................{ LOCAL                              }....................
 " If the current user has a custom Vim dotfile, source this file *AFTER*
-" performing all other startup logic excluding that performed by this script.
+" performing all other logic and hence as our penultimate action.
 if filereadable(g:our_vimrc_local_file)
     execute 'source ' . fnameescape(g:our_vimrc_local_file)
 endif
 
-" ....................{ GLOBALS                           }....................
-" Notify vimrc-specific functions defined elsewhere (e.g., PrintError()) that
-" Vim has successfully started up *AFTER* performing all other startup logic.
-let g:our_is_startup = 0
+" --------------------( WASTELANDS                         )--------------------
