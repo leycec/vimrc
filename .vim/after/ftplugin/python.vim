@@ -36,8 +36,6 @@ endif
 " Overwrite this mode's default comment leader with that set by "30-usage.vim".
 setlocal comments=:#,fb:-
 
-"FIXME: Currently disabled in favour of the default "fromstart" highlighting.
-
 " Python-specific syntax highlighting is particularly troublesome. While the
 " default "autocmd BufEnter * :syntax sync fromstart" suffices for most
 " filetypes, Python plugins routinely fail to highlight large files under this
