@@ -229,11 +229,6 @@ augroup our_highlight_custom
       \ highlight SpellCap ctermbg=16 guisp=#5fafd7
 augroup END
 
-" highlight clear SpellBad
-" highlight SpellBad ctermfg=9 ctermbg=52 guisp=#ff5f5f
-" highlight clear SpellCap
-" highlight SpellCap ctermfg=11 ctermbg=58 guisp=#5fafd7
-
 " ....................{ COLOUR ~ filetype                 }....................
 " Map filetypes to syntax highlighting synchronization settings. While Vim
 " already maps most filetypes to these settings, their defaults often fail to
@@ -259,7 +254,7 @@ augroup END
 " * Python, whose "after/ftplugin" sets this synchronization.
 augroup our_filetype_syntax
     autocmd!
-    autocmd FileType html,zsh autocmd BufEnter * :syntax sync fromstart
+    autocmd FileType html,sh,zsh autocmd BufEnter * :syntax sync fromstart
     " autocmd FileType html,python,zsh autocmd BufEnter * :syntax sync fromstart
     " autocmd BufEnter * :syntax sync fromstart
 augroup END
