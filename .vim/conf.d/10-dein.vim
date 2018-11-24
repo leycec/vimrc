@@ -254,10 +254,6 @@ if dein#load_state(g:our_plugin_dir)
     "call dein#add('xolox/vim-misc')
 
     " ....................{ LAZY ~ filetype               }....................
-    " CSS. As the CSS plugin provided out-of-the-box by Vim lacks support for
-    " most CSS3-specific syntactic constructs, external plugins are preferred.
-    call dein#add('hail2u/vim-css3-syntax', {'on_ft': 'css'})
-
     " Markdown. There exist a variety of Markdown plugins, including:
     "
     " * "gabrielelana/vim-markdown", implementing GitHub-flavoured Markdown
@@ -273,11 +269,46 @@ if dein#load_state(g:our_plugin_dir)
       " \ 'depends': 'godlygeek/tabular',
     " call dein#add('gabrielelana/vim-markdown')
 
+    "FIXME: Investigate whether this filetype mapping requires:
+    "* Vim-agnostic Perl 6 shebangs resembling "#!/usr/bin/env perl6".
+    "* Vim-specific Perl 6 modelines resembling "# vim: filetype=perl6".
+    " Perl 6.
+    call dein#add('vim-perl/vim-perl6', {'on_ft': 'perl6'})
+
     " Python.
     call dein#add('python-mode/python-mode', {'on_ft': 'python'})
 
     " Zeshy.
     call dein#add('leycec/vim-zeshy', {'on_ft': 'zeshy'})
+
+    " ....................{ LAZY ~ filetype : css         }....................
+    " CSS. As the CSS plugin provided out-of-the-box by Vim lacks support for
+    " most CSS3-specific syntactic constructs, external plugins are preferred.
+    call dein#add('hail2u/vim-css3-syntax', {'on_ft': 'css'})
+
+    " CSS-specific syntax highlighting.
+    call dein#add('ap/vim-css-color', {'on_ft': ['css', 'scss', 'sass']})
+
+    " ..................{ LAZY ~ filetype : rst             }..................
+    " reStructuredText (reST).
+    call dein#add('Rykka/riv.vim', {'on_ft': 'rst'})
+
+    " If the external "instantRst" command is installed, the external
+    " "instant_rst" Python package is assumed to also be installed, in which
+    " case the "InstantRst" plugin by the same author integrating with the
+    " "riv.vim" plugin installed above is both safely installable *AND* usable.
+    if executable('instantRst')
+        call dein#add('Rykka/InstantRst', {'on_ft': 'rst'})
+
+    "FIXME: While warning the user of this condition would be generally useful, Vim
+    "appears to provide no means of doing so without requiring the user to manually
+    "press a key on *EVERY* Vim startup after displaying this warning. This warning
+    "is currently disabled until a less intrusive warning mechanism is discovered.
+
+    " Else, "InstantRst" is *NOT* safely installable. Warn the user appropriately.
+    " else
+    "     echomsg '"instantRst" command not found; reStructuredText buffers not previewable.'
+    endif
 
     " ..................{ LAZY ~ key                        }..................
     " Bind <gc-> (e.g., <gcc>) to perform buffer commenting and uncommenting.
@@ -303,27 +334,6 @@ if dein#load_state(g:our_plugin_dir)
     " Coerce <Enter> to inject '\v' magic on search-and-replacements.
     call dein#add('coot/EnchantedVim.git')
     " call dein#add('coot/EnchantedVim.git', {'depends': 'coot/CRDispatcher.git'})
-
-    " ..................{ LAZY ~ filetype : rst             }..................
-    " reStructuredText (reST).
-    call dein#add('Rykka/riv.vim', {'on_ft': 'rst'})
-
-    " If the external "instantRst" command is installed, the external
-    " "instant_rst" Python package is assumed to also be installed, in which
-    " case the "InstantRst" plugin by the same author integrating with the
-    " "riv.vim" plugin installed above is both safely installable *AND* usable.
-    if executable('instantRst')
-        call dein#add('Rykka/InstantRst', {'on_ft': 'rst'})
-
-    "FIXME: While warning the user of this condition would be generally useful, Vim
-    "appears to provide no means of doing so without requiring the user to manually
-    "press a key on *EVERY* Vim startup after displaying this warning. This warning
-    "is currently disabled until a less intrusive warning mechanism is discovered.
-
-    " Else, "InstantRst" is *NOT* safely installable. Warn the user appropriately.
-    " else
-    "     echomsg '"instantRst" command not found; reStructuredText buffers not previewable.'
-    endif
 
     " ..................{ LAZY ~ path                       }..................
     " File exploration.
@@ -369,9 +379,6 @@ if dein#load_state(g:our_plugin_dir)
     "            \ 'commands': [{'name': 'Ag', 'complete': 'file'}] }}
 
     " ..................{ LAZY ~ syntax                     }..................
-    " CSS-specific syntax highlighting.
-    call dein#add('ap/vim-css-color', {'on_ft': ['css', 'scss', 'sass']})
-
     "FIXME: Fantastic plugin for reformatting. There's only one issue: we only want
     "to make the ":Autoformat" command available. Unfortunately, this plugin also
     "forcefully overrides Vim's builtin "gq" functionality with its filetype-
