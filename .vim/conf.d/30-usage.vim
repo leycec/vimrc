@@ -297,6 +297,19 @@ let g:markdown_fenced_languages = [
 "         * not good, however.
 let g:vim_markdown_new_list_item_indent = 2
 
+" ....................{ FILETYPE ~ perl6                  }....................
+" Implicitly convert ASCII- to Unicode-formatted Perl 6 operators.
+"
+" Note that Vim digraphs offer similar behaviour out-of-the-box as follows:
+"
+" * Enter Insert mode.
+" * Type <Ctrl-k> to enter the digraph pseudo-mode.
+" * Type a digraph (i.e., string of two or more ASCII characters internally
+"   recognized and converted by Vim into a corresponding Unicode character).
+"
+" Ergo, typing <Ctrl-k,-:> suffices to input the Unicode division sign "÷".
+let g:perl6_unicode_abbrevs = 1
+
 " ....................{ FILETYPE ~ python-mode            }....................
 "FIXME: "python-mode" currently indents line continuations by one level more of
 "indentation than seems reasonable. The culprit appears to be the block
