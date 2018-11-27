@@ -424,6 +424,10 @@ set foldlevelstart=99
 set foldlevel=99
 
 " ....................{ FORMATTING                        }....................
+" Insert one rather than two spaces after sentence-terminating punctuation
+" (e.g., ".", "?", "!") when performing a join command (e.g., "J", "gq").
+set nojoinspaces
+
 " Filetype-specific formatting. For safety, append and shift list
 " "formatoptions" with the "+=" and "-=" operators rather than overwriting such
 " list (and hence sane Vim defaults) with the "=" operator. See ":h fo-table".
