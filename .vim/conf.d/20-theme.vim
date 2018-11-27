@@ -470,11 +470,12 @@ augroup our_filetype_wrapping
     " hence running these plugins.
     "
     " Ideally, the "linebreak" option visually soft-wrapping lines at standard
-    " English word delimiters (e.g., spaces, hyphens, punctuation) would also be
-    " set. Unfortunately, this option conflicts with the "list" option visually
-    " distinguishing tabs from spaces. Given the non-negligible significance of
-    " tabs under various modes (e.g., "ebuild", "make", "python"), the latter
-    " option is arguably of greater significance and hence takes precedence.
-    " Unsurprisingly, we do not even bother enabling the "linebreak" option.
+    " English word delimiters (e.g., spaces, hyphens, punctuation) would also
+    " be set. Unfortunately, this option conflicts with the "list" option
+    " visually distinguishing tabs from spaces. Given the non-negligible
+    " significance of tabs under various modes (e.g., "ebuild", "make",
+    " "python"), the latter option is arguably of greater significance and
+    " hence takes precedence. Unsurprisingly, we do not even bother enabling
+    " the "linebreak" option.
     autocmd FileType * setlocal wrap
 augroup END
