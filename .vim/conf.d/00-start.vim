@@ -354,6 +354,10 @@ augroup our_filetype_detect
       \ let b:is_bash = 1 |
       \ setfiletype sh
 
+    " Associate the ".gv" filetype with GraphViz mode. Note that Vim already
+    " associates the ".dot" filetype with this mode by default.
+    autocmd BufNewFile,BufRead *.gv setfiletype dot
+
     " Associate filetype ".qss" with CSS mode. While Qt StyleSheet (QSS) files
     " are *NOT* valid Cascading Style Sheet (CSS), they are CSS-like enough to
     " parse as such...  mostly.
