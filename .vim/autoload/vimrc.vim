@@ -256,6 +256,35 @@ function! vimrc#sanitize_code_buffer_formatting() abort
 endfunction
 
 " ....................{ HIGHLIGHTERS                      }....................
+" vimrc#print_syntax_group_current() -> str
+"
+" Display the names of both the originating and translated syntax groups
+" applied to the current character of the current buffer in the status bar.
+"
+" This function was gratefully inspired by the following external source:
+"
+" * Laurence Gonsalves's SynGroup() function, published at:
+"   https://stackoverflow.com/a/37040415/2809027
+function! vimrc#print_syntax_group_current() abort
+    " Integer uniquely identifying the originating syntax group applied to the
+    " current character of the current buffer. Dismantled, this is:
+    "
+    " * "line('.')", the current line number.
+    " * "col('.')", the current column number.
+    let l:syntax_group_id = synID(line('.'), col('.'), 1)
+
+    " Log the names of the current originating and translated syntax groups.
+    " Dismantled, this is:
+    "
+    " * "synIDattr(...)", the name of the originating syntax group.
+    " * "synIDtrans(...)", the integer uniquely identifying the syntax group
+    "   to which the originating syntax group is translated.
+    echo
+      \ synIDattr(l:syntax_group_id, 'name') . ' -> ' .
+      \ synIDattr(synIDtrans(l:syntax_group_id), 'name')
+endfunction
+
+
 " vimrc#synchronize_syntax_highlighting() -> None
 "
 " Synchronize syntax highlighting in the current buffer. This function is
