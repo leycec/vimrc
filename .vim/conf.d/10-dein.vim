@@ -153,7 +153,7 @@ if dein#load_state(g:our_plugin_dir)
     call dein#add('vim-airline/vim-airline')
     call dein#add('vim-airline/vim-airline-themes')
 
-    " ..................{ NON-LAZY ~ vcs                   }..................
+    " ..................{ NON-LAZY ~ vcs                    }..................
     " By definition, VCS wrappers *CANNOT* be loaded lazily -- despite the
     " abundance of online ".vimrc" examples erroneously suggesting they can.
     " Since VCS wrapper hooks *MUST* be run on buffer switches to detect

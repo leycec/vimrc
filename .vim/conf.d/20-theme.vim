@@ -157,6 +157,50 @@ syntax on
 "  detect 24-bit RGB colour support in terminals. We may not care, of course.
 " set termguicolors
 
+" ....................{ COLOUR ~ theme : custom           }....................
+" Custom highlight groups overwriting those defined both by the color scheme
+" enabled below *AND* filetype plugins, which frequently overwrite those
+" defined by the current scheme. (Yes, this is awful.)
+"
+" Note that:
+"
+" * "ColorScheme" autocommands must be defined *BEFORE* the first call to the
+"   :colorscheme() builtin, which implicitly triggers these autocommands.
+" * "ctermfg" and "ctermbg" are indices in [1, 256] as visualized here:
+"     http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim
+"     https://vignette.wikia.nocookie.net/vim/images/1/16/Xterm-color-table.png/revision/latest?cb=20110121055231
+augroup our_highlight_custom
+    autocmd!
+
+    " Redefine the following highlight groups:
+    "
+    " * "SpellBad", typically highlighting syntax and spelling errors.
+    " * "SpellCap", typically highlighting syntax and spelling warnings.
+    " * "error", typically highlighting quickfix-based errors.
+    " * "todo", typically highlighting temporary comments (e.g., "FIXME",
+    "   "TODO").
+    " * "ALEErrorLine", highlighting ALE-specific syntax errors.
+    " * "ALEInfoLine", highlighting ALE-specific informational messages.
+    " * "ALEStyleError", highlighting ALE-specific style "errors".
+    " * "ALEStyleWarning", highlighting ALE-specific style "warnings".
+    " * "ALEWarningLine", highlighting ALE-specific syntax warnings.
+    "
+    " Vim unhelpfully predefines these groups with the "cterm=underline" and
+    " "gui=undercurl" attributes; sadly, each must be manually cleared.
+    autocmd ColorScheme *
+      \ highlight SpellBad cterm=NONE ctermfg=NONE ctermbg=52 gui=undercurl guifg=NONE guibg=NONE guisp=#ff5f5f |
+      \ highlight SpellCap cterm=NONE ctermfg=NONE ctermbg=58 gui=undercurl guifg=NONE guibg=NONE guisp=#5fafd7 |
+      \ highlight clear error |
+      \ highlight clear todo |
+      \ highlight link error           SpellBad |
+      \ highlight link ALEErrorLine    SpellBad |
+      \ highlight link todo            SpellCap |
+      \ highlight link ALEInfoLine     SpellCap |
+      \ highlight link ALEStyleError   SpellCap |
+      \ highlight link ALEStyleWarning SpellCap |
+      \ highlight link ALEWarningLine  SpellCap |
+augroup END
+
 " ....................{ COLOUR ~ theme                    }....................
 " Avoid "solarized". While the author has clearly invested inordinate effort in
 " designing, prosletyzing, and generalizing this scheme for a wide audience and
@@ -203,31 +247,6 @@ syntax on
 if &t_Co >= 256
     colorscheme lucius
 endif
-
-" ....................{ COLOUR ~ theme : custom           }....................
-" Custom highlight groups overwriting those defined both by the above color
-" scheme *AND* filetype plugins, which frequently overwrite those defined by
-" the current scheme. (Yes, this is awful.)
-"
-" Note that "ctermfg" and "ctermbg" are indices in [1, 256], as visualized here:
-"     http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim
-"     https://vignette.wikia.nocookie.net/vim/images/1/16/Xterm-color-table.png/revision/latest?cb=20110121055231
-augroup our_highlight_custom
-    autocmd!
-
-    " Redefine the following highlight groups:
-    "
-    " * Syntax and spelling errors.
-    " * Syntax and spelling warnings.
-    "
-    " Vim unhelpfully predefines these groups with the "cterm=underline"
-    " attribute; each must be manually cleared *BEFORE* being redefined.
-    autocmd VimEnter *
-      \ highlight clear SpellBad |
-      \ highlight SpellBad ctermbg=52 guisp=#ff5f5f |
-      \ highlight clear SpellCap |
-      \ highlight SpellCap ctermbg=16 guisp=#5fafd7
-augroup END
 
 " ....................{ COLOUR ~ filetype                 }....................
 " Map filetypes to syntax highlighting synchronization settings. While Vim
@@ -388,6 +407,10 @@ let g:airline_mode_map = {
   \ }
 
 " ....................{ STATUSLINE ~ airline : extension  }....................
+" Show warnings, errors, and other issues emitted by the third-party
+" Asynchronous Linting Engine (ALE) bundle.
+let g:airline#extensions#ale#enabled = 1
+
 " Show the current VCS branch if any.
 let g:airline#extensions#branch#enabled = 1
 

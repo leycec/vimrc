@@ -651,10 +651,9 @@ let g:ale_linters = {}
 " let g:ale_history_log_output = 1
 
 " ....................{ SYNTAX CHECK ~ ale : line         }....................
-" Highlight syntactically invalid and suspect lines according to the predefined
-" highlight groups for doing so.
-highlight link ALEErrorLine   SpellBad
-highlight link ALEWarningLine SpellCap
+" Unconditionally enable ALE-informed syntax highlighting. See "20-theme" for
+" the definitions of all ALE-specific syntax groups.
+let g:ale_set_highlights = 1
 
 " ....................{ SYNTAX CHECK ~ ale : sign         }....................
 " Unconditionally disable ALE's usage of the sign gutter, which:
@@ -694,13 +693,18 @@ let g:ale_echo_delay = 128
 " ....................{ SYNTAX CHECK ~ ale : python       }....................
 " If Python 3 support is available...
 if g:our_is_python3
-    "FIXME: Reenable after "pyflakes" integration actually works.
-    " " If the "pyflakes" linter is available, prefer linting Python with *ONLY*
-    " " "pyflakes", a minimalist (and hence efficient) Python linter.
+    "FIXME: Uncomment the following after ALE correctly supports "pyflakes".
+    "For unknown reasons, the newly defined "pyflakes" linter fails to
+    "highlight syntax errors or warnings -- despite correctly identifying those
+    "errors and warnings in the status bar. *sigh*
+
+    " If the "pyflakes" linter is available, prefer linting Python with *ONLY*
+    " this linter: the most minimalist (and thus efficient) Python linter.
     " if executable('pyflakes') || executable('pyflakes3')
     "     let g:ale_linters['python'] = ['pyflakes']
+    " " Else if the "pylint" linter is available...
+    " elseif executable('pylint')
 
-    " Else if the "pylint" linter is available...
     if executable('pylint')
         " Fallback to linting Python with this linter.
         let g:ale_linters['python'] = ['pylint']
@@ -773,8 +777,14 @@ if g:our_is_python3
         "   warnings (e.g., unused local variable).
         " * "--jobs=2", minimally parallelizing "pylint" execution.
         let g:ale_python_pylint_options =
-          \ '--disable=R,C,E0401,E0611,E0702,E1101,E1133,E1135,W0122,W0201,W0212,W0511,W0603,W0613,W0702,W0703 ' .
-          \ '--jobs=2'
+          \ '--disable=R,C,E0401,E0611,E0702,E1101,E1133,E1135,W0122,W0201,W0212,W0511,W0603,W0613,W0702,W0703'
+
+        "FIXME: Replace the above "pylint" configuration by that defined below
+        "*AFTER* ALE supports the "--jobs=" option. As of this writing, setting
+        "this option induces infinite loops in ALE and/or "pylint". (Woops.)
+        " let g:ale_python_pylint_options =
+        "   \ '--disable=R,C,E0401,E0611,E0702,E1101,E1133,E1135,W0122,W0201,W0212,W0511,W0603,W0613,W0702,W0703 ' .
+        "   \ '--jobs=2'
     " Else if the "flake8" linter is available...
     elseif executable('flake8')
         " Fallback to linting Python with this linter.
@@ -871,6 +881,39 @@ set tags=./.tags;
 "endif
 
 " ....................{ VCS ~ fugitive                    }....................
+" Common default mappings in the ":Gstatus" buffer include:
+"
+"     g?     " show this help
+"     <C-N>  " next file
+"     <C-P>  " previous file
+"     <CR>   " |:Gedit|
+"     -      " |:Git| add
+"     -      " |:Git| reset (staged files)
+"     a      " Show alternative format
+"     ca     " |:Gcommit| --amend
+"     cc     " |:Gcommit|
+"     ce     " |:Gcommit| --amend --no-edit
+"     cw     " |:Gcommit| --amend --only
+"     cva    " |:Gcommit| --verbose --amend
+"     cvc    " |:Gcommit| --verbose
+"     D      " |:Gdiff|
+"     ds     " |:Gsdiff|
+"     dp     " |:Git!| diff (p for patch; use :Gw to apply)
+"     dp     " |:Git| add --intent-to-add (untracked files)
+"     dv     " |:Gvdiff|
+"     O      " |:Gtabedit|
+"     o      " |:Gsplit|
+"     P      " |:Git| add --patch
+"     P      " |:Git| reset --patch (staged files)
+"     q      " close status
+"     r      " reload status
+"     S      " |:Gvsplit|
+"     U      " |:Git| checkout
+"     U      " |:Git| checkout HEAD (staged files)
+"     U      " |:Git| clean (untracked files)
+"     U      " |:Git| rm (unmerged files)
+"     .      " enter |:| command line with file prepopulated
+
 " Define the following new commands:
 "
 " * GdiffUnstaged(), reviewing all unstaged changes by diffing the working
