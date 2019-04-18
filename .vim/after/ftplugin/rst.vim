@@ -1,17 +1,17 @@
-" --------------------( LICENSE                            )--------------------
+" --------------------( LICENSE                           )--------------------
 " Copyright 2015-2018 by Cecil Curry.
 " See "LICENSE" for further details.
 "
-" --------------------( SYNOPSIS                           )--------------------
+" --------------------( SYNOPSIS                          )--------------------
 " reStructuredText-specific settings applied to all files of filetype ".rst".
 
-" ....................{ PREAMBLE                           }....................
+" ....................{ PREAMBLE                          }....................
 " If this plugin has already been loaded for the current buffer, return.
 if exists('b:is_our_ftplugin_rst')
     finish
 endif
 
-" ....................{ BINDINGS                           }....................
+" ....................{ BINDINGS                          }....................
 " If the optional "InstantRst" plugin enabling reStructuredText buffer previews
 " is available, bind:
 "
@@ -27,12 +27,12 @@ if dein#tap('InstantRst')
     nnoremap <buffer> <localleader>pO :StopInstantRst!<cr>
 endif
 
-" ....................{ COMMENTS                           }....................
+" ....................{ COMMENTS                          }....................
 " Parse all ".. #" substrings prefixing any line and suffixed by whitespace as
 " comment leaders. Technically, reStructuredText has *NO* formal comment
 " leaders. In practice, this comment leader conforms with modern expectations
-" (mostly due to the terminating "#", inherited from numerous popular languages)
-" and hence suffices as a suitable default.
+" (mostly due to the terminating "#", inherited from numerous popular
+" languages) and hence suffices as a suitable default.
 "
 " Dismantled, this is:
 "
@@ -50,6 +50,6 @@ endif
 "We suspect the former, frankly.
 let b:comments = 'b:.. #'
 
-" ....................{ POSTAMBLE                          }....................
+" ....................{ POSTAMBLE                         }....................
 " Declare this plugin to have been successfully loaded for the current buffer.
 let b:is_our_ftplugin_rst = 1
