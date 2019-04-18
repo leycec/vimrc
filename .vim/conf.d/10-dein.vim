@@ -44,13 +44,13 @@ scriptencoding utf-8
 " which means "bloody early in Vim startup."
 "
 " Common startup-related commands include:
-"     :scriptnames      " list the absolute paths of all current startup scripts
+"     :scriptnames     " list the absolute paths of all current startup scripts
 "
 " Common dein commands include:
 "     :DeinUpdate           " install and/or update all plugins as needed
 "     :call dein#install()  " install all uninstalled plugins
 "     :call dein#update()   " update all installed plugins
-"     :h dein              " peruse documentation
+"     :h dein               " peruse documentation
 "
 " For nonstandard Vim plugins requiring post-installation "intervention" (e.g.,
 " "neocomplcache", "unite", "vimproc", "vimshell"), see official recipes (i.e.,
@@ -60,14 +60,15 @@ scriptencoding utf-8
 "     https://github.com/Shougo/dein-vim-recipes
 "     https://github.com/Shougo/dein-vim-recipes/tree/master/recipes
 "
-" While these recipes could be preloaded on Vim startup, doing so would probably
-" violate lazy loading and hence unnecessarily increase startup time. That said:
+" While these recipes could technically be preloaded on Vim startup, doing so
+" would violate lazy loading and hence unnecessarily increase startup time.
+" That said:
 "
 "     " Leverage official dein recipes for popular plugins, if available.
 "     dein 'Shougo/dein-vim-recipes', {'force' : 1}
 
-" If dein is *NOT* installed, do so before doing anything else. dein
-" is the fulcrum on which the remainder of this configuration rests.
+" If dein is *NOT* installed, do so before doing anything else. dein is the
+" fulcrum on which the remainder of this configuration rests.
 if !isdirectory(g:our_dein_dir)
     echo "Installing dein...\n"
     execute
@@ -108,10 +109,9 @@ let g:dein#install_process_timeout = 120
 "
 "     call dein#recache_runtimepath()
 "
-" Yes, this sucks. No, there's nothing we can do about it. Yes, that sucks, too.
+" Yes, this sucks. No, there's nothing we can do about it. Yes, that sucks too.
 " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-"FIXME: Unconvinced this is actually working. So much for efficiency. *sigh*
 if dein#load_state(g:our_plugin_dir)
     " Initialize dein, installing new plugins to and loading installed plugins
     " from the plugin subdirectory. Since dein adopts the whitelist approach
@@ -291,14 +291,14 @@ if dein#load_state(g:our_plugin_dir)
 
     " ..................{ LAZY ~ filetype : rst             }..................
     " reStructuredText (reST).
-    call dein#add('Rykka/riv.vim', {'on_ft': 'rst'})
+    call dein#add('gu-fan/riv.vim', {'on_ft': 'rst'})
 
     " If the external "instantRst" command is installed, the external
     " "instant_rst" Python package is assumed to also be installed, in which
     " case the "InstantRst" plugin by the same author integrating with the
     " "riv.vim" plugin installed above is both safely installable *AND* usable.
     if executable('instantRst')
-        call dein#add('Rykka/InstantRst', {'on_ft': 'rst'})
+        call dein#add('gu-fan/InstantRst', {'on_ft': 'rst'})
 
     "FIXME: While warning the user of this condition would be generally useful, Vim
     "appears to provide no means of doing so without requiring the user to manually

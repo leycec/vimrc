@@ -757,6 +757,11 @@ if g:our_is_python3
         "     the same class, no privacy violation commonly exists. Since
         "     "pylint" unconditionally flags *ALL* such access regardless of
         "     context, the only sane decision is *NOT* to play the game at all.
+        "   * "W0221" (i.e., "arguments-differ"), preventing "pylint" from
+        "     flagging subclass methods whose signature differs from that of
+        "     superclass methods of the same name. While such differences *CAN*
+        "     be problematic in the uncommon edge case of multiple inheritance,
+        "     there exist numerous valid use cases for doing so.
         "   * "W0511" (i.e., "fixme"), preventing "pylint" from flagging all
         "     "FIXME" comments. *sigh*
         "   * "W0603" (i.e., "global-statement"), preventing "pylint" from
@@ -777,7 +782,7 @@ if g:our_is_python3
         "   warnings (e.g., unused local variable).
         " * "--jobs=2", minimally parallelizing "pylint" execution.
         let g:ale_python_pylint_options =
-          \ '--disable=R,C,E0401,E0611,E0702,E1101,E1133,E1135,W0122,W0201,W0212,W0511,W0603,W0613,W0702,W0703'
+          \ '--disable=R,C,E0401,E0611,E0702,E1101,E1133,E1135,W0122,W0201,W0212,W0221,W0511,W0603,W0613,W0702,W0703'
 
         "FIXME: Replace the above "pylint" configuration by that defined below
         "*AFTER* ALE supports the "--jobs=" option. As of this writing, setting

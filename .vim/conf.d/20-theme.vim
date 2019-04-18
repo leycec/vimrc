@@ -468,8 +468,9 @@ let &textwidth = g:our_textwidth
 " Data markup languages tend to demand excessive indentation and hence
 " additional horizontal width. For efficiency, this setting must be lazily
 " applied by filetype plugins (e.g., in the "after/ftplugin" subdirectory).
+let g:our_textwidth_data_markup = 100
 " let g:our_textwidth_data_markup = 80
-let g:our_textwidth_data_markup = 93
+" let g:our_textwidth_data_markup = 93
 
 " If Vim supports doing so, display a translucent vertical line at our
 " preferred line length. Dismantled, this is:
