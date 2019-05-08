@@ -386,11 +386,6 @@ let g:airline_theme='lucius'
 " let g:airline_theme='bubblegum'
 " let g:airline_theme='ubaryd'
 
-" To conserve statusline space, delimit sections by background colour changes
-" rather than additional characters.
-let g:airline_left_sep = ''
-let g:airline_right_sep = ''
-
 " To conserve statusline space, abbreviate Vim mode names by single characters.
 let g:airline_mode_map = {
   \ '__' : '-',
@@ -421,12 +416,32 @@ let g:airline#extensions#hunks#enabled = 0
 
 " List all buffers in a new statusline situated *ABOVE* all other windows.
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_sep = ''
-let g:airline#extensions#tabline#left_alt_sep = ''
 
-"FIXME: Enable once we get such fonts (finally!) going.
-" Enable Powerline-patched font support.
-" let g:airline_powerline_fonts = 1
+"FIXME: Conditionally enable Powerline-patched font support only if the font
+"leveraged by the current terminal emulator is actually Powerline-patched.
+"Naturally, there appears to be no platform-portable means of doing so; the
+"closest equivalent appears to be the following StackOverflow answer, which
+"would probably prove non-trivial to implement:
+"    https://stackoverflow.com/a/36039000/2809027
+
+" If the current terminal is the 256-color variant of URXVT, assume the font
+" displayed by this terminal to be Powerline-patched (i.e., augmented with
+" Powerline symbols). In this case, display such symbols in the statusline.
+if $TERM == 'rxvt-unicode-256color'
+    let g:airline_powerline_fonts = 1
+" Else, assume the font displayed by this terminal to *NOT* be
+" Powerline-patched. In this case...
+else
+    " Avoid displaying these symbols in the statusline.
+    let g:airline_powerline_fonts = 0
+
+    " To conserve space in both the bottom statusline and top tabline, delimit
+    " sections by background colour changes rather than additional characters.
+    let g:airline_left_sep = ''
+    let g:airline_right_sep = ''
+    let g:airline#extensions#tabline#left_sep = ''
+    let g:airline#extensions#tabline#left_alt_sep = ''
+endif
 
 " ....................{ STATUSLINE ~ airline : section    }....................
 " For a list of default values for all sections, see:
