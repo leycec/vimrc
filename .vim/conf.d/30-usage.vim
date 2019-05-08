@@ -639,6 +639,17 @@ augroup END
 " ....................{ SYNTAX CHECK ~ ale                }....................
 " Asynchronous Linting Engine (ALE) provides asynchronous syntax checking.
 
+" Minimum number of milliseconds after the current buffer is modified to
+" require ALE delay *BEFORE* relinting this buffer. Since the default of 200
+" milliseconds tends to induce visible slowdown under CPU load and/or
+" computationally expensive linters, we approximately double this default.
+"
+" See also:
+"
+" * ":help g:ale_lint_on_text_changed", a downstream setting governing when
+"   asynchronous linting delayed by the current setting occurs.
+let g:ale_lint_delay = 512
+
 " Dictionary mapping from each lintable filetype to the list of all linters
 " with which to asynchronously lint buffers of that filetype. Since ALE
 " defaults to linting filetypes *NOT* specified by this dictionary with all
