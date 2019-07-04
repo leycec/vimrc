@@ -33,9 +33,6 @@ if !executable('pyflakes') && !executable('flake8')
 endif
 
 " ....................{ COMMENTS                           }....................
-" Overwrite this mode's default comment leader with that set by "30-usage.vim".
-setlocal comments=:#,fb:-
-
 " Python-specific syntax highlighting is particularly troublesome. While the
 " default "autocmd BufEnter * :syntax sync fromstart" suffices for most
 " filetypes, Python plugins routinely fail to highlight large files under this
@@ -62,6 +59,20 @@ augroup our_python_syntax
     " function.
     autocmd BufEnter <buffer> :syntax sync minlines=1024
     "autocmd BufEnter <buffer> :syntax sync fromstart
+
+    " Overwrite this mode's default comment leader with that set by
+    " "30-usage.vim".
+    "
+    " Note that this is non-ideal. Ideally, this mode's default comment leader
+    " would be trivially settable by replacing this non-trivial command with
+    " the following trivial command at the top-level of this script, as with
+    " every other filetype:
+    "     setlocal comments=:#,fb:-
+    "
+    " Interestingly, that approach *DID* successfully work for several years
+    " before silently failing sometime in mid-2019 for unknown reasons. Now,
+    " only the following non-trivial command suffices. *sigh*
+    autocmd BufEnter <buffer> setlocal comments=:#,fb:-
 augroup END
 
 " ....................{ WRAPPING                           }....................
