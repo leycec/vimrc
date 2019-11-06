@@ -310,7 +310,7 @@ let g:vim_markdown_new_list_item_indent = 2
 " Ergo, typing <Ctrl-k,-:> suffices to input the Unicode division sign "÷".
 let g:perl6_unicode_abbrevs = 1
 
-" ....................{ FILETYPE ~ python-mode            }....................
+" ....................{ FILETYPE ~ pymode                 }....................
 "FIXME: "python-mode" currently indents line continuations by one level more of
 "indentation than seems reasonable. The culprit appears to be the block
 "commented by "If this line is explicitly joined..." in
@@ -358,26 +358,7 @@ endif
 " plugin also hooking Insert mode events (e.g., "watchdogs").
 let g:pymode_rope_complete_on_dot = 0
 
-" ....................{ FILETYPE ~ rest : riv             }....................
-" Common riv commands include:
-"     :RivInstruction     " list all available Riv.vim options
-"     :RivCheatSheet      " read the 'reStructuredText Cheatsheet'
-"     :RivPrimer          " read 'A ReStructuredText Primer'
-"     :RivSpecification   " read the 'reStructuredText Specification'
-"     :RivQuickStart      " read the 'QuickStart With Riv'
-"     :RivInstruction     " read the 'Riv Instructions'
-"
-" Likewise, common InstantRst commands include:
-"     :InstantRst         " preview current reST buffer
-"     :InstantRst!        " preview all reST buffers
-"     :StopInstantRst     " stop previewing current reST buffer
-"     :StopInstantRst!    " stop previewing all reST buffers
-
-" Reduce the CPU intensiveness of reST buffer previews. While helpful, these
-" previews are non-essential and hence deprioritizable.
-let g:instant_rst_slow = 1
-
-" ....................{ FILETYPE ~ syntax                 }....................
+" ....................{ FILETYPE ~ pymode : syntax        }....................
 " Enable Python-specific syntax highlighting.
 let g:pymode_syntax = 1
 
@@ -410,6 +391,25 @@ let g:pymode_syntax_print_as_function = 1
 "         Ninety-ninth line.
 "         Hundredth line.'''
 let g:pymode_syntax_slow_sync = 1
+
+" ....................{ FILETYPE ~ rest : riv             }....................
+" Common riv commands include:
+"     :RivInstruction     " list all available Riv.vim options
+"     :RivCheatSheet      " read the 'reStructuredText Cheatsheet'
+"     :RivPrimer          " read 'A ReStructuredText Primer'
+"     :RivSpecification   " read the 'reStructuredText Specification'
+"     :RivQuickStart      " read the 'QuickStart With Riv'
+"     :RivInstruction     " read the 'Riv Instructions'
+"
+" Likewise, common InstantRst commands include:
+"     :InstantRst         " preview current reST buffer
+"     :InstantRst!        " preview all reST buffers
+"     :StopInstantRst     " stop previewing current reST buffer
+"     :StopInstantRst!    " stop previewing all reST buffers
+
+" Reduce the CPU intensiveness of reST buffer previews. While helpful, these
+" previews are non-essential and hence deprioritizable.
+let g:instant_rst_slow = 1
 
 " ....................{ FOLDING                           }....................
 " Disable folding globally. However, intentionally or accidentally performing a
@@ -525,118 +525,7 @@ augroup END
 " Indent "\"-prefixed continuation lines by half of the shiftwidth.
 let g:vim_indent_cont = 2
 
-" ....................{ MACROS                            }....................
-" When executing macros, redraw the screen only after such macros complete.
-set lazyredraw
-
-" ....................{ MODES                             }....................
-" Check the first 8 lines of new buffers for Vim modelines. By default, Gentoo
-" and other distributions disable such checking. Typically, modelines resemble:
-"
-"     # Declare this file to be of Vim type "conf", regardless of filename.
-"     # vim: set filetype=conf:
-set modeline
-set modelines=8
-
-" ....................{ MOUSE                             }....................
-" Enable terminal mouse support.
-set mouse=a
-
-" ....................{ NAVIGATION                        }....................
-" Constrain the cursor to actual characters for all modes *EXCEPT* (i.e.,
-" enable virtual editing for) the following:
-"
-" * "block", Visual block mode.
-" * "insert", Insert mode.
-" * "all", all modes.
-" * "onemore", permit the cursor to only move past the end of the line.
-set virtualedit=block
-
-" Define context-sensitive window navigation commands.
-command SwitchWindowUp    call vimrc#switch_window('k')
-command SwitchWindowDown  call vimrc#switch_window('j')
-command SwitchWindowLeft  call vimrc#switch_window('h')
-command SwitchWindowRight call vimrc#switch_window('l')
-
-" ....................{ REFORMATTING ~ vim-autoformat     }....................
-" Permit the Python-specific "autopep8" reformatter to aggressively reformat
-" long lines. While "vim-autoformat" provides default options for such
-" reformatter under "plugin/defaults.vim", "autopep8" senselessly ignores
-" option "--max-line-length" unless at least two aggressive options are passed.
-let g:formatprg_python = 'autopep8'
-let g:formatprg_args_expr_python = '"- --experimental --aggressive --aggressive --aggressive ".(&textwidth ? "--max-line-length=".&textwidth : "")'
-
-" ....................{ REMOTING                          }....................
-" Prevent the default "netrw" plugin from littering working trees with
-" ".netrwhist" files caching history and bookmarks for remotely edited files.
-" While it would probably be better to reconfigure "netrw" to add such files to
-" the "~/.vim/cache" subdirectory, it's unclear how to effect that; so, we
-" currently disable them entirely.
-let g:netrw_dirhistmax = 0
-
-" ....................{ SEARCHING                         }....................
-" Highlight all matching substrings in the current buffer.
-set hlsearch
-
-" Search incrementally (i.e., as you type).
-set incsearch
-
-" Search for all-lowercase regexes case-insensitively and all other regexes
-" (i.e., regexes containing at least one uppercase character) case-sensitively.
-"
-" Do *NOT* globally enable "ignorecase", as doing so unhelpfully applies to
-" substitutions, which should generally be searched for case-sensitively.
-" Instead, selectively enable such option only for searching with "\c" above.
-set smartcase
-
-" ....................{ SEARCHING ~ magic                 }....................
-" Enable the following per-regex options globally:
-"
-" * "\v" when both searching and substituting, enabling "very magic" regex
-"   syntax (i.e., resembling PCREs, such that regex-reserved characters need
-"   *NOT* be explicitly prefixed by "\"). Technically, Vim provides no means of
-"   globally doing so, instead requiring such syntax be locally enabled on a
-"   per-regex basis by prefixing such regexes with "\v". Since genuinely
-"   enabling such syntax globally would break third-party scripts expecting
-"   default "magic" syntax, this constraint is understandable (if onerous). To
-"   circumvent this safely, remap search key prefixes to prefix all
-"   interactively entered regexes with "\v."
-nnoremap / /\v
-nnoremap ? ?\v
-
-" While the above succinctly suffices for simple searches, such approach does
-" *NOT* extend to substitutions or other complex search operations. Instead,
-" instruct the "EnchantedVim" plugin to do so on our behalf. Since such
-" plugin's simple search support conflicts with option "incsearch" *AND* since
-" the above already suffices for such support, disable such plugin's simple
-" search support (enabled by default) and enable such plugin's more complex
-" search support (disabled by default). (You know how it is.)
-let g:VeryMagic = 0
-let g:VeryMagicFunction = 1
-let g:VeryMagicHelpgrep = 1
-let g:VeryMagicRange = 1
-let g:VeryMagicSubstitute = 1
-let g:VeryMagicVimGrep = 1
-
-" ....................{ SEARCHING ~ replace               }....................
-" Enable global substitutions by default (i.e., implicitly append "/g" to all
-" substitutions). Appending "/g" to a substitution now disables global
-" substitution, as expected.
-set gdefault
-
-" ....................{ SPELLING                          }....................
-" Spell check in English when enabled on a buffer-specific basis.
-set spelllang=en
-
-" Filetype-specific spelling settings.
-augroup our_filetype_spelling
-    autocmd!
-
-    " Enable spell checking in all buffers of the following filetypes.
-    autocmd FileType markdown,mkd,rst,text,yaml setlocal spell
-augroup END
-
-" ....................{ SYNTAX CHECK ~ ale                }....................
+" ....................{ LINTING ~ ale                     }....................
 " Asynchronous Linting Engine (ALE) provides asynchronous syntax checking.
 
 " Minimum number of milliseconds after the current buffer is modified to
@@ -661,12 +550,12 @@ let g:ale_linters = {}
 " let g:ale_history_enabled = 1
 " let g:ale_history_log_output = 1
 
-" ....................{ SYNTAX CHECK ~ ale : line         }....................
+" ....................{ LINTING ~ ale : line              }....................
 " Unconditionally enable ALE-informed syntax highlighting. See "20-theme" for
 " the definitions of all ALE-specific syntax groups.
 let g:ale_set_highlights = 1
 
-" ....................{ SYNTAX CHECK ~ ale : sign         }....................
+" ....................{ LINTING ~ ale : sign              }....................
 " Unconditionally disable ALE's usage of the sign gutter, which:
 "
 " * Conflicts with that of other bundles -- usually, version control.
@@ -682,7 +571,7 @@ let g:ale_sign_column_always = 1
 let g:ale_sign_error   = '»'
 let g:ale_sign_warning = '–'
 
-" ....................{ SYNTAX CHECK ~ ale : speed        }....................
+" ....................{ LINTING ~ ale : speed             }....................
 " Maximum number of ALE-specific signs per buffer. Since signs are well-known
 " to impose significant performance penalties in ALE, instructing ALE to *NOT*
 " maintain an excessive number of signs is a simple (albeit effective) approach
@@ -701,7 +590,7 @@ let g:ale_maximum_file_size = 200000
 " reducing responsiveness.
 let g:ale_echo_delay = 128
 
-" ....................{ SYNTAX CHECK ~ ale : python       }....................
+" ....................{ LINTING ~ ale : python            }....................
 " If Python 3 support is available...
 if g:our_is_python3
     "FIXME: Uncomment the following after ALE correctly supports "pyflakes".
@@ -810,6 +699,123 @@ if g:our_is_python3
         let g:ale_python_flake8_options = '--select=F,E'
     endif
 endif
+
+" ....................{ MACROS                            }....................
+" When executing macros, redraw the screen only after such macros complete.
+set lazyredraw
+
+" ....................{ MODELINES                         }....................
+" Check the first 8 lines of new buffers for Vim modelines. By default, Gentoo
+" and other distributions disable such checking. Typically, modelines resemble:
+"
+"     # Declare this file to be of Vim type "conf", regardless of filename.
+"     # vim: set filetype=conf:
+set modeline
+set modelines=8
+
+" ....................{ MOUSE                             }....................
+" Enable terminal mouse support.
+set mouse=a
+
+" ....................{ NAVIGATING                        }....................
+" Constrain the cursor to actual characters for all modes *EXCEPT* (i.e.,
+" enable virtual editing for) the following:
+"
+" * "block", Visual block mode.
+" * "insert", Insert mode.
+" * "all", all modes.
+" * "onemore", permit the cursor to only move past the end of the line.
+set virtualedit=block
+
+" Define context-sensitive window navigation commands.
+command SwitchWindowUp    call vimrc#switch_window('k')
+command SwitchWindowDown  call vimrc#switch_window('j')
+command SwitchWindowLeft  call vimrc#switch_window('h')
+command SwitchWindowRight call vimrc#switch_window('l')
+
+" ....................{ REFORMATTING ~ vim-autoformat     }....................
+" Permit the Python-specific "autopep8" reformatter to aggressively reformat
+" long lines. While "vim-autoformat" provides default options for such
+" reformatter under "plugin/defaults.vim", "autopep8" senselessly ignores
+" option "--max-line-length" unless at least two aggressive options are passed.
+let g:formatprg_python = 'autopep8'
+let g:formatprg_args_expr_python = '"- --experimental --aggressive --aggressive --aggressive ".(&textwidth ? "--max-line-length=".&textwidth : "")'
+
+" ....................{ REMOTING                          }....................
+" Prevent the default "netrw" plugin from littering working trees with
+" ".netrwhist" files caching history and bookmarks for remotely edited files.
+" While it would probably be better to reconfigure "netrw" to add such files to
+" the "~/.vim/cache" subdirectory, it's unclear how to effect that; so, we
+" currently disable them entirely.
+let g:netrw_dirhistmax = 0
+
+" ....................{ SEARCHING                         }....................
+" Highlight all matching substrings in the current buffer.
+set hlsearch
+
+" Search incrementally (i.e., as you type).
+set incsearch
+
+" Maximum memory usage in kilobytes to constrain regular expression-based
+" pattern matching by. The default of 1000Kb induces syntax highlighting
+" failure on large buffers with the following error message:
+"     E363: pattern uses more memory than 'maxmempattern'
+let g:maxmempattern = 2048
+
+" Search for all-lowercase regexes case-insensitively and all other regexes
+" (i.e., regexes containing at least one uppercase character) case-sensitively.
+"
+" Do *NOT* globally enable "ignorecase", as doing so unhelpfully applies to
+" substitutions, which should generally be searched for case-sensitively.
+" Instead, selectively enable such option only for searching with "\c" above.
+set smartcase
+
+" ....................{ SEARCHING ~ magic                 }....................
+" Enable the following per-regex options globally:
+"
+" * "\v" when both searching and substituting, enabling "very magic" regex
+"   syntax (i.e., resembling PCREs, such that regex-reserved characters need
+"   *NOT* be explicitly prefixed by "\"). Technically, Vim provides no means of
+"   globally doing so, instead requiring such syntax be locally enabled on a
+"   per-regex basis by prefixing such regexes with "\v". Since genuinely
+"   enabling such syntax globally would break third-party scripts expecting
+"   default "magic" syntax, this constraint is understandable (if onerous). To
+"   circumvent this safely, remap search key prefixes to prefix all
+"   interactively entered regexes with "\v."
+nnoremap / /\v
+nnoremap ? ?\v
+
+" While the above succinctly suffices for simple searches, such approach does
+" *NOT* extend to substitutions or other complex search operations. Instead,
+" instruct the "EnchantedVim" plugin to do so on our behalf. Since such
+" plugin's simple search support conflicts with option "incsearch" *AND* since
+" the above already suffices for such support, disable such plugin's simple
+" search support (enabled by default) and enable such plugin's more complex
+" search support (disabled by default). (You know how it is.)
+let g:VeryMagic = 0
+let g:VeryMagicFunction = 1
+let g:VeryMagicHelpgrep = 1
+let g:VeryMagicRange = 1
+let g:VeryMagicSubstitute = 1
+let g:VeryMagicVimGrep = 1
+
+" ....................{ SEARCHING ~ replace               }....................
+" Enable global substitutions by default (i.e., implicitly append "/g" to all
+" substitutions). Appending "/g" to a substitution now disables global
+" substitution, as expected.
+set gdefault
+
+" ....................{ SPELLING                          }....................
+" Spell check in English when enabled on a buffer-specific basis.
+set spelllang=en
+
+" Filetype-specific spelling settings.
+augroup our_filetype_spelling
+    autocmd!
+
+    " Enable spell checking in all buffers of the following filetypes.
+    autocmd FileType markdown,mkd,rst,text,yaml setlocal spell
+augroup END
 
 " ....................{ TAGS                              }....................
 " Vim supports tags for a wide variety of languages, many of which are
