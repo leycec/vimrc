@@ -300,12 +300,13 @@ if dein#load_state(g:our_plugin_dir)
     if executable('instantRst')
         call dein#add('gu-fan/InstantRst', {'on_ft': 'rst'})
 
-    "FIXME: While warning the user of this condition would be generally useful, Vim
-    "appears to provide no means of doing so without requiring the user to manually
-    "press a key on *EVERY* Vim startup after displaying this warning. This warning
-    "is currently disabled until a less intrusive warning mechanism is discovered.
+    "FIXME: While warning the user of this condition would be generally useful,
+    "Vim appears to provide no means of doing so without requiring the user to
+    "manually press a key on *EVERY* Vim startup after displaying this warning.
+    "This warning is currently disabled until a less intrusive warning
+    "mechanism is discovered.
 
-    " Else, "InstantRst" is *NOT* safely installable. Warn the user appropriately.
+    " Else, "InstantRst" is *NOT* safely installable. Warn the user.
     " else
     "     echomsg '"instantRst" command not found; reStructuredText buffers not previewable.'
     endif
@@ -406,7 +407,7 @@ if dein#load_state(g:our_plugin_dir)
     " The dein-compatible ALE plugin supplants our prior use of the
     " dein-incompatible "watchdogs" plugin, which tragically failed to scale.
     if g:our_is_job_async
-        call dein#add('w0rp/ale', {
+        call dein#add('dense-analysis/ale', {
           \ 'on_ft': [
           \     'c', 'cpp', 'd',
           \     'css', 'sass', 'scss',

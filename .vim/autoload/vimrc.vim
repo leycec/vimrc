@@ -11,6 +11,23 @@ scriptencoding utf-8
 " By Vim mandate, all functions defined by this script *MUST* be prefixed by
 " "vimrc#". In return, Vim sources this script and hence autoloads all such
 " functions on the first call to any such function.
+"
+" --------------------( SNIPPETS                          )--------------------
+" Note the following vimscript snippets, which are sufficiently succinct to
+" *NOT* warrant full-blown functions:
+"
+" * Convert Microsoft (e.g., MS-DOS, Windows) to UNIX newlines. Either:
+"   * Globally strip all "^M" control characters from the current buffer. Note,
+"     however, that this only works for buffers whose newlines are *ALL*
+"     unconditionally terminated by Microsoft newlines. For mixed-mode buffers
+"     (i.e., buffers whose newlines are terminated by a heterogenous mixture of
+"     both Microsoft and UNIX newlines), see the subsequent snippet:
+"         :set ff=unix
+"   * Globally strip all "^M" control characters from the current buffer. Note
+"     that, unlike the prior snippet, this snippet universally applies to *ALL*
+"     buffers – including mixed-mode buffers containing a mixture of both
+"     Microsoft and UNIX newlines:
+"         :%s/\r//g
 
 " ....................{ TESTERS                           }....................
 " vimrc#is_buffer_viewable() -> bool
