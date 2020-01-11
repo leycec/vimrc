@@ -1,5 +1,5 @@
 " --------------------( LICENSE                           )--------------------
-" Copyright 2015-2018 by Cecil Curry.
+" Copyright 2015-2020 by Cecil Curry.
 " See "LICENSE" for further details.
 "
 " --------------------( SYNOPSIS                          )--------------------
@@ -20,7 +20,7 @@ endif
 " * <-po> to stop previewing the current reStructuredText buffer.
 " * <-pO> to stop previewing all reStructuredText buffers.
 if dein#tap('InstantRst')
-    nnoremap <buffer> <localleader>p :InstantRst<cr>
+    nnoremap <buffer> <localleader>p  :InstantRst<cr>
     nnoremap <buffer> <localleader>ps :InstantRst<cr>
     nnoremap <buffer> <localleader>pS :InstantRst!<cr>
     nnoremap <buffer> <localleader>po :StopInstantRst<cr>

@@ -1,6 +1,6 @@
 scriptencoding utf-8
 " --------------------( LICENSE                           )--------------------
-" Copyright 2015-2018 by Cecil Curry.
+" Copyright 2015-2020 by Cecil Curry.
 " See "LICENSE" for further details.
 "
 " --------------------( SYNOPSIS                          )--------------------
@@ -254,21 +254,6 @@ if dein#load_state(g:our_plugin_dir)
     "call dein#add('xolox/vim-misc')
 
     " ....................{ LAZY ~ filetype               }....................
-    " Markdown. There exist a variety of Markdown plugins, including:
-    "
-    " * "gabrielelana/vim-markdown", implementing GitHub-flavoured Markdown
-    "   (GFMD), my preferred Markdown flavour. Frequently updated and fast on
-    "   large buffers.
-    " * "plasticboy/vim-markdown", implementing a generic flavour of Markdown.
-    "   Frequently updated but slow on large buffers.
-    " * "tpope/vim-markdown", doubling as Vim's default syntax highlighting
-    "   plugin for Markdown. Infrequently updated, minimalist, and generic.
-    call dein#add('gabrielelana/vim-markdown', {
-      \ 'on_ft': ['markdown', 'mkd'],
-      \ })
-      " \ 'depends': 'godlygeek/tabular',
-    " call dein#add('gabrielelana/vim-markdown')
-
     "FIXME: Investigate whether this filetype mapping requires:
     "* Vim-agnostic Perl 6 shebangs resembling "#!/usr/bin/env perl6".
     "* Vim-specific Perl 6 modelines resembling "# vim: filetype=perl6".
@@ -288,6 +273,39 @@ if dein#load_state(g:our_plugin_dir)
 
     " CSS-specific syntax highlighting.
     call dein#add('ap/vim-css-color', {'on_ft': ['css', 'scss', 'sass']})
+
+    " ..................{ LAZY ~ filetype : md              }..................
+    " Markdown. There exist a variety of Markdown plugins, including:
+    "
+    " * "gabrielelana/vim-markdown", implementing GitHub-flavoured Markdown
+    "   (GFMD), my preferred Markdown flavour. Frequently updated and fast on
+    "   large buffers.
+    " * "plasticboy/vim-markdown", implementing a generic flavour of Markdown.
+    "   Frequently updated but slow on large buffers.
+    " * "tpope/vim-markdown", doubling as Vim's default syntax highlighting
+    "   plugin for Markdown. Infrequently updated, minimalist, and generic.
+    call dein#add('gabrielelana/vim-markdown', {
+      \ 'on_ft': ['markdown', 'mkd'],
+      \ })
+      " \ 'depends': 'godlygeek/tabular',
+    " call dein#add('gabrielelana/vim-markdown')
+
+    " Markdown preview.
+    "
+    " If the external "yarn" Node.js package manager is installed, compile and
+    " install the Javascript core of this plugin with this manager.
+    if executable('yarn')
+        call dein#add('iamcco/markdown-preview.nvim', {
+          \ 'on_ft': ['markdown', 'mkd'],
+          \ 'build': 'cd app & yarn install',
+          \ })
+    " Else, install the precompiled Javascript core bundled with this plugin.
+    else
+        call dein#add('iamcco/markdown-preview.nvim', {
+          \ 'on_ft': ['markdown', 'mkd'],
+          \ 'build': { -> mkdp#util#install() },
+          \ })
+    endif
 
     " ..................{ LAZY ~ filetype : rst             }..................
     " reStructuredText (reST).

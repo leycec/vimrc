@@ -1,6 +1,6 @@
 scriptencoding utf-8
 " --------------------( LICENSE                           )--------------------
-" Copyright 2015-2018 by Cecil Curry.
+" Copyright 2015-2020 by Cecil Curry.
 " See "LICENSE" for further details.
 "
 " --------------------( SYNOPSIS                          )--------------------
@@ -296,6 +296,26 @@ let g:markdown_fenced_languages = [
 "     * This is...
 "         * not good, however.
 let g:vim_markdown_new_list_item_indent = 2
+
+" ....................{ FILETYPE ~ markdown : preview     }....................
+" Prevent "markdown-preview" from implicitly opening and closing preview
+" windows on entering and leaving Markdown buffers.
+let g:mkdp_auto_start = 0
+let g:mkdp_auto_close = 0
+
+" Prevent "markdown-preview" from implicitly scrolling preview windows on
+" scrolling Markdown buffers.
+let g:mkdp_preview_options = {
+    \ 'disable_sync_scroll': 1,
+    \ }
+
+" Print the URL of the Markdown preview page on opening a preview window.
+let g:mkdp_echo_preview_url = 1
+
+" Refresh the current Markdown preview only on saving the Markdown buffer
+" associated with this preview *OR* leaving Insert mode. By default,
+" "markdown-preview" refreshes this preview on all edits and cursor movements.
+let g:mkdp_refresh_slow = 1
 
 " ....................{ FILETYPE ~ perl6                  }....................
 " Implicitly convert ASCII- to Unicode-formatted Perl 6 operators.
@@ -760,7 +780,8 @@ set incsearch
 " pattern matching by. The default of 1000Kb induces syntax highlighting
 " failure on large buffers with the following error message:
 "     E363: pattern uses more memory than 'maxmempattern'
-let g:maxmempattern = 2048
+let g:maxmempattern = 4096
+" let g:maxmempattern = 2048
 
 " Search for all-lowercase regexes case-insensitively and all other regexes
 " (i.e., regexes containing at least one uppercase character) case-sensitively.
