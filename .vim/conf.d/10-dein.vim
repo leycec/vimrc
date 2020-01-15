@@ -7,6 +7,23 @@ scriptencoding utf-8
 " dein configuration, defining the set of all dein-managed third-party
 " Github-hosted plugins to be used.
 
+"FIXME: Install https://github.com/davidhalter/jedi-vim, commonly regarded as
+"the optimal Python-specific solution for both autocompletion and
+"jump-to-definition with Vim. Note that:
+"
+"* The default installation instructions are sadly trash-tier, despite the
+"  remarkable quality of the remainder of the plugin. Let's grep up some
+"  dein-specific Vim snippetry, please. As of this writing, the optimal
+"  dein-specific Vim snippetry comes courtesy:
+"    https://jnrowe-vim.readthedocs.io/en/latest/dein.html#jedi-vim
+"  Note, however, that the clause "'if': has('pythonx')," strikes us as
+"  fundamentally insane. What, exactly, is the "pythonx" feature? Rudimentary
+"  googling suggests this feature implies Vim to have compiled support for both
+"  Python 2 and 3. Since Python 2 is effectively dead, this is useless. Would
+"  "'if': has('python3')," not make more sense here?
+"* The default key binding of <Ctrl-Space> for autocompletion is a chord and
+"  thus prohibited; consider rebinding autocompletions to "<leader>c" instead.
+
 "FIXME: Install https://github.com/airblade/vim-gitgutter, an utterly awesome
 "plugin augmenting the gutter in an airline-aware manner with discrete "+" and
 ""-" symbols signifying changes versus the current branch HEAD. It also comes
@@ -253,7 +270,7 @@ if dein#load_state(g:our_plugin_dir)
     " easytags dependency.
     "call dein#add('xolox/vim-misc')
 
-    " ....................{ LAZY ~ filetype               }....................
+    " ..................{ LAZY ~ filetype                   }..................
     "FIXME: Investigate whether this filetype mapping requires:
     "* Vim-agnostic Perl 6 shebangs resembling "#!/usr/bin/env perl6".
     "* Vim-specific Perl 6 modelines resembling "# vim: filetype=perl6".
@@ -266,13 +283,24 @@ if dein#load_state(g:our_plugin_dir)
     " Zeshy.
     call dein#add('leycec/vim-zeshy', {'on_ft': 'zeshy'})
 
-    " ....................{ LAZY ~ filetype : css         }....................
+    " ..................{ LAZY ~ filetype : css             }..................
     " CSS. As the CSS plugin provided out-of-the-box by Vim lacks support for
     " most CSS3-specific syntactic constructs, external plugins are preferred.
     call dein#add('hail2u/vim-css3-syntax', {'on_ft': 'css'})
 
     " CSS-specific syntax highlighting.
     call dein#add('ap/vim-css-color', {'on_ft': ['css', 'scss', 'sass']})
+
+    " ..................{ LAZY ~ filetype : html : template }..................
+    " Twig. There exist two principle Twig plugins:
+    "
+    " * "lumiliet/vim-twig", updated slightly more frequently and featuring
+    "   substantially more watchers and stars.
+    " * "nelsyeung/twig.vim", updated slightly less frequently but integrating
+    "   with a few more other plugins (e.g., neosnippet, UltiSnips).
+    call dein#add('lumiliet/vim-twig', {
+      \ 'on_ft': ['markdown', 'twig'],
+      \ })
 
     " ..................{ LAZY ~ filetype : md              }..................
     " Markdown. There exist a variety of Markdown plugins, including:
