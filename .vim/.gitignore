@@ -1,14 +1,14 @@
-# ====================[ .gitignore                         ]====================
+# ====================[ .gitignore                        ]====================
 #
-# --------------------( LICENSE                            )--------------------
-# Copyright 2015 by Cecil Curry.
+# --------------------( LICENSE                           )--------------------
+# Copyright 2015-2020 by Cecil Curry.
 # See "LICENSE" for further details.
 #
-# --------------------( SYNOPSIS                           )--------------------
+# --------------------( SYNOPSIS                          )--------------------
 # Blacklist all files and subdirectories of the current directory matching the
 # following git-specific glob expressions.
 #
-# --------------------( SEE ALSO                           )--------------------
+# --------------------( SEE ALSO                          )--------------------
 # For further details, see:
 #
 # * "man gitignore" for high-level commentary.
@@ -16,7 +16,7 @@
 #   that glob() and hence ".gitignore" files support only a proper subset of
 #   bash- and zsh-style glob syntax.
 
-# ....................{ DIRECTORIES ~ top-level            }....................
+# ....................{ DIRECTORIES ~ top-level           }....................
 # Ignore dein's top-level directory. Since some plugins have non-trivial
 # installations forking external commands (e.g., "make"), copying plugin
 # subdirectories into this directory does *NOT* generally suffice to install
@@ -28,7 +28,11 @@
 # Ignore the top-level cache directory.
 /cache/
 
-# ....................{ FILES ~ top-level                  }....................
+# ....................{ DIRECTORIES ~ subdirectory        }....................
+# Ignore all Git repository dot directories.
+.git/
+
+# ....................{ FILES ~ top-level                 }....................
 # For portability, ignore our "~/.vim/vimrc" -> "~/.vimrc" symbolic link.
 # Unfortunately, symbolic links are static and hence have no means of
 # dynamically resolving to the current user's home directory.

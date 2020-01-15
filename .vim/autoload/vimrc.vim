@@ -273,6 +273,35 @@ function! vimrc#sanitize_code_buffer_formatting() abort
 endfunction
 
 " ....................{ HIGHLIGHTERS                      }....................
+" vimrc#synchronize_syntax_highlighting() -> None
+"
+" Synchronize syntax highlighting in the current buffer. This function is
+" typically manually called by the user *AFTER* a failure by Vim to properly
+" highlight this buffer.
+function! vimrc#synchronize_syntax_highlighting() abort
+    " Log this attempt.
+    echo 'Synchronize syntax highlighting...'
+
+    " Reparse syntax from a reasonable number of prior lines in this buffer on
+    " every buffer movement. This is more conservative than the default of
+    " reparsing syntax from the beginning of this buffer on every buffer
+    " movement -- which, in theory, *SHOULD* improve the probability of success
+    " in resynchronizing syntax highlighting.
+    syntax sync minlines=1024
+
+    " Reparse syntax from the beginning of this buffer on every buffer
+    " movement. Although this synchronization setting is already the default
+    " for this collection of startup scripts, resetting this setting incurs no
+    " penalties and can in edge cases produce tangible benefits.
+    " syntax sync fromstart
+
+    " Reenable syntax highlighting. Although syntax highlighting is, of course,
+    " already enabled by default by this collection of startup scripts,
+    " reenabling syntax highlighting appears to be required in edge cases.
+    syntax on
+endfunction
+
+" ....................{ HIGHLIGHTERS ~ print              }....................
 " vimrc#print_syntax_group_current() -> str
 "
 " Display the names of both the originating and translated syntax groups
@@ -302,32 +331,27 @@ function! vimrc#print_syntax_group_current() abort
 endfunction
 
 
-" vimrc#synchronize_syntax_highlighting() -> None
+" vimrc#print_syntax_group_all() -> str
 "
-" Synchronize syntax highlighting in the current buffer. This function is
-" typically manually called by the user *AFTER* a failure by Vim to properly
-" highlight this buffer.
-function! vimrc#synchronize_syntax_highlighting() abort
-    " Log this attempt.
-    echo 'Synchronize syntax highlighting...'
-
-    " Reparse syntax from a reasonable number of prior lines in this buffer on
-    " every buffer movement. This is more conservative than the default of
-    " reparsing syntax from the beginning of this buffer on every buffer
-    " movement -- which, in theory, *SHOULD* improve the probability of success
-    " in resynchronizing syntax highlighting.
-    syntax sync minlines=1024
-
-    " Reparse syntax from the beginning of this buffer on every buffer
-    " movement. Although this synchronization setting is already the default
-    " for this collection of startup scripts, resetting this setting incurs no
-    " penalties and can in edge cases produce tangible benefits.
-    " syntax sync fromstart
-
-    " Reenable syntax highlighting. Although syntax highlighting is, of course,
-    " already enabled by default by this collection of startup scripts,
-    " reenabling syntax highlighting appears to be required in edge cases.
-    syntax on
+" Display the names of both the originating and translated syntax groups for
+" all all syntax groups on the syntax stack applied to the current character of
+" the current buffer in the status bar.
+"
+" This function was gratefully inspired by the following external source:
+"
+" * Rich's syntax_query() function, published at:
+"   https://vi.stackexchange.com/a/16113/16249
+function! vimrc#print_syntax_group_all() abort
+    " For the integer uniquely identifying the originating syntax group of the
+    " current syntax group on the syntax stack applied to the current character
+    " of the current buffer...
+    for l:syntax_group_id in synstack(line('.'), col('.'))
+        " Log the names of this originating and translated syntax group. Also
+        " see the vimrc#print_syntax_group_current() function.
+        echo
+          \ synIDattr(l:syntax_group_id, 'name') . ' -> ' .
+          \ synIDattr(synIDtrans(l:syntax_group_id), 'name')
+    endfor
 endfunction
 
 " ....................{ PRINTERS ~ buffer                 }....................

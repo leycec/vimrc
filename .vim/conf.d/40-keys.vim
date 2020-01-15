@@ -128,9 +128,14 @@ nnoremap <leader>u :UndotreeToggle<cr>
 " Bind <,1> to synchronize syntax highlighting in the current buffer.
 nnoremap <silent> <leader>1 :call vimrc#synchronize_syntax_highlighting()<cr>
 
-" Bind <,s> to display the syntax groups highlighted at the current character
-" of the current buffer in the status bar.
+" Bind:
+"
+" * <,s> to display the top-most syntax groups highlighted at the current
+"   character of the current buffer in the status bar.
+" * <,S> to display all syntax groups highlighted at the current character of
+"   the current buffer in the status bar.
 nnoremap <silent> <leader>s :call vimrc#print_syntax_group_current()<cr>
+nnoremap <silent> <leader>S :call vimrc#print_syntax_group_all()<cr>
 
 " Bind <,/> to dehighlight all terms found by the prior search. This preserves
 " the search history and hence is preferable to manually searching for garbage
