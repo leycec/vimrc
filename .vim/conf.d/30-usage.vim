@@ -264,6 +264,10 @@ command DiffSelf call vimrc#diff_buffer_current_with_file_current()
 " Common file exploration commands include:
 "     :VimFiler         " run vimfiler
 
+" ....................{ FILETYPE ~ markdown : gabrielelana}....................
+" Disable Jekyll-specific Markdown syntax highlighting.
+let g:markdown_include_jekyll_support = 0
+
 " ....................{ FILETYPE ~ markdown : tpope       }....................
 " Tim Pope's Markdown plugin. While no longer used, there's little harm in
 " preserving the following variable.

@@ -6,6 +6,36 @@ scriptencoding utf-8
 " --------------------( SYNOPSIS                          )--------------------
 " dein configuration, defining the set of all dein-managed third-party
 " Github-hosted plugins to be used.
+"
+" --------------------( COMMANDS                          )--------------------
+" Common startup-related commands include:
+"     :scriptnames     " list the absolute paths of all current startup scripts
+"
+" Common dein commands include:
+"     :DeinUpdate           " install and/or update all plugins as needed
+"     :call dein#install()  " install all uninstalled plugins
+"     :call dein#update()   " update all installed plugins
+"     :h dein               " peruse documentation
+"
+" --------------------( FUNCTIONS                         )--------------------
+" Common dein functions for use in this specific file include:
+"     call dein#add(...)    " install and cache the passed plugin
+"
+" --------------------( RECIPES                           )--------------------
+" For nonstandard Vim plugins requiring post-installation "intervention" (e.g.,
+" "neocomplcache", "unite", "vimproc", "vimshell"), see official recipes (i.e.,
+" Vim configuration snippets) at the following URLs:
+"
+"     FIXME: Sadly, this Github repository no longer appears to exist. *sigh*
+"     https://github.com/Shougo/dein-vim-recipes
+"     https://github.com/Shougo/dein-vim-recipes/tree/master/recipes
+"
+" While these recipes could technically be preloaded on Vim startup, doing so
+" would violate lazy loading and hence unnecessarily increase startup time.
+" That said:
+"
+"     " Leverage official dein recipes for popular plugins, if available.
+"     dein 'Shougo/dein-vim-recipes', {'force' : 1}
 
 "FIXME: Install https://github.com/davidhalter/jedi-vim, commonly regarded as
 "the optimal Python-specific solution for both autocompletion and
@@ -59,38 +89,14 @@ scriptencoding utf-8
 " ....................{ INSTALL                           }....................
 " The dein plugin manager must be configured *BEFORE* dein-managed plugins --
 " which means "bloody early in Vim startup."
-"
-" Common startup-related commands include:
-"     :scriptnames     " list the absolute paths of all current startup scripts
-"
-" Common dein commands include:
-"     :DeinUpdate           " install and/or update all plugins as needed
-"     :call dein#install()  " install all uninstalled plugins
-"     :call dein#update()   " update all installed plugins
-"     :h dein               " peruse documentation
-"
-" For nonstandard Vim plugins requiring post-installation "intervention" (e.g.,
-" "neocomplcache", "unite", "vimproc", "vimshell"), see official recipes (i.e.,
-" Vim configuration snippets) at the following URLs:
-"
-"     FIXME: Sadly, this Github repository no longer appears to exist. *sigh*
-"     https://github.com/Shougo/dein-vim-recipes
-"     https://github.com/Shougo/dein-vim-recipes/tree/master/recipes
-"
-" While these recipes could technically be preloaded on Vim startup, doing so
-" would violate lazy loading and hence unnecessarily increase startup time.
-" That said:
-"
-"     " Leverage official dein recipes for popular plugins, if available.
-"     dein 'Shougo/dein-vim-recipes', {'force' : 1}
 
 " If dein is *NOT* installed, do so before doing anything else. dein is the
 " fulcrum on which the remainder of this configuration rests.
-if !isdirectory(g:our_dein_dir)
+if !isdirectory(g:our_dein_repo_dir)
     echo "Installing dein...\n"
     execute
       \ 'silent !git clone https://github.com/Shougo/dein.vim ' .
-      \ shellescape(g:our_dein_dir)
+      \ shellescape(g:our_dein_repo_dir)
 endif
 
 " When starting but *NOT* reloading Vim...
@@ -101,7 +107,7 @@ if has('vim_starting')
     endif
 
     " Add dein to Vim's PATH.
-    call AddRuntimePath(g:our_dein_dir)
+    call AddRuntimePath(g:our_dein_repo_dir)
 endif
 
 " ....................{ OPTIONS                           }....................
@@ -121,15 +127,20 @@ let g:dein#install_process_timeout = 120
 " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 " WARNING: To reduce startup speed, dein does *NOT* automatically synchronize
 " the contents of the source "~/.vim/dein/repos" directory with the target
-" "~/.vim/dein/.cache" directory. Instead, users *MUST* manually run the
-" following Ex command on modifying the contents of the former:
+" "~/.vim/dein/.cache" directory. Instead, users *MUST* either:
+"
+" * Temporarily move plugins to be modified (e.g., for local development) from
+"   the "~/.vim/dein/repos" to "~/.vim/local" directory. The configuration
+"   below instructs dein to *NOT* cache plugins residing in the latter
+"   directory; ergo, these plugins are "live" and must be manually mantained.
+" * Manually run the following Ex command on modifying the contents of the
+"   source "~/.vim/dein/repos" directory:
 "
 "     call dein#recache_runtimepath()
-"
-" Yes, this sucks. No, there's nothing we can do about it. Yes, that sucks too.
 " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-if dein#load_state(g:our_plugin_dir)
+if dein#load_state(g:our_dein_dir)
+    " ..................{ START                             }..................
     " Initialize dein, installing new plugins to and loading installed plugins
     " from the plugin subdirectory. Since dein adopts the whitelist approach
     " to plugin management, plugins *NOT* explicitly passed to dein#add() will
@@ -148,8 +159,12 @@ if dein#load_state(g:our_plugin_dir)
     "   "~/.vimrc").
     " * "expand('<sfile>:p')", the absolute filename of the current Vim script
     "   (e.g., "~/.vimrc/conf.d/10-dein.vim").
-    call dein#begin(g:our_plugin_dir, [expand('<sfile>:p')])
-    "call dein#begin(g:our_plugin_dir, [$MYVIMRC, expand('<sfile>:p')])
+    call dein#begin(g:our_dein_dir, [expand('<sfile>:p')])
+    "call dein#begin(g:our_dein_dir, [$MYVIMRC, expand('<sfile>:p')])
+
+    " Load but do *NOT* cache each subdirectory of this directory as a plugin
+    " to be manually maintained by the user (e.g., for local development).
+    call dein#local(g:our_dein_local_dir)
 
     " ..................{ CORE                              }..................
     " Install dein with dein itself, completing the self-referential loop.
@@ -312,11 +327,14 @@ if dein#load_state(g:our_plugin_dir)
     "   Frequently updated but slow on large buffers.
     " * "tpope/vim-markdown", doubling as Vim's default syntax highlighting
     "   plugin for Markdown. Infrequently updated, minimalist, and generic.
-    call dein#add('gabrielelana/vim-markdown', {
-      \ 'on_ft': ['markdown', 'mkd'],
-      \ })
-      " \ 'depends': 'godlygeek/tabular',
-    " call dein#add('gabrielelana/vim-markdown')
+
+    "FIXME: Temporarily disabled in favour of "~/.vim/local/vim-markdown",
+    "a local fork of this repository adding support for YAML front matter. Once
+    "we submit an upstream pull request enabling this support, remove this
+    "local fork and re-enable this repository.
+    " call dein#add('gabrielelana/vim-markdown', {
+    "   \ 'on_ft': ['markdown', 'mkd'],
+    "   \ })
 
     " Markdown preview.
     "
@@ -514,6 +532,7 @@ if dein#load_state(g:our_plugin_dir)
     "   \ 'autoload': { 'filetypes': ['zeshy'] },
     "   \ }
 
+    " ..................{ STOP                              }..................
     " Finalize dein's in-memory configuration.
     call dein#end()
 
