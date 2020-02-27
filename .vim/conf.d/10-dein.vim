@@ -12,10 +12,11 @@ scriptencoding utf-8
 "     :scriptnames     " list the absolute paths of all current startup scripts
 "
 " Common dein commands include:
-"     :DeinUpdate           " install and/or update all plugins as needed
-"     :call dein#install()  " install all uninstalled plugins
-"     :call dein#update()   " update all installed plugins
-"     :h dein               " peruse documentation
+"     :DeinUpdate               " install and/or update all plugins as needed
+"     :call dein#install()      " install all uninstalled plugins
+"     :call dein#update()       " update all installed plugins
+"     :call dein#clear_state()  " clear dein's cache (e.g., ~/.vim/dein/.cache)
+"     :h dein                   " peruse documentation
 "
 " --------------------( FUNCTIONS                         )--------------------
 " Common dein functions for use in this specific file include:
@@ -166,7 +167,7 @@ if dein#load_state(g:our_dein_dir)
     " to be manually maintained by the user (e.g., for local development).
     call dein#local(g:our_dein_local_dir)
 
-    " ..................{ CORE                              }..................
+    " ..................{ DEIN                              }..................
     " Install dein with dein itself, completing the self-referential loop.
     call dein#add('Shougo/dein.vim')
 
@@ -174,9 +175,16 @@ if dein#load_state(g:our_dein_dir)
     " improvement over dein's vanilla workflow for installation and updates.
     call dein#add('wsdjeg/dein-ui.vim')
 
+    " ..................{ NON-LAZY ~ start                  }..................
+    " IDE-like startup screen listing recently opened files and sessions.
+    call dein#add('mhinz/vim-startify')
+
     " ..................{ NON-LAZY ~ theme                  }..................
     "FIXME: I'm not entirely fond of either the comment or documentation colors.
-    "Contemplate corrections.
+    "Contemplate corrections. Alternately, alternative schemes include:
+    "
+    "* JellyBeans, quite similar to Lucius and considerably more popular:
+    "  https://github.com/nanotech/jellybeans.vim
 
     " Colour theme.
     call dein#add('jonathanfilip/vim-lucius')
@@ -190,8 +198,8 @@ if dein#load_state(g:our_dein_dir)
     " abundance of online ".vimrc" examples erroneously suggesting they can.
     " Since VCS wrapper hooks *MUST* be run on buffer switches to detect
     " whether that buffer is under VCS control, VCS wrappers *MUST* be sourced
-    " before such switches. Then since the first file to be opened constitutes
-    " a buffer switch *AND* since at least one file is (typically) always open,
+    " before these switches. Since the first file to be opened constitutes a
+    " buffer switch *AND* since at least one file is (typically) always open,
     " VCS wrappers *MUST* be non-lazily sourced on every Vim startup.
     "
     " Technically, this requirement is somewhat circumventable by defining
@@ -208,11 +216,19 @@ if dein#load_state(g:our_dein_dir)
     "
     " The costs are considerably higher than the negligible efficiency gains.
 
-    " Git wrapper.
+    "FIXME: Disabled as Mercurial is effectively dead, as evidenced by
+    "BitBucket dropping Mercurial support.
+    " Mercurial wrapper.
+    " call dein#add('ludovicchabant/vim-lawrencium')
+
+    " Git frontend.
     call dein#add('tpope/vim-fugitive')
 
-    " Mercurial wrapper.
-    call dein#add('ludovicchabant/vim-lawrencium')
+    "FIXME: Disabled as it doesn't appear to play well with Fugitive, despite
+    "explicitly claiming to. We suspect the
+    ""g:committia_open_only_vim_starting" option is to blame, but... *shrug*
+    " Git commit frontend.
+    " call dein#add('rhysd/committia.vim')
 
     " ..................{ LAZY ~ dependencies               }..................
     " Pure dependencies (i.e., plugins only dependencies of other plugins) are
@@ -282,32 +298,31 @@ if dein#load_state(g:our_dein_dir)
       \ '})
       " \ 'depends': 'Shougo/vimproc',
 
-    " easytags dependency.
-    "call dein#add('xolox/vim-misc')
+    " ..................{ LAZY ~ lang                       }..................
+    " Core Perl support.
+    call dein#add('vim-perl/vim-perl', {
+      \ 'on_ft': 'perl',
+      \ 'build': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny'
+      \ })
 
-    " ..................{ LAZY ~ filetype                   }..................
-    "FIXME: Investigate whether this filetype mapping requires:
-    "* Vim-agnostic Perl 6 shebangs resembling "#!/usr/bin/env perl6".
-    "* Vim-specific Perl 6 modelines resembling "# vim: filetype=perl6".
-    " Perl 6.
-    call dein#add('vim-perl/vim-perl6', {'on_ft': 'perl6'})
+    "FIXME: Sadly dead, alas. (Everyone sigh as one now.)
+    " " Zeshy.
+    " call dein#add('leycec/vim-zeshy', {'on_ft': 'zeshy'})
 
-    " Python.
-    call dein#add('python-mode/python-mode', {'on_ft': 'python'})
-
-    " Zeshy.
-    call dein#add('leycec/vim-zeshy', {'on_ft': 'zeshy'})
-
-    " ..................{ LAZY ~ filetype : css             }..................
-    " CSS. As the CSS plugin provided out-of-the-box by Vim lacks support for
-    " most CSS3-specific syntactic constructs, external plugins are preferred.
-    call dein#add('hail2u/vim-css3-syntax', {'on_ft': 'css'})
+    " ..................{ LAZY ~ lang : css                 }..................
+    " Core CSS support.
+    "
+    " Note that the CSS plugin provided out-of-the-box by Vim lacks support for
+    " most CSS3-specific syntactic constructs.
+    call dein#add('hail2u/vim-css3-syntax', {
+      \ 'on_ft': ['css', 'scss', 'sass']})
 
     " CSS-specific syntax highlighting.
-    call dein#add('ap/vim-css-color', {'on_ft': ['css', 'scss', 'sass']})
+    call dein#add('ap/vim-css-color', {
+      \ 'on_ft': ['css', 'scss', 'sass']})
 
-    " ..................{ LAZY ~ filetype : html : template }..................
-    " Twig. There exist two principle Twig plugins:
+    " ..................{ LAZY ~ lang : html : template     }..................
+    " Core Twig support. There exist two principle Twig plugins:
     "
     " * "lumiliet/vim-twig", updated slightly more frequently and featuring
     "   substantially more watchers and stars.
@@ -317,7 +332,7 @@ if dein#load_state(g:our_dein_dir)
       \ 'on_ft': ['markdown', 'twig'],
       \ })
 
-    " ..................{ LAZY ~ filetype : md              }..................
+    " ..................{ LAZY ~ lang : md                  }..................
     " Markdown. There exist a variety of Markdown plugins, including:
     "
     " * "gabrielelana/vim-markdown", implementing GitHub-flavoured Markdown
@@ -353,42 +368,53 @@ if dein#load_state(g:our_dein_dir)
           \ })
     endif
 
-    " ..................{ LAZY ~ filetype : rst             }..................
-    " reStructuredText (reST).
+    " ..................{ LAZY ~ lang : php                 }..................
+    " Core PHP support.
+    call dein#add('StanAngeloff/php.vim', {'on_ft': 'php'})
+
+    "FIXME: Uncomment if we ever care about this sort of thing.
+    " IDE-like PHP facilities.
+    " call dein#add('phpactor/phpactor', {
+    "   \ 'on_ft': 'php',
+    "   \ 'build': 'composer install',
+    "   \ 'if': executable('composer'),
+    "   \ })
+
+    " ..................{ LAZY ~ lang : python              }..................
+    " Core Python support.
+    call dein#add('python-mode/python-mode', {'on_ft': 'python'})
+
+    " ..................{ LAZY ~ lang : rst                 }..................
+    " Core reStructuredText (reST) support.
     call dein#add('gu-fan/riv.vim', {'on_ft': 'rst'})
 
     " If the external "instantRst" command is installed, the external
     " "instant_rst" Python package is assumed to also be installed, in which
     " case the "InstantRst" plugin by the same author integrating with the
     " "riv.vim" plugin installed above is both safely installable *AND* usable.
-    if executable('instantRst')
-        call dein#add('gu-fan/InstantRst', {'on_ft': 'rst'})
-
-    "FIXME: While warning the user of this condition would be generally useful,
-    "Vim appears to provide no means of doing so without requiring the user to
-    "manually press a key on *EVERY* Vim startup after displaying this warning.
-    "This warning is currently disabled until a less intrusive warning
-    "mechanism is discovered.
-
-    " Else, "InstantRst" is *NOT* safely installable. Warn the user.
-    " else
-    "     echomsg '"instantRst" command not found; reStructuredText buffers not previewable.'
-    endif
+    call dein#add('gu-fan/InstantRst', {
+      \ 'on_ft': 'rst',
+      \ 'if': executable('instantRst'),
+      \ })
 
     " ..................{ LAZY ~ key                        }..................
-    " Bind <gc-> (e.g., <gcc>) to perform buffer commenting and uncommenting.
+    " Bind <gc*> (e.g., <gcc>) to perform buffer commenting and uncommenting.
     call dein#add('tomtom/tcomment_vim', {
       \ 'on_map': {'nx': ['gc', 'g<', 'g>', '<C-_>', '<Leader>_']},
       \ })
+
+    " Improve <ga> to display additional metadata (e.g., HTML, Unicode) on the
+    " character at the cursor.
+    call dein#add('tpope/vim-characterize', {'on_map': {'nx': 'ga'}})
+
+    " Improve <.> to support repeating of plugin-specific key bindings.
+    call dein#add('tpope/vim-repeat.git', {'on_map': {'nx': '.'}})
 
     " Bind <[> and <]> to syntax-aware metamovement. Specifically, bind:
     "
     " * <[n> to jump to the prior merge conflict if any.
     " * <]n> to jump to the next merge conflict if any.
     call dein#add('tpope/vim-unimpaired', {'on_map': {'nx': ['[', ']']}})
-
-    " Improve <.> to support repeating of plugin-specaific key bindings.
-    call dein#add('tpope/vim-repeat.git', {'on_map': {'n': '.'}})
 
     "FIXME: All of the following should probably be loaded lazily. It's unclear,
     "however, what the most efficient means of doing so should be.
@@ -430,7 +456,7 @@ if dein#load_state(g:our_dein_dir)
     "     https://github.com/junegunn/fzf.vim/issues/722
     if !vimrc#is_path('~/.fzf.bash')
         call dein#add('junegunn/fzf', {
-          \ 'build': './install --all', 'merged': 0 }) 
+          \ 'build': './install --all', 'merged': 0 })
     endif
 
     " In either case, unconditionally install the high-level "fzf.vim" API...
@@ -463,7 +489,7 @@ if dein#load_state(g:our_dein_dir)
     "   \ }
 
     " If Vim supports asynchronous job control, enable asynchronous syntax
-    " checking via the Asynchronous Linting Engine (ALE). If Vim does *NOT*
+    " checking through the Asynchronous Linting Engine (ALE). If Vim does *NOT*
     " support asynchronous job control, we avoid enabling any syntax checking.
     " Why? Because synchronous syntax checking is overly obtrusive and feeble,
     " given the ubiquity of modern Vim support for asynchronous job control.
@@ -524,12 +550,13 @@ if dein#load_state(g:our_dein_dir)
     " Navigate the undo history tree.
     call dein#add('mbbill/undotree', {'on_cmd': 'UndotreeToggle'})
 
-    "FIXME: Temporarily disabled. We don't currently leverage tags functionality
-    "terribly much, and there appear to be conflicts with git-based Universal Ctags.
+    "FIXME: Temporarily disabled. We don't currently leverage tags
+    "functionality terribly much and the overhead is probably significant.
+    "That said, if and when we require tags functionality, this is absolutely
+    "the ideal plugin for that thankless task.
     " Project tags.
-    " call dein#add('xolox/vim-easytags', {
-    "   \ 'depends': 'xolox/vim-misc',
-    "   \ 'autoload': { 'filetypes': ['zeshy'] },
+    " call dein#add('ludovicchabant/vim-gutentags', {
+    "   \ 'autoload': { 'filetypes': ['python'] },
     "   \ }
 
     " ..................{ STOP                              }..................

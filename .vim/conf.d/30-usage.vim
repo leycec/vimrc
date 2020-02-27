@@ -563,17 +563,6 @@ let g:vim_indent_cont = 2
 "   asynchronous linting delayed by the current setting occurs.
 let g:ale_lint_delay = 512
 
-" Dictionary mapping from each lintable filetype to the list of all linters
-" with which to asynchronously lint buffers of that filetype. Since ALE
-" defaults to linting filetypes *NOT* specified by this dictionary with all
-" linters available for that filetype, each filetype of interest should
-" typically be explicitly mapped to exactly one desirable linter here or below.
-let g:ale_linters = {}
-
-" let g:ale_run_synchronously = 1
-" let g:ale_history_enabled = 1
-" let g:ale_history_log_output = 1
-
 " ....................{ LINTING ~ ale : line              }....................
 " Unconditionally enable ALE-informed syntax highlighting. See "20-theme" for
 " the definitions of all ALE-specific syntax groups.
@@ -614,7 +603,26 @@ let g:ale_maximum_file_size = 200000
 " reducing responsiveness.
 let g:ale_echo_delay = 128
 
-" ....................{ LINTING ~ ale : python            }....................
+" ....................{ LINTING ~ ale : lang              }....................
+" Dictionary mapping from each lintable filetype to the list of all linters
+" with which to asynchronously lint buffers of that filetype. Since ALE
+" defaults to linting filetypes *NOT* specified by this dictionary with all
+" linters available for that filetype, each filetype of interest should
+" typically be explicitly mapped to exactly one desirable linter here or below.
+let g:ale_linters = {
+  \ 'php': ['php'],
+  \ }
+
+" If the Perl Critic linter is available, lint Perl with this linter.
+"
+" Note that ALE also supports "perl" itself as a linter, disabled by
+" default due to "perl" insecurely executing "BEGIN" and "CHECK" blocks.
+" Indeed, we concur and thus avoid enabling this linter.
+if executable('perlcritic')
+    let g:ale_linters['perl'] = ['perlcritic']
+endif
+
+" ....................{ LINTING ~ ale : lang : python     }....................
 " If Python 3 support is available...
 if g:our_is_python3
     "FIXME: Uncomment the following after ALE correctly supports "pyflakes".
@@ -839,7 +847,7 @@ augroup our_filetype_spelling
     autocmd!
 
     " Enable spell checking in all buffers of the following filetypes.
-    autocmd FileType markdown,mkd,rst,text,yaml setlocal spell
+    autocmd FileType gitcommit,markdown,mkd,rst,text,yaml setlocal spell
 augroup END
 
 " ....................{ TAGS                              }....................
