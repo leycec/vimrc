@@ -530,8 +530,11 @@ if dein#load_state(g:our_dein_dir)
     "   \ }
 
     " ..................{ LAZY ~ vcs                        }..................
-    " Git log wrapper. While otherwise excellent, "vim-fugitive" particularly
-    " lacks in this department.
+    " Core ".gitignore" support.
+    call dein#add('gisphm/vim-gitignore', {'on_ft': 'gitignore'})
+
+    " "git log" wrapper. While otherwise notable, "vim-fugitive" lacks in the
+    " "git log" department.
     call dein#add('kablamo/vim-git-log', {'on_cmd': 'GitLog'})
 
     "FIXME: Currently disabled, due to "vimgitlog" being basically broken. That

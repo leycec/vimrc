@@ -359,7 +359,7 @@ call MakeDirIfNotFound(g:our_dein_local_dir)
 
 " ....................{ FILETYPE                          }....................
 " Associate Vim-specific filetypes with filename-embedded filetypes *BEFORE*
-" subsequent logic, much of which depends on Vim-specific filetypes.
+" subsequent logic, most of which depends on Vim-specific filetypes.
 augroup our_filetype_detect
     autocmd!
 
@@ -385,10 +385,14 @@ augroup our_filetype_detect
     " Python, they are Pythonic enough to parse as such... mostly.
     autocmd BufNewFile,BufRead *.spec setfiletype python
 
-    " Associate all files in the "~/.gitignore.d" directory with conf mode.
-    " Such files are vcsh-specific files in canonical ".gitignore" format,
-    " which Vim also assigns the same mode by default.
-    autocmd BufNewFile,BufRead ~/.gitignore.d/* setfiletype conf
+    " Associate paths matching these patterns with our purely made-up
+    " "gitignore" mode handled by subsequent logic elsewhere:
+    "
+    " * All files in any directory whose basename is ".gitignore".
+    " * All vcsh-specific files in the "~/.gitignore.d" directory, which
+    "   necessarily comply with the standard ".gitignore" format.
+    autocmd BufNewFile,BufRead
+      \ .gitignore,~/.gitignore.d/* setfiletype gitignore
 
     " Default undetected filetypes to "text". To ensure this default is applied
     " only as a fallback in the event no plugin or subsequent autocommand
