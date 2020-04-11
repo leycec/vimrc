@@ -268,13 +268,11 @@ endif
 "   synchronization to be faster under certain modes than "minlines"-style
 "   synchronization.
 "
-" Filetypes intentionally excluded here include:
-"
-" * Python, whose "after/ftplugin" sets this synchronization.
+" Note that most filetypes are intentionally excluded here in favour of
+" language-specific "after/ftplugin" plugins (e.g., Perl, Python).
 augroup our_filetype_syntax
     autocmd!
-    autocmd FileType html,sh,zsh autocmd BufEnter * :syntax sync fromstart
-    " autocmd FileType html,python,zsh autocmd BufEnter * :syntax sync fromstart
+    autocmd FileType html,perl,sh,zsh autocmd BufEnter * :syntax sync fromstart
     " autocmd BufEnter * :syntax sync fromstart
 augroup END
 " syntax sync fromstart
