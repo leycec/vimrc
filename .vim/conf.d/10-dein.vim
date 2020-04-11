@@ -38,6 +38,9 @@ scriptencoding utf-8
 "     " Leverage official dein recipes for popular plugins, if available.
 "     dein 'Shougo/dein-vim-recipes', {'force' : 1}
 
+"FIXME: Install https://github.com/habamax/vim-asciidoctor, commonly regarded
+"as the optimal AsciiDoc plugin. Vim's builtin support is...non-ideal at best.
+
 "FIXME: Install https://github.com/davidhalter/jedi-vim, commonly regarded as
 "the optimal Python-specific solution for both autocompletion and
 "jump-to-definition with Vim. Note that:
