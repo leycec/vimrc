@@ -244,6 +244,9 @@ let g:our_dein_repo_dir =
 " Absolute path of the directory to cache temporary paths to.
 let g:our_cache_dir = g:our_vim_dir . '/cache'
 
+" Absolute path of the directory to backup currently edited files to.
+let g:our_spell_dir = g:our_vim_dir . '/spell'
+
 " Absolute path of the directory to backup previously edited files to.
 let g:our_backup_dir = g:our_cache_dir . '/backup'
 
@@ -348,7 +351,7 @@ endif
 " ....................{ PATHS ~ make                      }....................
 " Create all requisite subdirectories as needed.
 call MakeDirIfNotFound(g:our_backup_dir)
-call MakeDirIfNotFound(g:our_dein_dir)
+call MakeDirIfNotFound(g:our_spell_dir)
 call MakeDirIfNotFound(g:our_swap_dir)
 call MakeDirIfNotFound(g:our_undo_dir)
 call MakeDirIfNotFound(g:our_view_dir)

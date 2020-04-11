@@ -321,19 +321,6 @@ let g:mkdp_echo_preview_url = 1
 " "markdown-preview" refreshes this preview on all edits and cursor movements.
 let g:mkdp_refresh_slow = 1
 
-" ....................{ FILETYPE ~ perl6                  }....................
-" Implicitly convert ASCII- to Unicode-formatted Perl 6 operators.
-"
-" Note that Vim digraphs offer similar behaviour out-of-the-box as follows:
-"
-" * Enter Insert mode.
-" * Type <Ctrl-k> to enter the digraph pseudo-mode.
-" * Type a digraph (i.e., string of two or more ASCII characters internally
-"   recognized and converted by Vim into a corresponding Unicode character).
-"
-" Ergo, typing <Ctrl-k,-:> suffices to input the Unicode division sign "÷".
-let g:perl6_unicode_abbrevs = 1
-
 " ....................{ FILETYPE ~ pymode                 }....................
 "FIXME: "python-mode" currently indents line continuations by one level more of
 "indentation than seems reasonable. The culprit appears to be the block
@@ -469,7 +456,7 @@ augroup our_filetype_format
     " * "zeshy", handled by the third-party "zeshy" plugin. This formatting is
     "   already applied by this plugin and need not be repeated here.
     autocmd FileType
-      \ dosini,ebuild,fstab,gitcommit,markdown,mkd,python,sh,vim,yaml,zsh
+      \ dosini,ebuild,fstab,gentoo-make-conf,gitcommit,markdown,mkd,perl,python,sh,vim,yaml,zsh
       \ call vimrc#sanitize_code_buffer_formatting()
 
     " Enable comment-aware text formatting for *ALL* code-specific
@@ -839,22 +826,66 @@ let g:VeryMagicVimGrep = 1
 set gdefault
 
 " ....................{ SPELLING                          }....................
+" Common spelling commands include:
+"     ]s                     " jump to the next misspelled word
+"     [s                     " jump to the prior misspelled word
+"     zg                     " mark a misspelled word at the cursor as good
+
 " Spell check in English when enabled on a buffer-specific basis.
 set spelllang=en
+
+"FIMXE: Auto-regenerate the corresponding binary "en.utf-8.spl" cache file when
+"older than the plaintext "en.utf-8.add" file. Vim uses the latter to generate
+"the former, but only does so on adding new words to the latter. This is
+"non-ideal, since Vim will fail to regenerate the former on external changes to
+"the latter (e.g., git synchronization across machines). See also:
+"    https://vi.stackexchange.com/a/5052/16249
+"    https://github.com/micarmst/vim-spellsync
+
+" Absolute filename of the user-specific file to store misspelled words
+" manually marked by the user as *NOT* misspelled (e.g., with <zg>), whose
+" basename *MUST* be of the format "{language}.{encoding}.add".
+"
+" Note that, for unknown reasons, Vim *ALWAYS* returns the empty string for
+" "set spellfile?" until the first manual user interaction with the spelling
+" system (e.g., with <zg), at which point "set spellfile?" shows this filename.
+let g:spellfile = g:our_spell_dir . '/en.utf-8.add'
+
+" Avoid highlighting any of the following as misspelled words:
+"
+" * URIs (i.e., words prefixed by one or more alphanumeric characters followed
+"   by a "://" delimiter), strongly inspired by this blog post:
+"     http://www.panozzaj.com/blog/2016/03/21/ignore-urls-and-acroynms-while-spell-checking-vim/
+" * Acronyms (i.e., words comprised of only three or more uppercase
+"   alphanumeric characters optionally followed by an "s"), strongly inspired
+"   by the same blog post.
+"
+" Note that these highlight groups only apply to a subset of filetypes. For
+" more complex filetypes (e.g., Python), a "containedin=" clause explicitly
+" referencing the type of parent highlight group containing these child
+" highlight groups is required. To prevent filetype plugins from ignoring these
+" highlight groups, these groups *MUST* be added to a custom
+" "~/.vim/after/syntax/{filetype.vim}" filetype plugin rather than listed here.
+" See also this explanatory StackOverflow answer:
+"     https://vi.stackexchange.com/a/4003/16249
+syntax match NoSpellUri '\w\+:\/\/[^[:space:]]\+' contains=@NoSpell
+
+"FIXME: Seemingly unneeded. Perhaps Vim now ignores acronyms by default?
+" syntax match NoSpellAcronym '\<\(\u\|\d\)\{3,}s\?\>'  contains=@NoSpell
 
 " Filetype-specific spelling settings.
 augroup our_filetype_spelling
     autocmd!
 
     " Enable spell checking in all buffers of the following filetypes.
-    autocmd FileType gitcommit,markdown,mkd,rst,text,yaml setlocal spell
+    autocmd FileType gitcommit,markdown,mkd,python,rst,text,vim,yaml
+      \ setlocal spell
 augroup END
 
 " ....................{ TAGS                              }....................
 " Vim supports tags for a wide variety of languages, many of which are
 " unsupported by "Exuberant Ctags" and hence require manual intervention below
 " (e.g., JavaScript). For canonical documentation on doing so, see:
-"
 "   https://github.com/majutsushi/tagbar/wiki
 "
 " Despite the URL, such documentation is independent of the "tagbar" plugin.
