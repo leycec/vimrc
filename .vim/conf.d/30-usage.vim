@@ -13,6 +13,13 @@ scriptencoding utf-8
 "within Vim -- without use of external tag files. Yeah; it's friggin' sweet.
 "See: https://github.com/klen/python-mode
 
+" ....................{ AUTOCOMMANDS                      }....................
+" Number of milliseconds before Vim invokes the "CursorHold" autocommand,
+" conditionally required by some plugins (e.g., Spelunker) to perform dynamic
+" background operations. As the default value of 4000ms produces a noticeable
+" delay in performing these operations, we considerably reduce the default.
+set updatetime=512
+
 " ....................{ BUFFERS                           }....................
 " Common buffer commands include:
 "     :b{number}        " switch to the buffer with that number
@@ -826,6 +833,14 @@ let g:VeryMagicVimGrep = 1
 set gdefault
 
 " ....................{ SPELLING                          }....................
+"FIXME: Sadly, Spelunker is even less intelligent than Vim's default naive
+"spell checker. Whereas the latter is configurable to spell check *ONLY*
+"comments and strings in code, the former has no means of doing so.
+" Disable Vim's default naive spell checker in favour of Spelunker, a
+" third-party spell checker intelligently aware of common code conventions like
+" CamelCase, snake_case, acronyms, URLs, and so on.
+" set nospell
+
 " Common spelling commands include:
 "     ]s                     " jump to the next misspelled word
 "     [s                     " jump to the prior misspelled word
@@ -881,6 +896,18 @@ augroup our_filetype_spelling
     autocmd FileType gitcommit,markdown,mkd,python,rst,text,vim,yaml
       \ setlocal spell
 augroup END
+
+" ....................{ SPELLING ~ spelunker              }....................
+"FIXME: Disabled, as Spelunker is even less intelligent than the default spell
+"checker. (See above for voluminous details.)
+let g:enable_spelunker_vim = 0
+
+" Spell check only words displayed in the current window (i.e., type "2")
+" rather than all words across the current buffer (i.e., type "1").
+"
+" Note that Spelunker implements type "2" with the "CurserHold" autocommand,
+" whuch Vim delays by "updatetime" milliseconds.
+" let g:spelunker_check_type = 2
 
 " ....................{ TAGS                              }....................
 " Vim supports tags for a wide variety of languages, many of which are

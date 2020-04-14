@@ -188,8 +188,9 @@ augroup our_highlight_custom
     " Vim unhelpfully predefines these groups with the "cterm=underline" and
     " "gui=undercurl" attributes; sadly, each must be manually cleared.
     autocmd ColorScheme *
-      \ highlight SpellBad cterm=NONE ctermfg=NONE ctermbg=52 gui=undercurl guifg=NONE guibg=NONE guisp=#ff5f5f |
-      \ highlight SpellCap cterm=NONE ctermfg=NONE ctermbg=58 gui=undercurl guifg=NONE guibg=NONE guisp=#5fafd7 |
+      \ highlight SpellBad          cterm=NONE ctermfg=NONE ctermbg=52 gui=undercurl guifg=NONE guibg=NONE guisp=#ff5f5f |
+      \ highlight SpelunkerSpellBad cterm=NONE ctermfg=NONE ctermbg=52 gui=undercurl guifg=NONE guibg=NONE guisp=#ff5f5f |
+      \ highlight SpellCap          cterm=NONE ctermfg=NONE ctermbg=58 gui=undercurl guifg=NONE guibg=NONE guisp=#5fafd7 |
       \ highlight clear error |
       \ highlight clear todo |
       \ highlight link error           SpellBad |

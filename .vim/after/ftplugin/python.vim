@@ -33,6 +33,11 @@ if !executable('pyflakes') && !executable('flake8')
 endif
 
 " ....................{ COMMENTS                          }....................
+"FIXME: Consider refactoring the following into the comparable
+""~/.vim/after/syntax/python.vim" plugin *WITHOUT* leveraging autocommands. In
+"theory, simply defining "syntax sync minlines=1024" in that file as is should
+"suffice to enable this functionality.
+
 " Python-specific syntax highlighting is particularly troublesome. While the
 " default "autocmd BufEnter * :syntax sync fromstart" suffices for most
 " filetypes, Python plugins routinely fail to highlight large files under this

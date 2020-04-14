@@ -196,6 +196,17 @@ if dein#load_state(g:our_dein_dir)
     call dein#add('vim-airline/vim-airline')
     call dein#add('vim-airline/vim-airline-themes')
 
+    " ..................{ NON-LAZY ~ spell                  }..................
+    "FIXME: Disabled; Spelunker is less clever than the default spell checker.
+    " By definition, spelling-centric plugins *CANNOT* be loaded lazily. Since
+    " most buffers regardless of filetype benefit from spell checking,
+    " non-lazily loading these plugins at startup is the only sane solution.
+
+    " Third-party spell checker, replacing Vim's default naive spell checker
+    " with a sane alternative intelligently aware of common code conventions
+    " like CamelCase, snake_case, acronyms, URLs, and so on.
+    "call dein#add('kamykn/spelunker.vim')
+
     " ..................{ NON-LAZY ~ vcs                    }..................
     " By definition, VCS wrappers *CANNOT* be loaded lazily -- despite the
     " abundance of online ".vimrc" examples erroneously suggesting they can.
