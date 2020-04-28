@@ -208,8 +208,8 @@ endfunction
 "
 " Specifically, this function enables comment-aware text formatting for
 " code-specific filetypes whose syntax supports comments -- regardless of
-" whether the plugins configuring these filetypes do so. Since this is Vim, each
-" option is signified by a character of the "formatoptions" string global.
+" whether the plugins configuring these filetypes do so. Since this is Vim,
+" each option is denoted by a character of the "formatoptions" string global.
 "
 " This function enables the following options:
 "
@@ -272,7 +272,55 @@ function! vimrc#sanitize_code_buffer_formatting() abort
     setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*\\\|^\\s*[*-+]\\s\\+
 endfunction
 
-" ....................{ HIGHLIGHTERS                      }....................
+" ....................{ MUNGERS                           }....................
+" vimrc#prefix_strings(prefix: str, strings: List[str]) -> str
+"
+" Create and return a new list of strings from the passed prefix and list of
+" strings by prefixing each string of that list with that prefix.
+"
+" This function was gratefully inspired by the following external source:
+"
+" * jnrowe's s:prefix() function, published at:
+"   https://jnrowe-vim.readthedocs.io/en/latest/dein.html#utility-functions
+function! vimrc#prefix_strings(prefix, strings) abort
+    return map(a:strings, {_, string -> a:prefix . string})
+endfunction
+
+
+" vimrc#suffix_strings(suffix: str, strings: List[str]) -> str
+"
+" Create and return a new list of strings from the passed suffix and list of
+" strings by suffixing each string of that list with that suffix.
+"
+" This function was gratefully inspired by the following external source:
+"
+" * jnrowe's s:suffix() function, published at:
+"   https://jnrowe-vim.readthedocs.io/en/latest/dein.html#utility-functions
+function! vimrc#suffix_strings(suffix, strings) abort
+    return map(a:strings, {_, string -> string . a:suffix})
+endfunction
+
+" ....................{ PRINTERS                          }....................
+" vimrc#print_buffer_current_byte_offset() -> None
+"
+" Print the 1-based byte offset of the current position in the current buffer.
+"
+" This function returns the same value displayed by the "%o" statusline
+" modifier, and is principally intended for users preferring to manually call
+" this function rather than continually display a statusline offset.
+"
+" Note that the built-in goto() command jumps to an arbitrary byte offset
+" (e.g., ":goto 25647", jumping to the 25647th byte in the current buffer).
+"
+" This function was gratefully inspired by the following external source:
+"
+" * lcd047's FileOffset() function, published at:
+"   https://vi.stackexchange.com/a/3850
+function! vimrc#print_buffer_current_byte_offset() abort
+    echo line2byte(line('.')) + col('.') - 1
+endfunction
+
+" ....................{ SYNTAX                            }....................
 " vimrc#synchronize_syntax_highlighting() -> None
 "
 " Synchronize syntax highlighting in the current buffer. This function is
@@ -301,7 +349,7 @@ function! vimrc#synchronize_syntax_highlighting() abort
     syntax on
 endfunction
 
-" ....................{ HIGHLIGHTERS ~ print              }....................
+" ....................{ SYNTAX ~ print                    }....................
 " vimrc#print_syntax_group_current() -> str
 "
 " Display the names of both the originating and translated syntax groups
@@ -352,26 +400,6 @@ function! vimrc#print_syntax_group_all() abort
           \ synIDattr(l:syntax_group_id, 'name') . ' -> ' .
           \ synIDattr(synIDtrans(l:syntax_group_id), 'name')
     endfor
-endfunction
-
-" ....................{ PRINTERS ~ buffer                 }....................
-" vimrc#print_buffer_current_byte_offset() -> None
-"
-" Print the 1-based byte offset of the current position in the current buffer.
-"
-" This function returns the same value displayed by the "%o" statusline
-" modifier, and is principally intended for users preferring to manually call
-" this function rather than continually display a statusline offset.
-"
-" Note that the built-in goto() command jumps to an arbitrary byte offset
-" (e.g., ":goto 25647", jumping to the 25647th byte in the current buffer).
-"
-" This function was gratefully inspired by the following external source:
-"
-" * lcd047's FileOffset() function, published at:
-"   https://vi.stackexchange.com/a/3850
-function! vimrc#print_buffer_current_byte_offset() abort
-    echo line2byte(line('.')) + col('.') - 1
 endfunction
 
 " ....................{ WINDOWS                           }....................

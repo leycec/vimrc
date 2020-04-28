@@ -329,10 +329,7 @@ let g:mkdp_echo_preview_url = 1
 let g:mkdp_refresh_slow = 1
 
 " ....................{ FILETYPE ~ pymode                 }....................
-"FIXME: "python-mode" currently indents line continuations by one level more of
-"indentation than seems reasonable. The culprit appears to be the block
-"commented by "If this line is explicitly joined..." in
-""autoload/pymode/indent.vim", but we're unsure how to properly correct it.
+" Core Python support via the "python-mode" ("pymode") plugin.
 
 " If Vim was compiled with Python 3 support *AND* "python3" is in the current
 " ${PATH}, Python 3 is available and presumably preferred to 2. In such case,
@@ -410,7 +407,10 @@ let g:pymode_syntax_print_as_function = 1
 "         Hundredth line.'''
 let g:pymode_syntax_slow_sync = 1
 
-" ....................{ FILETYPE ~ rest : riv             }....................
+" ....................{ FILETYPE ~ rest                   }....................
+" Core reStructuredText (reST) support via the "riv" plugin and previewing via
+" the "InstantRst" plugin.
+"
 " Common riv commands include:
 "     :RivInstruction     " list all available Riv.vim options
 "     :RivCheatSheet      " read the 'reStructuredText Cheatsheet'
@@ -441,7 +441,7 @@ set nofoldenable
 set foldlevelstart=99
 set foldlevel=99
 
-" ....................{ FORMATTING                        }....................
+" ....................{ FORMAT                            }....................
 " Insert one rather than two spaces after sentence-terminating punctuation
 " (e.g., ".", "?", "!") when performing a join command (e.g., "J", "gq").
 set nojoinspaces
@@ -474,6 +474,31 @@ augroup our_filetype_format
       \ *.css
       \ call vimrc#sanitize_code_buffer_formatting()
 augroup END
+
+" ....................{ FORMAT ~ table                    }....................
+" Markdown- and reStructuredText-formatted table support.
+"
+" Common "vim-table-mode" commands include:
+"     :TableModeToggle *or* <Leader>tm    " enable on-the-fly table editing
+"     ||                                  " add automatic row separators
+"     [|                                  " move left one table cell
+"     ]|                                  " move right one table cell
+"     {|                                  " move up one table cell
+"     }|                                  " move down one table cell
+"     i|                                  " move inner table cell
+"     a|                                  " move around table cell
+"     <Leader>tdd                         " delete current table row
+"     <Leader>tdc                         " delete current table column
+"     <Leader>tic                         " insert table column after cursor
+"     <Leader>tiC                         " insert table column before cursor
+"     :TableModeRealign *or* <Leader>tr   " reformat current table
+"     :Tableize *or* <Leader>tt           " reformat CSV data into table
+"     :Tableize/{char} *or* <Leader>T     " reformat {char}-delimited data
+"
+" See also:
+" * "Creating table on-the-fly," terse usage instructions.
+"   https://github.com/dhruvasagar/vim-table-mode#creating-table-on-the-fly
+
 
 " ....................{ GLOBBING                          }....................
 " When globbing, ignore files matching the following glob patterns.
@@ -833,6 +858,12 @@ let g:VeryMagicVimGrep = 1
 set gdefault
 
 " ....................{ SPELLING                          }....................
+" Common spelling commands include:
+"     ]s        " jump to the next misspelled word
+"     [s        " jump to the prior misspelled word
+"     zg        " mark a misspelled word at the cursor as good
+"     zug       " unmark a misspelled word at the cursor as good
+
 "FIXME: Sadly, Spelunker is even less intelligent than Vim's default naive
 "spell checker. Whereas the latter is configurable to spell check *ONLY*
 "comments and strings in code, the former has no means of doing so.
@@ -840,11 +871,6 @@ set gdefault
 " third-party spell checker intelligently aware of common code conventions like
 " CamelCase, snake_case, acronyms, URLs, and so on.
 " set nospell
-
-" Common spelling commands include:
-"     ]s                     " jump to the next misspelled word
-"     [s                     " jump to the prior misspelled word
-"     zg                     " mark a misspelled word at the cursor as good
 
 " Spell check in English when enabled on a buffer-specific basis.
 set spelllang=en

@@ -63,7 +63,8 @@ augroup our_python_syntax
     " See also the autoloadable vimrc#synchronize_syntax_highlighting()
     " function.
     autocmd BufEnter <buffer> :syntax sync minlines=1024
-    "autocmd BufEnter <buffer> :syntax sync fromstart
+    " autocmd BufEnter <buffer> :syntax sync minlines=99999
+    " autocmd BufEnter <buffer> :syntax sync fromstart
 
     " Overwrite this mode's default comment leader with that set by
     " "30-usage.vim".
