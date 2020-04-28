@@ -312,6 +312,17 @@ if dein#load_state(g:our_dein_dir)
       \ '})
       " \ 'depends': 'Shougo/vimproc',
 
+    " ..................{ LAZY ~ format                     }..................
+    " Markdown- and reStructuredText-formatted table support.
+    "
+    " This snippet is strongly inspired by the following:
+    "     https://jnrowe-vim.readthedocs.io/en/latest/dein.html#vim-table-mode
+    call dein#add('dhruvasagar/vim-table-mode', {
+      \ 'on_cmd': ['TableModeToggle', 'Tableize'],
+      \ 'on_ft': ['markdown', 'mkd', 'rst'],
+      \ 'on_map': '<LocalLeader>t',
+      \ })
+
     " ..................{ LAZY ~ lang                       }..................
     " Core Perl support.
     call dein#add('vim-perl/vim-perl', {
@@ -484,13 +495,14 @@ if dein#load_state(g:our_dein_dir)
     "            \ 'commands': [{'name': 'Ag', 'complete': 'file'}] }}
 
     " ..................{ LAZY ~ syntax                     }..................
-    "FIXME: Fantastic plugin for reformatting. There's only one issue: we only want
-    "to make the ":Autoformat" command available. Unfortunately, this plugin also
-    "forcefully overrides Vim's builtin "gq" functionality with its filetype-
-    "specific logic. This works tolerably for some filetypes, but utterly fails on
-    "others. In particular, "autopep8" for Python refuses to wrap long comments
-    "appropriately. Consequently, this plugin must be temporarily enabled *ONLY* for
-    "the duration of edits requiring the ":Autoformat" command. *sigh*
+    "FIXME: Fantastic plugin for reformatting. There's only one issue: we only
+    "want to make the ":Autoformat" command available. Unfortunately, this
+    "plugin also forcefully overrides Vim's builtin "gq" functionality with its
+    "filetype-specific logic. This works tolerably for some filetypes, but
+    "utterly fails on others. In particular, "autopep8" for Python refuses to
+    "wrap long comments appropriately. Consequently, this plugin must be
+    "temporarily enabled *ONLY* for the duration of edits requiring the
+    "":Autoformat" command. *sigh*
 
     " Filetype-aware syntax reformatting, augmenting "gq" with intelligent
     " reformatting specific to language standards. This plugin inspects the
