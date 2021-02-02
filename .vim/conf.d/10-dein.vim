@@ -266,7 +266,7 @@ if dein#load_state(g:our_dein_dir)
     "     http://learnvimscriptthehardway.stevelosh.com/chapters/42.html
 
     " Vertically align table-like text.
-    call dein#add('godlygeek/tabular', {'lazy' : 1})
+    " call dein#add('godlygeek/tabular', {'lazy' : 1})
 
     " Low-level asynchronous Vim support.
     call dein#add('Shougo/vimproc.vim', {
@@ -317,6 +317,10 @@ if dein#load_state(g:our_dein_dir)
     "
     " This snippet is strongly inspired by the following:
     "     https://jnrowe-vim.readthedocs.io/en/latest/dein.html#vim-table-mode
+
+    "FIXME: Conditionally reenable as needed. Sadly, "vim-table-mode" currently
+    "misbehaves on tables with row- or column-spanning cells:
+    "    https://github.com/dhruvasagar/vim-table-mode/issues/163
     call dein#add('dhruvasagar/vim-table-mode', {
       \ 'on_cmd': ['TableModeToggle', 'Tableize'],
       \ 'on_ft': ['markdown', 'mkd', 'rst'],

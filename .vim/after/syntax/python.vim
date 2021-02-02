@@ -31,10 +31,17 @@ syntax match NoSpellPythonCaps
   \ /\v<[A-Z]([A-Z0-9]{-1,}|[a-z0-9]+[A-Z0-9].{-})>/ transparent
   \ contained containedin=pythonComment,python.*String contains=@NoSpell
 
-" Avoid spell checking snake_case-formatted identifiers.
-syntax match NoSpellPythonSnake
-  \ /\v<\w+_.{-1,}>/ transparent
-  \ contained containedin=pythonComment,python.*String contains=@NoSpell
+"FIXME: For unknown reasons, enabling this and *ONLY* this "syntax" statement
+"causes subtle (but horrible) failures across "python-mode" indentation and
+"syntax highlighting. While lamentable, we need "python-mode" more than we need
+"to avoid spell checking snake_case-formatted identifiers. See also this
+"currently unresolved upstream issue:
+"    https://github.com/python-mode/python-mode/issues/1083
+
+" " Avoid spell checking snake_case-formatted identifiers.
+" syntax match NoSpellPythonSnake
+"   \ /\v<\w+_.{-1,}>/ transparent
+"   \ contained containedin=pythonComment,python.*String contains=@NoSpell
 
 " Avoid spell checking "@"-prefixed identifiers.
 syntax match NoSpellPythonDecorator
