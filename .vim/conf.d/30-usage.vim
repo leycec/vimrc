@@ -373,6 +373,12 @@ endif
 " plugin also hooking Insert mode events (e.g., "watchdogs").
 let g:pymode_rope_complete_on_dot = 0
 
+" Prevent "python-mode" from implicitly trimming trailing whitespace. By
+" default, "python-mode" does so, which is frankly horrible, because doing so
+" often produces semantically invalid code. See also:
+"     https://github.com/python-mode/python-mode/issues/912
+let g:pymode_trim_whitespaces = 0
+
 " ....................{ FILETYPE ~ pymode : syntax        }....................
 " Enable Python-specific syntax highlighting.
 let g:pymode_syntax = 1
@@ -429,6 +435,14 @@ let g:pymode_syntax_slow_sync = 1
 " previews are non-essential and hence deprioritizable.
 let g:instant_rst_slow = 1
 
+" Prevent "riv" from causing spurious "maxmempattern" errors on highlighting
+" reST links by disabling such support entirely. Note that this issue occurs
+" regardless of the fact we've already dramatically increased the
+" "maxmempattern" setting below, implying that this is our only recourse. Ergo,
+" this arguably constitutes an unresolved "riv" issue. See also:
+"     https://github.com/gu-fan/riv.vim/issues/144
+let g:riv_link_cursor_hl = 0
+
 " ....................{ FOLDING                           }....................
 " Disable folding globally. However, intentionally or accidentally performing a
 " folding action (e.g., by typing <zc>) implicitly undoes this by re-enabling
@@ -479,7 +493,7 @@ augroup END
 " Markdown- and reStructuredText-formatted table support.
 "
 " Common "vim-table-mode" commands include:
-"     :TableModeToggle *or* <Leader>tm    " enable on-the-fly table editing
+"     <Leader>tm (:TableModeToggle)       " enable on-the-fly table editing
 "     ||                                  " add automatic row separators
 "     [|                                  " move left one table cell
 "     ]|                                  " move right one table cell
@@ -491,14 +505,13 @@ augroup END
 "     <Leader>tdc                         " delete current table column
 "     <Leader>tic                         " insert table column after cursor
 "     <Leader>tiC                         " insert table column before cursor
-"     :TableModeRealign *or* <Leader>tr   " reformat current table
-"     :Tableize *or* <Leader>tt           " reformat CSV data into table
-"     :Tableize/{char} *or* <Leader>T     " reformat {char}-delimited data
+"     <Leader>tr (:TableModeRealign)      " reformat current table
+"     <Leader>tt (:Tableize)              " reformat CSV data into table
+"     <Leader>T (:Tableize/{char})        " reformat {char}-delimited data
 "
 " See also:
 " * "Creating table on-the-fly," terse usage instructions.
 "   https://github.com/dhruvasagar/vim-table-mode#creating-table-on-the-fly
-
 
 " ....................{ GLOBBING                          }....................
 " When globbing, ignore files matching the following glob patterns.
@@ -668,6 +681,11 @@ if g:our_is_python3
         "   * "E0401" (i.e., "import-error"), preventing "pylint" from
         "     flagging importable modules that, for whatever reason, are
         "     unimportable by "pylint". (Probably a "sys.path" issue.)
+        "   * "E0603" (i.e., "undefined-all-variable"), preventing "pylint"
+        "     from flagging "__all__" lists referencing undefined attributes.
+        "     While a list referencing an undefined attribute would typically
+        "     be harmful, the "__all__" dunder list global is itself
+        "     sufficiently harmful to warrant unconditional ignoring.
         "   * "E0611" (i.e., "no-name-in-module"), preventing "pylint" from
         "     flagging attributes imported from C extensions.
         "   * "E0702" (i.e., "raising-bad-type"), preventing "pylint" from
@@ -683,10 +701,22 @@ if g:our_is_python3
         "     "pylint" from erroneously flagging types that support the "in"
         "     operator as not supporting that operator (notably, cached
         "     properties).
+        "   * "E1136" (i.e., "unsubscriptable-object"), preventing "pylint"
+        "     from erroneously flagging types defining the __class_getitem__()
+        "     dunder method as unsubscriptable. Since most builtin types now
+        "     define this dunder method under Python >= 3.9, "pylint" behaves
+        "     erroneously over a vast swath of objects when this is enabled.
+        "   * "W0107" (i.e., "unnecessary-pass"), preventing "pylint" from
+        "     flagging all "pass" statements preceded by docstrings in
+        "     placeholder classes and functions.
         "   * "W0122" (i.e., "exec-used"), preventing "pylint" from flagging
         "     all exec() statements. While commonly undesirable, there exist
         "     numerous valid use cases for exec() statements. Flagging all such
         "     calls is unhelpful.
+        "   * "W0123" (i.e., "eval-used"), preventing "pylint" from flagging
+        "     all eval() statements. While commonly undesirable, there exist
+        "     numerous valid use cases for eval() statements. Flagging all such
+        "     calls is unhelpful. *shaking_my_psoriatic_head*
         "   * "W0125" (i.e., "using-constant-test"), preventing "pylint" from
         "     flagging conditional statements branching on constant values
         "     (e.g., "if False:"). These statements are of use in selectively
@@ -733,7 +763,7 @@ if g:our_is_python3
         "   warnings (e.g., unused local variable).
         " * "--jobs=2", minimally parallelizing "pylint" execution.
         let g:ale_python_pylint_options =
-          \ '--disable=R,C,E0401,E0611,E0702,E1101,E1133,E1135,W0122,W0201,W0212,W0221,W0511,W0603,W0613,W0702,W0703'
+          \ '--disable=R,C,E0401,E0603,E0611,E0702,E1101,E1133,E1135,E1136,W0107,W0122,W0123,W0201,W0212,W0221,W0511,W0603,W0613,W0702,W0703'
 
         "FIXME: Replace the above "pylint" configuration by that defined below
         "*AFTER* ALE supports the "--jobs=" option. As of this writing, setting
