@@ -377,7 +377,7 @@ let g:pymode_rope_complete_on_dot = 0
 " default, "python-mode" does so, which is frankly horrible, because doing so
 " often produces semantically invalid code. See also:
 "     https://github.com/python-mode/python-mode/issues/912
-let g:pymode_trim_whitespaces = 0
+"let g:pymode_trim_whitespaces = 0
 
 " ....................{ FILETYPE ~ pymode : syntax        }....................
 " Enable Python-specific syntax highlighting.
