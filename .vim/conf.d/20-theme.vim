@@ -158,7 +158,7 @@ syntax on
 " set termguicolors
 
 " ....................{ COLOUR ~ theme : custom           }....................
-" Custom highlight groups overwriting those defined both by the color scheme
+" Custom highlight groups overwriting those defined by both the color scheme
 " enabled below *AND* filetype plugins, which frequently overwrite those
 " defined by the current scheme. (Yes, this is awful.)
 "

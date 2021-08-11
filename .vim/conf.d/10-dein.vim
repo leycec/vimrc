@@ -15,8 +15,12 @@ scriptencoding utf-8
 "     :DeinUpdate               " install and/or update all plugins as needed
 "     :call dein#install()      " install all uninstalled plugins
 "     :call dein#update()       " update all installed plugins
-"     :call dein#clear_state()  " clear dein's cache (e.g., ~/.vim/dein/.cache)
+"     :call dein#recache_runtimepath() " rebuild ~/.vim/dein/.cache safely
 "     :h dein                   " peruse documentation
+"
+" Avoid calling these dein commands, which do *NOT* appear to behave as
+" expected for layman usage:
+"     :call dein#clear_state()  " clear dein's cache (e.g., ~/.vim/dein/.cache)
 "
 " --------------------( FUNCTIONS                         )--------------------
 " Common dein functions for use in this specific file include:
@@ -26,7 +30,6 @@ scriptencoding utf-8
 " For nonstandard Vim plugins requiring post-installation "intervention" (e.g.,
 " "neocomplcache", "unite", "vimproc", "vimshell"), see official recipes (i.e.,
 " Vim configuration snippets) at the following URLs:
-"
 "     FIXME: Sadly, this Github repository no longer appears to exist. *sigh*
 "     https://github.com/Shougo/dein-vim-recipes
 "     https://github.com/Shougo/dein-vim-recipes/tree/master/recipes
@@ -34,7 +37,6 @@ scriptencoding utf-8
 " While these recipes could technically be preloaded on Vim startup, doing so
 " would violate lazy loading and hence unnecessarily increase startup time.
 " That said:
-"
 "     " Leverage official dein recipes for popular plugins, if available.
 "     dein 'Shougo/dein-vim-recipes', {'force' : 1}
 
@@ -44,7 +46,6 @@ scriptencoding utf-8
 "FIXME: Install https://github.com/davidhalter/jedi-vim, commonly regarded as
 "the optimal Python-specific solution for both autocompletion and
 "jump-to-definition with Vim. Note that:
-"
 "* The default installation instructions are sadly trash-tier, despite the
 "  remarkable quality of the remainder of the plugin. Let's grep up some
 "  dein-specific Vim snippetry, please. As of this writing, the optimal
@@ -327,12 +328,25 @@ if dein#load_state(g:our_dein_dir)
       \ 'on_map': '<LocalLeader>t',
       \ })
 
-    " ..................{ LAZY ~ lang                       }..................
-    " Core Perl support.
-    call dein#add('vim-perl/vim-perl', {
-      \ 'on_ft': 'perl',
-      \ 'build': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny'
-      \ })
+    " Sane language-specific indentation *AND* syntax highlighting.
+    " "vim-polyglot" effectively supports all languages of interest, including
+    " surprisingly esoteric languages.
+    "
+    " Note that:
+    " * The filetypes of desired languages should *NOT* be explicitly listed
+    "   here with the 'on_ft' key. Why? Because "vim-polyglot" already
+    "   aggressively lazily loads the language-specific indentation and syntax
+    "   highlighting plugins it internally bundles. Doing so again here with
+    "   "dein" would only introduce spurious delays and possibly even errors.
+    " * The "{'merged': 0}" setting is necessary to avoid a non-fatal (but
+    "   extremely annoying) startup error resembling:
+    "       Error detected while processing /home/leycec/.vim/dein/.cache/.vimrc/.dein/ftdetect/ftdetect.vim:
+    "       line   57:
+    "       E117: Unknown function: polyglot#init#init
+    "       Press ENTER or type command to continue
+    "
+    " It is amazing. See also: https://github.com/sheerun/vim-polyglot
+    call dein#add('sheerun/vim-polyglot', {'merged': 0})
 
     "FIXME: Sadly dead, alas. (Everyone sigh as one now.)
     " " Zeshy.
@@ -397,6 +411,13 @@ if dein#load_state(g:our_dein_dir)
           \ })
     endif
 
+    " ..................{ LAZY ~ lang : perl                }..................
+    " Core Perl support.
+    call dein#add('vim-perl/vim-perl', {
+      \ 'on_ft': 'perl',
+      \ 'build': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny'
+      \ })
+
     " ..................{ LAZY ~ lang : php                 }..................
     " Core PHP support.
     call dein#add('StanAngeloff/php.vim', {'on_ft': 'php'})
@@ -411,7 +432,14 @@ if dein#load_state(g:our_dein_dir)
 
     " ..................{ LAZY ~ lang : python              }..................
     " Core Python support.
-    call dein#add('python-mode/python-mode', {'on_ft': 'python'})
+    "
+    " Note that "python-mode/python-mode" should *NOT* typically be used.
+    " Upstream no longer actively maintains "python-mode"; moreover, everything
+    " that "python-mode" does other more special-purpose plugins do better.
+
+    " Sane Python indentation. Note that "vim-polyglot" and "python-mode" both
+    " bundle this plugin; ergo, this is *NOT* generally explicitly required.
+    " call dein#add('Vimjas/vim-python-pep8-indent', {'on_ft': 'python'})
 
     " ..................{ LAZY ~ lang : rst                 }..................
     " Core reStructuredText (reST) support.

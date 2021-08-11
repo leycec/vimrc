@@ -12,6 +12,9 @@ scriptencoding utf-8
 "introspection, analysis, and refactoring of Python on a project-wide basis from
 "within Vim -- without use of external tag files. Yeah; it's friggin' sweet.
 "See: https://github.com/klen/python-mode
+"FIXME: Actually, it probably makes more sense to leverage a general-purpose
+"Language Server Process (LSP) like Jedi in conjunction with a Vim plugin
+"harnessing that LSP like CoC (Conquer of Completion).
 
 " ....................{ AUTOCOMMANDS                      }....................
 " Number of milliseconds before Vim invokes the "CursorHold" autocommand,
@@ -219,7 +222,6 @@ augroup our_filetype_comments
     "
     " This option is a comma-delimited string list of all comment leaders, each
     " formatted as "{flags}:{string}", where:
-    "
     " * "{flags}" is an undelimited character list of boolean flags modifying
     "   the parsing of this comment leader from Vim's default behaviour.
     " * "{string}" is the typically unquoted string of all characters
@@ -227,13 +229,11 @@ augroup our_filetype_comments
     "   such whitespace is required, specify the "b" flag instead.
     "
     " Dismantled, this is:
-    "
     " * ":#", defining "#" to be a comment leader with default flags and hence
     "   *NOT* requiring suffixing whitespace.
     "
     " Note that this option must set *AFTER* loading the following filetypes,
     " which are thus omitted here:
-    "
     " * "python", handled by the third-party "python-mode" plugin.
     " * "dosini", handled by the official "dosini" plugin.
     "
@@ -329,89 +329,91 @@ let g:mkdp_echo_preview_url = 1
 let g:mkdp_refresh_slow = 1
 
 " ....................{ FILETYPE ~ pymode                 }....................
-" Core Python support via the "python-mode" ("pymode") plugin.
+"FIXME: We thankfully no longer use "python-mode", but have elected to
+"temporarily preserve this as a failsafe in the unlikely event we revert.
 
-" If Vim was compiled with Python 3 support *AND* "python3" is in the current
-" ${PATH}, Python 3 is available and presumably preferred to 2. In such case,
-" enable Python 3- rather than 2-specific functionality. For backward
-" compatibility, the latter is the default.
+" " Core Python support via the "python-mode" ("pymode") plugin.
 "
-" Ideally, "python-mode" would conditionally detect which Python functionality
-" to enable based on the shebang line prefixing the current file buffer. Since
-" it does *NOT*, this is the next-best thing in GrungyTown.
-let g:pymode_python = g:our_is_python3 ? 'python3' : 'python'
-
-" Disable all folding functionality in "python-mode".
-let g:pymode_folding = 0
-
-" Prevent "python-mode" from performing syntax checks (e.g., on buffer write),
-" as "ale" already does so in a frankly superior manner.
-let g:pymode_lint = 0
-
-" Disable support for rope, a Python refactoring library. In theory, enabling
-" such support would be preferable. In practice, the time (and possibly space)
-" costs of enabling such support appear to be prohibitive. The proprietary IDE
-" PyCharm appears to be both more trustworthy *AND* performant than rope for
-" industrial-strength Python refactoring, sadly.
-let g:pymode_rope = 0
-"let g:pymode_rope = 1
-
-" If the current user is the superuser, prevent Rope from recursively searching
-" for ".ropeproject" directories in parent directories of the current directory
-" if the latter contains no ".ropeproject" directory. Since the superuser
-" typically edits top-level files containing no such directory, this recursion
-" typically induces a recursive search of the entire filesystem hanging Vim.
-if g:our_is_superuser
-    let g:pymode_rope_lookup_project = 0
-" Else, permit Rope to perform this recursion.
-else
-    let g:pymode_rope_lookup_project = 1
-endif
-
-" Disable Rope-based autocompletion on typing <.> in Insert mode. As of this
-" writing, this behaviour appears to either be broken or conflict with another
-" plugin also hooking Insert mode events (e.g., "watchdogs").
-let g:pymode_rope_complete_on_dot = 0
-
-" Prevent "python-mode" from implicitly trimming trailing whitespace. By
-" default, "python-mode" does so, which is frankly horrible, because doing so
-" often produces semantically invalid code. See also:
-"     https://github.com/python-mode/python-mode/issues/912
-"let g:pymode_trim_whitespaces = 0
-
-" ....................{ FILETYPE ~ pymode : syntax        }....................
-" Enable Python-specific syntax highlighting.
-let g:pymode_syntax = 1
-
-" Highlight all possible syntax.
-let g:pymode_syntax_all = 1
-
-" Highlight print() according to Python 3 rather than 2 semantics.
-let g:pymode_syntax_print_as_function = 1
-
-" Highlight in the most reliable, albeit least efficient, manner. This improves
-" but does *NOT* perfect syntax highlighting of Python code containing long
-" strings. In particular, single-quoted strings formatted as parens-delimited
-" single-quoted lines will typically *NOT* be highlighted properly, suggesting
-" these strings be reformatted as triple-quoted strings with dedendation: e.g.,
+" " If Vim was compiled with Python 3 support *AND* "python3" is in the current
+" " ${PATH}, Python 3 is available and presumably preferred to 2. In such case,
+" " enable Python 3- rather than 2-specific functionality. For backward
+" " compatibility, the latter is the default.
+" "
+" " Ideally, "python-mode" would conditionally detect which Python functionality
+" " to enable based on the shebang line prefixing the current file buffer. Since
+" " it does *NOT*, this is the next-best thing in GrungyTown.
+" let g:pymode_python = g:our_is_python3 ? 'python3' : 'python'
 "
-"     # This will probably fail to be properly highlighted.
-"     my_bad_string = (
-"         'First line.\n'
-"         'Second line.\n'
-"         ...
-"         'Ninety-ninth line.\n'
-"         'Hundredth line.'
-"     )
+" " Disable all folding functionality in "python-mode".
+" let g:pymode_folding = 0
 "
-"     # This, however, will not.
-"     my_good_string =\
-"         '''First line.
-"         Second line.
-"         ...
-"         Ninety-ninth line.
-"         Hundredth line.'''
-let g:pymode_syntax_slow_sync = 1
+" " Prevent "python-mode" from performing syntax checks (e.g., on buffer write),
+" " as "ale" already does so in a frankly superior manner.
+" let g:pymode_lint = 0
+"
+" " Disable support for rope, a Python refactoring library. In theory, enabling
+" " such support would be preferable. In practice, the time (and possibly space)
+" " costs of enabling such support appear to be prohibitive. The proprietary IDE
+" " PyCharm appears to be both more trustworthy *AND* performant than rope for
+" " industrial-strength Python refactoring, sadly.
+" let g:pymode_rope = 0
+" "let g:pymode_rope = 1
+"
+" " If the current user is the superuser, prevent Rope from recursively searching
+" " for ".ropeproject" directories in parent directories of the current directory
+" " if the latter contains no ".ropeproject" directory. Since the superuser
+" " typically edits top-level files containing no such directory, this recursion
+" " typically induces a recursive search of the entire filesystem hanging Vim.
+" if g:our_is_superuser
+"     let g:pymode_rope_lookup_project = 0
+" " Else, permit Rope to perform this recursion.
+" else
+"     let g:pymode_rope_lookup_project = 1
+" endif
+"
+" " Disable Rope-based autocompletion on typing <.> in Insert mode. As of this
+" " writing, this behaviour appears to either be broken or conflict with another
+" " plugin also hooking Insert mode events (e.g., "watchdogs").
+" let g:pymode_rope_complete_on_dot = 0
+"
+" " Prevent "python-mode" from implicitly trimming trailing whitespace. By
+" " default, "python-mode" does so, which is frankly horrible, because doing so
+" " often produces semantically invalid code. See also:
+" "     https://github.com/python-mode/python-mode/issues/912
+" "let g:pymode_trim_whitespaces = 0
+"
+" " ....................{ FILETYPE ~ pymode : syntax        }....................
+" " Enable Python-specific syntax highlighting.
+" let g:pymode_syntax = 1
+"
+" " Highlight all possible syntax.
+" let g:pymode_syntax_all = 1
+"
+" " Highlight print() according to Python 3 rather than 2 semantics.
+" let g:pymode_syntax_print_as_function = 1
+"
+" " Highlight in the most reliable, albeit least efficient, manner. This improves
+" " but does *NOT* perfect syntax highlighting of Python code containing long
+" " strings. In particular, single-quoted strings formatted as parens-delimited
+" " single-quoted lines will typically *NOT* be highlighted properly, suggesting
+" " these strings be reformatted as triple-quoted strings with dedendation: e.g.,
+" "     # This will probably fail to be properly highlighted.
+" "     my_bad_string = (
+" "         'First line.\n'
+" "         'Second line.\n'
+" "         ...
+" "         'Ninety-ninth line.\n'
+" "         'Hundredth line.'
+" "     )
+" "
+" "     # This, however, will not.
+" "     my_good_string =\
+" "         '''First line.
+" "         Second line.
+" "         ...
+" "         Ninety-ninth line.
+" "         Hundredth line.'''
+" let g:pymode_syntax_slow_sync = 1
 
 " ....................{ FILETYPE ~ rest                   }....................
 " Core reStructuredText (reST) support via the "riv" plugin and previewing via
@@ -602,7 +604,6 @@ let g:ale_set_highlights = 1
 
 " ....................{ LINTING ~ ale : sign              }....................
 " Unconditionally disable ALE's usage of the sign gutter, which:
-"
 " * Conflicts with that of other bundles -- usually, version control.
 " * Is well-known to impose significant performance penalties in ALE.
 " * Is redundant, given the line-oriented highlight groups defined above.
