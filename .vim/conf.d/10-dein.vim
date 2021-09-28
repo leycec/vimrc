@@ -344,6 +344,8 @@ if dein#load_state(g:our_dein_dir)
     "       line   57:
     "       E117: Unknown function: polyglot#init#init
     "       Press ENTER or type command to continue
+    "   Note this prevents caching of "vim-polyglot" by "dein" entirely and is
+    "   thus intended for use only during plugin development. *shrug*
     "
     " It is amazing. See also: https://github.com/sheerun/vim-polyglot
     call dein#add('sheerun/vim-polyglot', {'merged': 0})

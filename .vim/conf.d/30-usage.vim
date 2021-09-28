@@ -328,93 +328,6 @@ let g:mkdp_echo_preview_url = 1
 " "markdown-preview" refreshes this preview on all edits and cursor movements.
 let g:mkdp_refresh_slow = 1
 
-" ....................{ FILETYPE ~ pymode                 }....................
-"FIXME: We thankfully no longer use "python-mode", but have elected to
-"temporarily preserve this as a failsafe in the unlikely event we revert.
-
-" " Core Python support via the "python-mode" ("pymode") plugin.
-"
-" " If Vim was compiled with Python 3 support *AND* "python3" is in the current
-" " ${PATH}, Python 3 is available and presumably preferred to 2. In such case,
-" " enable Python 3- rather than 2-specific functionality. For backward
-" " compatibility, the latter is the default.
-" "
-" " Ideally, "python-mode" would conditionally detect which Python functionality
-" " to enable based on the shebang line prefixing the current file buffer. Since
-" " it does *NOT*, this is the next-best thing in GrungyTown.
-" let g:pymode_python = g:our_is_python3 ? 'python3' : 'python'
-"
-" " Disable all folding functionality in "python-mode".
-" let g:pymode_folding = 0
-"
-" " Prevent "python-mode" from performing syntax checks (e.g., on buffer write),
-" " as "ale" already does so in a frankly superior manner.
-" let g:pymode_lint = 0
-"
-" " Disable support for rope, a Python refactoring library. In theory, enabling
-" " such support would be preferable. In practice, the time (and possibly space)
-" " costs of enabling such support appear to be prohibitive. The proprietary IDE
-" " PyCharm appears to be both more trustworthy *AND* performant than rope for
-" " industrial-strength Python refactoring, sadly.
-" let g:pymode_rope = 0
-" "let g:pymode_rope = 1
-"
-" " If the current user is the superuser, prevent Rope from recursively searching
-" " for ".ropeproject" directories in parent directories of the current directory
-" " if the latter contains no ".ropeproject" directory. Since the superuser
-" " typically edits top-level files containing no such directory, this recursion
-" " typically induces a recursive search of the entire filesystem hanging Vim.
-" if g:our_is_superuser
-"     let g:pymode_rope_lookup_project = 0
-" " Else, permit Rope to perform this recursion.
-" else
-"     let g:pymode_rope_lookup_project = 1
-" endif
-"
-" " Disable Rope-based autocompletion on typing <.> in Insert mode. As of this
-" " writing, this behaviour appears to either be broken or conflict with another
-" " plugin also hooking Insert mode events (e.g., "watchdogs").
-" let g:pymode_rope_complete_on_dot = 0
-"
-" " Prevent "python-mode" from implicitly trimming trailing whitespace. By
-" " default, "python-mode" does so, which is frankly horrible, because doing so
-" " often produces semantically invalid code. See also:
-" "     https://github.com/python-mode/python-mode/issues/912
-" "let g:pymode_trim_whitespaces = 0
-"
-" " ....................{ FILETYPE ~ pymode : syntax        }....................
-" " Enable Python-specific syntax highlighting.
-" let g:pymode_syntax = 1
-"
-" " Highlight all possible syntax.
-" let g:pymode_syntax_all = 1
-"
-" " Highlight print() according to Python 3 rather than 2 semantics.
-" let g:pymode_syntax_print_as_function = 1
-"
-" " Highlight in the most reliable, albeit least efficient, manner. This improves
-" " but does *NOT* perfect syntax highlighting of Python code containing long
-" " strings. In particular, single-quoted strings formatted as parens-delimited
-" " single-quoted lines will typically *NOT* be highlighted properly, suggesting
-" " these strings be reformatted as triple-quoted strings with dedendation: e.g.,
-" "     # This will probably fail to be properly highlighted.
-" "     my_bad_string = (
-" "         'First line.\n'
-" "         'Second line.\n'
-" "         ...
-" "         'Ninety-ninth line.\n'
-" "         'Hundredth line.'
-" "     )
-" "
-" "     # This, however, will not.
-" "     my_good_string =\
-" "         '''First line.
-" "         Second line.
-" "         ...
-" "         Ninety-ninth line.
-" "         Hundredth line.'''
-" let g:pymode_syntax_slow_sync = 1
-
 " ....................{ FILETYPE ~ rest                   }....................
 " Core reStructuredText (reST) support via the "riv" plugin and previewing via
 " the "InstantRst" plugin.
@@ -674,7 +587,12 @@ if g:our_is_python3
         " Fallback to linting Python with this linter.
         let g:ale_linters['python'] = ['pylint']
 
-        " Configure "pylint" to:
+        " Configure "pylint". Note that a mapping between the machine-readable
+        " error codes passed below and human-readable error names referenced
+        " below may be printed by running:
+        "     $ pylint --list-msgs | less
+        "
+        " Specifically, pass:
         "
         " * "--disable=", squelching ignorable:
         "   * "R", refactor complaints.
@@ -765,7 +683,7 @@ if g:our_is_python3
         "     raising ignorable warnings. ("pylint", you are clearly retarded.)
         "   * "W0703" (i.e., "broad-except"), preventing "catch Exception:"
         "     clauses from raising ignorable warnings. (Are you kidding me?)
-        "   This preserves only verifiably fatal errors and non-fatal severe.
+        "   This preserves only verifiably fatal errors and non-fatal severe
         "   warnings (e.g., unused local variable).
         " * "--jobs=2", minimally parallelizing "pylint" execution.
         let g:ale_python_pylint_options =

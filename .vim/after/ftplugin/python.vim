@@ -32,7 +32,7 @@ if !executable('pyflakes') && !executable('flake8')
     echomsg 'Commands "pyflakes" and "flake8" not found. Expect Python syntax checking to fail.'
 endif
 
-" ....................{ COMMENTS                          }....................
+" ....................{ SYNTAX                            }....................
 "FIXME: Consider refactoring the following into the comparable
 ""~/.vim/after/syntax/python.vim" plugin *WITHOUT* leveraging autocommands. In
 "theory, simply defining "syntax sync minlines=1024" in that file as is should
