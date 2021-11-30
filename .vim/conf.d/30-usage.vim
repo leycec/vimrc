@@ -756,6 +756,11 @@ if g:our_is_python3
         "     local variables) do typically imply a cause for concern, unused
         "     callable arguments are a valid common occurrence (e.g., due to
         "     abstract base classes) and hence best ignored.
+        "   * "W0632" (i.e., "unbalanced-tuple-unpacking"), preventing "pylint"
+        "     from flagging valid tuple unpackaging assignments whose
+        "     right-hand side (RHS) is a call to an arbitrary callable. For
+        "     unknown reasons, "pylint" erroneously flags *ALL* such calls as
+        "     "unbalanced." If you don't know, "pylint", don't pretend you do.
         "   * "W0702" (i.e., "bare-except"), preventing "catch:" clauses from
         "     raising ignorable warnings. ("pylint", you are clearly retarded.)
         "   * "W0703" (i.e., "broad-except"), preventing "catch Exception:"
@@ -764,7 +769,7 @@ if g:our_is_python3
         "   warnings (e.g., unused local variable).
         " * "--jobs=2", minimally parallelizing "pylint" execution.
         let g:ale_python_pylint_options =
-          \ '--disable=R,C,E0401,E0603,E0611,E0702,E1101,E1133,E1135,E1136,W0107,W0122,W0123,W0201,W0212,W0221,W0511,W0603,W0613,W0702,W0703'
+          \ '--disable=R,C,E0401,E0603,E0611,E0702,E1101,E1133,E1135,E1136,W0107,W0122,W0123,W0201,W0212,W0221,W0511,W0603,W0613,W0632,W0702,W0703'
 
         "FIXME: Replace the above "pylint" configuration by that defined below
         "*AFTER* ALE supports the "--jobs=" option. As of this writing, setting
