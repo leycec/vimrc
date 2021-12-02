@@ -327,11 +327,11 @@ endif
 
 " If Python 3 support is available...
 if g:our_is_python3
-    " If neither the "pyflakes" nor "pyflakes3" commands are in the current
-    " ${PATH}, print a non-fatal warning. Python syntax checking falls back to
-    " the "flake8" command in the absence of both, which is much less helpful.
-    if !(executable('pyflakes') || executable('pyflakes3'))
-        echomsg 'Commands "pyflakes" and "pyflakes3" not found. Expect Python syntax checking to fail.'
+    " If the "pylint" command is *NOT* in the current ${PATH}, print a
+    " non-fatal warning. Python syntax checking falls back to the "flake8"
+    " command in the absence of both, which is much less helpful.
+    if !executable('pylint')
+        echomsg 'Command "pylint" not found. Expect Python syntax checking to fail.'
     endif
 endif
 
