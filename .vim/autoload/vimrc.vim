@@ -231,7 +231,8 @@ endfunction
 "     this does *NOT* autoindent the second lines of list items.
 " * "j", removing comment leaders when joining lines.
 " * "m", breaking long lines at multibyte characters (e.g., for Asian
-"   languages in which characters signify words).
+"   languages in which characters signify words). *UPDATE:* for unknown
+"   reasons, enabling this breaks *EVERYTHING* now and has thus been disabled.
 " * "B", *NOT* inserting whitespace between adjacent multibyte characters
 "   when joining lines.
 "
@@ -265,8 +266,9 @@ endfunction
 "   format option at a time. Who decided this was a sane idea, Bram?
 "
 " See ":h fo-table" for further details.
+"tcgj
 function! vimrc#sanitize_code_buffer_formatting() abort
-    setlocal formatoptions+=cjmnoqrB
+    setlocal formatoptions+=cjnoqrB
     setlocal formatoptions-=l
     setlocal formatoptions-=t
     setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*\\\|^\\s*[*-+]\\s\\+

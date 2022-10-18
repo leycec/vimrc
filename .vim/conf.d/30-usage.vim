@@ -375,6 +375,13 @@ set foldlevel=99
 " (e.g., ".", "?", "!") when performing a join command (e.g., "J", "gq").
 set nojoinspaces
 
+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+" CAUTION: New languages *MUST* be manually added to the list below. If this is
+" *NOT* done, formatting will *NOT* behave as expected. Notably, the classic
+" culprit is that Vim will fail to automatically insert that language's comment
+" leader (e.g., "#") when typing a newline on an existing line prefixed by that
+" leader. Naturally, we *ALWAYS* forget to do this. *sigh*
+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 " Filetype-specific formatting. For safety, append and shift list
 " "formatoptions" with the "+=" and "-=" operators rather than overwriting such
 " list (and hence sane Vim defaults) with the "=" operator. See ":h fo-table".
@@ -392,7 +399,7 @@ augroup our_filetype_format
     " * "zeshy", handled by the third-party "zeshy" plugin. This formatting is
     "   already applied by this plugin and need not be repeated here.
     autocmd FileType
-      \ dosini,ebuild,fstab,gentoo-make-conf,gitcommit,markdown,mkd,perl,python,sh,vim,yaml,zsh
+      \ dosini,ebuild,fstab,gentoo-make-conf,gitcommit,kivy,markdown,mkd,perl,python,sh,toml,vim,yaml,zsh
       \ call vimrc#sanitize_code_buffer_formatting()
 
     " Enable comment-aware text formatting for *ALL* code-specific
@@ -479,9 +486,9 @@ augroup our_filetype_indentation
     autocmd FileType * setlocal shiftwidth=4 softtabstop=4 tabstop=4 expandtab
 
     " For markup-heavy filetypes (e.g., YAML), reduce the default tab width.
-    " Since markup tends to heavily nest, this helps prevent overly long lines
-    " and hence improve readability.
-    autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2 tabstop=2
+    " Since markup tends to deeply nest, doing so improves readability by
+    " preventing overly long lines.
+    autocmd FileType kivy,yaml setlocal shiftwidth=2 softtabstop=2 tabstop=2
 
     " For markup-obsessed filetypes (e.g., XML), minimize the default tab width
     " to the minimum non-zero width (i.e., 1). XML, what ills do thou wrought?
@@ -741,8 +748,8 @@ command SwitchWindowRight call vimrc#switch_window('l')
 " ....................{ REFORMATTING ~ vim-autoformat     }....................
 " Permit the Python-specific "autopep8" reformatter to aggressively reformat
 " long lines. While "vim-autoformat" provides default options for such
-" reformatter under "plugin/defaults.vim", "autopep8" senselessly ignores
-" option "--max-line-length" unless at least two aggressive options are passed.
+" reformatter under "plugin/defaults.vim", "autopep8" senselessly ignores the
+" "--max-line-length" option unless at least two aggressive options are passed.
 let g:formatprg_python = 'autopep8'
 let g:formatprg_args_expr_python = '"- --experimental --aggressive --aggressive --aggressive ".(&textwidth ? "--max-line-length=".&textwidth : "")'
 

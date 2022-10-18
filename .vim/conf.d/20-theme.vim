@@ -471,7 +471,7 @@ set showbreak=↳  " ↺↳↪
 " "/etc/vimrc") often maliciously override this option on a filetype-specific
 " basis, this option is persisted to a global variable with which these sources
 " are themselves overridden... by us!
-let g:our_textwidth = 79
+let g:our_textwidth = 80
 let &textwidth = g:our_textwidth
 
 "FIXME: Apply this length to HTML and XML as well. See "after/ftplugin/yaml.vim"
@@ -482,8 +482,8 @@ let &textwidth = g:our_textwidth
 " Data markup languages tend to demand excessive indentation and hence
 " additional horizontal width. For efficiency, this setting must be lazily
 " applied by filetype plugins (e.g., in the "after/ftplugin" subdirectory).
-" let g:our_textwidth_data_markup = 99
-let g:our_textwidth_data_markup = 79
+" let g:our_textwidth_data_markup = 100
+let g:our_textwidth_data_markup = 80
 
 " If Vim supports doing so, display a translucent vertical line at our
 " preferred line length. Dismantled, this is:

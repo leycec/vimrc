@@ -396,22 +396,24 @@ if dein#load_state(g:our_dein_dir)
     "   \ 'on_ft': ['markdown', 'mkd'],
     "   \ })
 
-    " Markdown preview.
-    "
-    " If the external "yarn" Node.js package manager is installed, compile and
-    " install the Javascript core of this plugin with this manager.
-    if executable('yarn')
-        call dein#add('iamcco/markdown-preview.nvim', {
-          \ 'on_ft': ['markdown', 'mkd'],
-          \ 'build': 'cd app & yarn install',
-          \ })
-    " Else, install the precompiled Javascript core bundled with this plugin.
-    else
-        call dein#add('iamcco/markdown-preview.nvim', {
-          \ 'on_ft': ['markdown', 'mkd'],
-          \ 'build': { -> mkdp#util#install() },
-          \ })
-    endif
+    "FIXME: No longer builds and we currently can't be bothered to resolve.
+    "Consider reenabling this or a less fragile alternative as time admits.
+    " " Markdown preview.
+    " "
+    " " If the external "yarn" Node.js package manager is installed, compile and
+    " " install the Javascript core of this plugin with this manager.
+    " if executable('yarn')
+    "     call dein#add('iamcco/markdown-preview.nvim', {
+    "       \ 'on_ft': ['markdown', 'mkd'],
+    "       \ 'build': 'cd app & yarn install',
+    "       \ })
+    " " Else, install the precompiled Javascript core bundled with this plugin.
+    " else
+    "     call dein#add('iamcco/markdown-preview.nvim', {
+    "       \ 'on_ft': ['markdown', 'mkd'],
+    "       \ 'build': { -> mkdp#util#install() },
+    "       \ })
+    " endif
 
     " ..................{ LAZY ~ lang : perl                }..................
     " Core Perl support.
