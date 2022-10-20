@@ -1,13 +1,13 @@
 scriptencoding utf-8
-" --------------------( LICENSE                           )--------------------
+" --------------------( LICENSE                            )--------------------
 " Copyright 2015-2020 by Cecil Curry.
 " See "LICENSE" for further details.
 "
-" --------------------( SYNOPSIS                          )--------------------
+" --------------------( SYNOPSIS                           )--------------------
 " dein configuration, defining the set of all dein-managed third-party
 " Github-hosted plugins to be used.
 "
-" --------------------( COMMANDS                          )--------------------
+" --------------------( COMMANDS                           )--------------------
 " Common startup-related commands include:
 "     :scriptnames     " list the absolute paths of all current startup scripts
 "
@@ -22,11 +22,11 @@ scriptencoding utf-8
 " expected for layman usage:
 "     :call dein#clear_state()  " clear dein's cache (e.g., ~/.vim/dein/.cache)
 "
-" --------------------( FUNCTIONS                         )--------------------
+" --------------------( FUNCTIONS                          )--------------------
 " Common dein functions for use in this specific file include:
 "     call dein#add(...)    " install and cache the passed plugin
 "
-" --------------------( RECIPES                           )--------------------
+" --------------------( RECIPES                            )--------------------
 " For nonstandard Vim plugins requiring post-installation "intervention" (e.g.,
 " "neocomplcache", "unite", "vimproc", "vimshell"), see official recipes (i.e.,
 " Vim configuration snippets) at the following URLs:
@@ -91,7 +91,7 @@ scriptencoding utf-8
 "dein does appear to provide an automated cleaning command:
 ":deinClean(). Let us use it!
 
-" ....................{ INSTALL                           }....................
+" ....................{ INSTALL                            }....................
 " The dein plugin manager must be configured *BEFORE* dein-managed plugins --
 " which means "bloody early in Vim startup."
 
@@ -115,13 +115,13 @@ if has('vim_starting')
     call AddRuntimePath(g:our_dein_repo_dir)
 endif
 
-" ....................{ OPTIONS                           }....................
+" ....................{ OPTIONS                            }....................
 " Number of seconds after which to timeout plugin installation and upgrades.
 " Since the default is insufficient for installing large plugins on slow
 " connections, slightly increase such default.
 let g:dein#install_process_timeout = 120
 
-" ....................{ CONFIGURE                         }....................
+" ....................{ CONFIGURE                          }....................
 " If dein's cache is either:
 "
 " * Stale (i.e., desynchronized from either current plugins or the plugin
@@ -129,7 +129,7 @@ let g:dein#install_process_timeout = 120
 " * Non-existent (e.g., due to this being a fresh installation of dein).
 " * Invalid, for whatever edge-case reason.
 "
-" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 " WARNING: To reduce startup speed, dein does *NOT* automatically synchronize
 " the contents of the source "~/.vim/dein/repos" directory with the target
 " "~/.vim/dein/.cache" directory. Instead, users *MUST* either:
@@ -142,10 +142,10 @@ let g:dein#install_process_timeout = 120
 "   source "~/.vim/dein/repos" directory:
 "
 "     call dein#recache_runtimepath()
-" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 if dein#load_state(g:our_dein_dir)
-    " ..................{ START                             }..................
+    " ..................{ START                              }..................
     " Initialize dein, installing new plugins to and loading installed plugins
     " from the plugin subdirectory. Since dein adopts the whitelist approach
     " to plugin management, plugins *NOT* explicitly passed to dein#add() will
@@ -171,7 +171,7 @@ if dein#load_state(g:our_dein_dir)
     " to be manually maintained by the user (e.g., for local development).
     call dein#local(g:our_dein_local_dir)
 
-    " ..................{ DEIN                              }..................
+    " ..................{ DEIN                               }..................
     " Install dein with dein itself, completing the self-referential loop.
     call dein#add('Shougo/dein.vim')
 
@@ -179,11 +179,11 @@ if dein#load_state(g:our_dein_dir)
     " improvement over dein's vanilla workflow for installation and updates.
     call dein#add('wsdjeg/dein-ui.vim')
 
-    " ..................{ NON-LAZY ~ start                  }..................
+    " ..................{ NON-LAZY ~ start                   }..................
     " IDE-like startup screen listing recently opened files and sessions.
     call dein#add('mhinz/vim-startify')
 
-    " ..................{ NON-LAZY ~ theme                  }..................
+    " ..................{ NON-LAZY ~ theme                   }..................
     "FIXME: I'm not entirely fond of either the comment or documentation colors.
     "Contemplate corrections. Alternately, alternative schemes include:
     "
@@ -197,7 +197,7 @@ if dein#load_state(g:our_dein_dir)
     call dein#add('vim-airline/vim-airline')
     call dein#add('vim-airline/vim-airline-themes')
 
-    " ..................{ NON-LAZY ~ spell                  }..................
+    " ..................{ NON-LAZY ~ spell                   }..................
     "FIXME: Disabled; Spelunker is less clever than the default spell checker.
     " By definition, spelling-centric plugins *CANNOT* be loaded lazily. Since
     " most buffers regardless of filetype benefit from spell checking,
@@ -208,7 +208,7 @@ if dein#load_state(g:our_dein_dir)
     " like CamelCase, snake_case, acronyms, URLs, and so on.
     "call dein#add('kamykn/spelunker.vim')
 
-    " ..................{ NON-LAZY ~ vcs                    }..................
+    " ..................{ NON-LAZY ~ vcs                     }..................
     " By definition, VCS wrappers *CANNOT* be loaded lazily -- despite the
     " abundance of online ".vimrc" examples erroneously suggesting they can.
     " Since VCS wrapper hooks *MUST* be run on buffer switches to detect
@@ -220,13 +220,12 @@ if dein#load_state(g:our_dein_dir)
     " Technically, this requirement is somewhat circumventable by defining
     " on_post_hook() hooks for the plugins installing such VCS wrappers that
     " explicitly call such VCS wrapper detection hooks. However:
-    "
-    " * Such detection hooks are often privatized to script-local functions.
+    " * Those detection hooks are often privatized to script-local functions.
     "   While such privacy is trivially breakable (and our dotfiles define
     "   utility functions for doing just that), the resulting logic depends on
     "   script internals *NOT* intended for public use and is hence liable to
     "   break without public notice.
-    " * Such circumventions prevent display of VCS metadata in the Vim UI
+    " * Those circumventions prevent display of VCS metadata in the Vim UI
     "   (e.g., the name of the current VCS branch in a statusline section).
     "
     " The costs are considerably higher than the negligible efficiency gains.
@@ -245,7 +244,7 @@ if dein#load_state(g:our_dein_dir)
     " Git commit frontend.
     " call dein#add('rhysd/committia.vim')
 
-    " ..................{ LAZY ~ dependencies               }..................
+    " ..................{ LAZY ~ dependencies                }..................
     " Pure dependencies (i.e., plugins only dependencies of other plugins) are
     " lazily loadable without autoload specifications. Which is a good thing.
     "
@@ -313,7 +312,7 @@ if dein#load_state(g:our_dein_dir)
       \ '})
       " \ 'depends': 'Shougo/vimproc',
 
-    " ..................{ LAZY ~ format                     }..................
+    " ..................{ LAZY ~ format                      }..................
     " Markdown- and reStructuredText-formatted table support.
     "
     " This snippet is strongly inspired by the following:
@@ -354,7 +353,7 @@ if dein#load_state(g:our_dein_dir)
     " " Zeshy.
     " call dein#add('leycec/vim-zeshy', {'on_ft': 'zeshy'})
 
-    " ..................{ LAZY ~ lang : css                 }..................
+    " ..................{ LAZY ~ lang : css                  }..................
     " Core CSS support.
     "
     " Note that the CSS plugin provided out-of-the-box by Vim lacks support for
@@ -366,7 +365,7 @@ if dein#load_state(g:our_dein_dir)
     call dein#add('ap/vim-css-color', {
       \ 'on_ft': ['css', 'scss', 'sass']})
 
-    " ..................{ LAZY ~ lang : html : template     }..................
+    " ..................{ LAZY ~ lang : html : template      }..................
     " Core Twig support. There exist two principle Twig plugins:
     "
     " * "lumiliet/vim-twig", updated slightly more frequently and featuring
@@ -377,7 +376,7 @@ if dein#load_state(g:our_dein_dir)
       \ 'on_ft': ['markdown', 'twig'],
       \ })
 
-    " ..................{ LAZY ~ lang : md                  }..................
+    " ..................{ LAZY ~ lang : md                   }..................
     " Markdown. There exist a variety of Markdown plugins, including:
     "
     " * "gabrielelana/vim-markdown", implementing GitHub-flavoured Markdown
@@ -415,14 +414,14 @@ if dein#load_state(g:our_dein_dir)
     "       \ })
     " endif
 
-    " ..................{ LAZY ~ lang : perl                }..................
+    " ..................{ LAZY ~ lang : perl                 }..................
     " Core Perl support.
     call dein#add('vim-perl/vim-perl', {
       \ 'on_ft': 'perl',
       \ 'build': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny'
       \ })
 
-    " ..................{ LAZY ~ lang : php                 }..................
+    " ..................{ LAZY ~ lang : php                  }..................
     " Core PHP support.
     call dein#add('StanAngeloff/php.vim', {'on_ft': 'php'})
 
@@ -434,7 +433,7 @@ if dein#load_state(g:our_dein_dir)
     "   \ 'if': executable('composer'),
     "   \ })
 
-    " ..................{ LAZY ~ lang : python              }..................
+    " ..................{ LAZY ~ lang : python               }..................
     " Core Python support.
     "
     " Note that "python-mode/python-mode" should *NOT* typically be used.
@@ -445,7 +444,7 @@ if dein#load_state(g:our_dein_dir)
     " bundle this plugin; ergo, this is *NOT* generally explicitly required.
     " call dein#add('Vimjas/vim-python-pep8-indent', {'on_ft': 'python'})
 
-    " ..................{ LAZY ~ lang : rst                 }..................
+    " ..................{ LAZY ~ lang : rst                  }..................
     " Core reStructuredText (reST) support.
     call dein#add('gu-fan/riv.vim', {'on_ft': 'rst'})
 
@@ -458,7 +457,7 @@ if dein#load_state(g:our_dein_dir)
       \ 'if': executable('instantRst'),
       \ })
 
-    " ..................{ LAZY ~ key                        }..................
+    " ..................{ LAZY ~ key                         }..................
     " Bind <gc*> (e.g., <gcc>) to perform buffer commenting and uncommenting.
     call dein#add('tomtom/tcomment_vim', {
       \ 'on_map': {'nx': ['gc', 'g<', 'g>', '<C-_>', '<Leader>_']},
@@ -487,7 +486,7 @@ if dein#load_state(g:our_dein_dir)
     call dein#add('coot/EnchantedVim.git')
     " call dein#add('coot/EnchantedVim.git', {'depends': 'coot/CRDispatcher.git'})
 
-    " ..................{ LAZY ~ path                       }..................
+    " ..................{ LAZY ~ path                        }..................
     " File exploration.
     call dein#add('Shougo/vimfiler', {
       \ 'on_cmd': ['VimFiler', 'VimFilerExplorer'],
@@ -530,7 +529,7 @@ if dein#load_state(g:our_dein_dir)
     "call dein#add('rking/ag.vim', { 'autoload': {
     "            \ 'commands': [{'name': 'Ag', 'complete': 'file'}] }}
 
-    " ..................{ LAZY ~ syntax                     }..................
+    " ..................{ LAZY ~ syntax                      }..................
     "FIXME: Fantastic plugin for reformatting. There's only one issue: we only
     "want to make the ":Autoformat" command available. Unfortunately, this
     "plugin also forcefully overrides Vim's builtin "gq" functionality with its
@@ -591,7 +590,7 @@ if dein#load_state(g:our_dein_dir)
     "   \ 'autoload': { 'filetypes': ['vim'] }
     "   \ }
 
-    " ..................{ LAZY ~ vcs                        }..................
+    " ..................{ LAZY ~ vcs                         }..................
     " Core ".gitignore" support.
     call dein#add('gisphm/vim-gitignore', {'on_ft': 'gitignore'})
 
@@ -609,7 +608,7 @@ if dein#load_state(g:our_dein_dir)
     "   \     'functions': [ 'GITLOG_ToggleWindows', 'GITLOG_FlipWindows',]
     "   \ }}
 
-    " ..................{ LAZY ~ rest                       }..................
+    " ..................{ LAZY ~ rest                        }..................
     " Buffer undo/redo.
     "
     " Navigate the undo history tree.
@@ -624,7 +623,7 @@ if dein#load_state(g:our_dein_dir)
     "   \ 'autoload': { 'filetypes': ['python'] },
     "   \ }
 
-    " ..................{ STOP                              }..................
+    " ..................{ STOP                               }..................
     " Finalize dein's in-memory configuration.
     call dein#end()
 
@@ -633,7 +632,7 @@ if dein#load_state(g:our_dein_dir)
     call dein#save_state()
 endif
 
-" ....................{ STOP                              }....................
+" ....................{ STOP                               }....................
 " If one or more plugins are *NOT* currently installed, do so.
 if dein#check_install()
     echo "Installing dein plugins...\n"
@@ -652,7 +651,7 @@ endif
 "     autocmd VimEnter * call auto_dein#update_weekly()
 " augroup END
 
-" ....................{ FILETYPES                         }....................
+" ....................{ FILETYPES                          }....................
 " Enable the following four core features (related to filetypes) *AFTER*
 " completing dein configuration but *BEFORE* subsequent functionality
 " requiring such features. (Attempting to enable these features *BEFORE*

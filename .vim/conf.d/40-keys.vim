@@ -172,7 +172,7 @@ nnoremap <leader>Gu :GdiffUnstaged<cr>
 nnoremap <leader>Gt :GdiffStaged<cr>
 
 " Bind <,Gs> to open a new buffer viewing and editing the Git index.
-nnoremap <leader>Gs :Gstatus<cr>
+nnoremap <leader>Gs :Git<cr>
 
 " Bind <,Hs> to open a new buffer viewing and editing Mercurial's DirState.
 nnoremap <leader>Hs :Hgstatus<cr>
