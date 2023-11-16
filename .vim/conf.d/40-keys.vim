@@ -1,12 +1,12 @@
 scriptencoding utf-8
-" --------------------( LICENSE                           )--------------------
+" --------------------( LICENSE                            )--------------------
 " Copyright 2015-2020 by Cecil Curry.
 " See "LICENSE" for further details.
 "
-" --------------------( SYNOPSIS                          )--------------------
+" --------------------( SYNOPSIS                           )--------------------
 " Dotfile-specific key bindings.
 "
-" --------------------( BINDINGS                          )--------------------
+" --------------------( BINDINGS                           )--------------------
 " Vim provides the following key binding commands:
 "
 " * map(), recursively defining a mapping for all modes (i.e., ":map j gg"
@@ -38,7 +38,7 @@ scriptencoding utf-8
 " depending on the behavior of target mappings (typically defined elsewhere).
 " If in doubt, default to the nnoremap() command for defining key bindings.
 "
-" --------------------( BINDINGS ~ debug                  )--------------------
+" --------------------( BINDINGS ~ debug                   )--------------------
 " To list all custom key bindings, call the ":map" Ex command with no
 " arguments.  To show the command associated with an existing:
 "
@@ -68,18 +68,18 @@ scriptencoding utf-8
 " *OR* user-defined key bindings with ":help" will erroneously yield either no
 " bindings or an inapplicable binding.
 "
-" --------------------( DEFAULT                           )--------------------
+" --------------------( DEFAULT                            )--------------------
 " Vim provides the following little-known (but much-helpful) key bindings out
 " of the box:
 "
 " * <gQ>, opening Ex mode -- also referred to as the best equivalent of a
 "   Vimscript REPL in Vim.
 "
-" --------------------( SEE ALSO                          )--------------------
+" --------------------( SEE ALSO                           )--------------------
 " * "conf.d/10-dein.vim", defining lazily loaded plugin-specific key bindings.
 " * "after/ftplugin/rst.vim", defining reStructuredText-specific key bindings.
 
-" ....................{ NORMAL                            }....................
+" ....................{ NORMAL                             }....................
 " Bind <;> to <:> and <:> to <;> in normal and visual modes. This reduces the
 " number of keystrokes required to enter Ex commands -- which, ammortized over
 " time, can dramatically reduce keystroke load.
@@ -93,12 +93,12 @@ scriptencoding utf-8
 nnoremap j gj
 nnoremap k gk
 
-" ....................{ EX                                }....................
+" ....................{ EX                                 }....................
 " Bind <:w!!> to reopen the current file with the superuser privelages,
 " effectively mimicking "sudo !!" at the CLI.
 cnoremap <silent> w!! w !sudo tee % >/dev/null
 
-" ....................{ LEADER                            }....................
+" ....................{ LEADER                             }....................
 " Bind:
 "
 " * <,> to <leader>, the symbolic user-specific prefix for global key bindings.
@@ -116,7 +116,7 @@ cnoremap <silent> w!! w !sudo tee % >/dev/null
 let mapleader=","
 let maplocalleader="-"
 
-" ....................{ LEADER ~ general                  }....................
+" ....................{ LEADER ~ general                   }....................
 " Bind <,vr> to reload Vim's startup scripts (e.g., this file).
 nnoremap <silent> <leader>vr load-vim-script $MYVIMRC<cr>
 
@@ -124,7 +124,7 @@ nnoremap <silent> <leader>vr load-vim-script $MYVIMRC<cr>
 " history from a uniform path to branching tree.)
 nnoremap <leader>u :UndotreeToggle<cr>
 
-" ....................{ LEADER ~ colour                   }....................
+" ....................{ LEADER ~ colour                    }....................
 " Bind <,1> to synchronize syntax highlighting in the current buffer.
 nnoremap <silent> <leader>1 :call vimrc#synchronize_syntax_highlighting()<cr>
 
@@ -142,7 +142,7 @@ nnoremap <silent> <leader>S :call vimrc#print_syntax_group_all()<cr>
 " strings (e.g., "/ oeuoeuoeu").
 nnoremap <silent> <leader>/ :nohlsearch<cr>
 
-" ....................{ LEADER ~ buffer                   }....................
+" ....................{ LEADER ~ buffer                    }....................
 "FIXME: This probably isn't quite right.
 " Bind <,e> to open a new buffer editing a file discovered via Unite.
 nnoremap <leader>e :Unite<cr>
@@ -151,7 +151,7 @@ nnoremap <leader>e :Unite<cr>
 " confirm this write with a prefixing <Enter>, reducing keystroke load.
 nnoremap <leader>w :w<cr>
 
-" ....................{ LEADER ~ plugin : ale             }....................
+" ....................{ LEADER ~ plugin : ale              }....................
 " Bind <,lj> and <,lk> to jump to the next and prior ALE-specific linter error
 " and/or warning in the current buffer. Note that:
 "
@@ -162,7 +162,7 @@ nnoremap <leader>w :w<cr>
 nmap <silent> <leader>lj <Plug>(ale_next_wrap)
 nmap <silent> <leader>lk <Plug>(ale_previous_wrap)
 
-" ....................{ LEADER ~ plugin : vcs : fugitive  }....................
+" ....................{ LEADER ~ plugin : vcs : fugitive   }....................
 " Bind <,Gu> to open a new buffer diffing the working Git tree against that
 " tree's index.
 nnoremap <leader>Gu :GdiffUnstaged<cr>
@@ -177,18 +177,17 @@ nnoremap <leader>Gs :Git<cr>
 " Bind <,Hs> to open a new buffer viewing and editing Mercurial's DirState.
 nnoremap <leader>Hs :Hgstatus<cr>
 
-" ....................{ LEADER ~ plugin : vcs : vimgitlog }....................
+" ....................{ LEADER ~ plugin : vcs : vimgitlog  }....................
 " Bind <,Gl> to open a new buffer viewing the Git log listing all commits and
 " files changed by those commits (in descending order of commit time).
 nnoremap <leader>Gl :GitLog<cr>
 
 "FIXME: Currently disabled, due to "vimgitlog" being basically broken. That
 "said, it's the only currently maintained Vim plugin purporting to do this.
-
 " nnoremap <leader>Gl :call GITLOG_ToggleWindows()<cr>
 " nnoremap <leader>GL :call GITLOG_FlipWindows()<cr>
 
-" ....................{ LEADER ~ window                   }....................
+" ....................{ LEADER ~ window                    }....................
 " Bind <,nd> to delete (i.e., close) the current window. This key binding has
 " been selected to orthogonally coincide with the ":bd" command deleting (i.e.,
 " closing) the current buffer.
@@ -243,7 +242,7 @@ nnoremap <leader>nH :wincmd H<cr>
 " the rightmost window.
 nnoremap <leader>nL :wincmd L<cr>
 
-" ....................{ SHAMELESS HACKAGE                 }....................
+" ....................{ SHAMELESS HACKAGE                  }....................
 "FIXME: Actually, this strikes me as a poor idea. Use the 0 register, instead.
 " Prevent <x> from overwriting the default register by forcing it to cut into
 " the blackhole register _ instead.
