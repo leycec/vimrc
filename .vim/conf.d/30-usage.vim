@@ -512,17 +512,26 @@ let g:vim_indent_cont = 2
 " computationally expensive linters, we approximately double this default.
 "
 " See also:
-"
 " * ":help g:ale_lint_on_text_changed", a downstream setting governing when
 "   asynchronous linting delayed by the current setting occurs.
 let g:ale_lint_delay = 512
 
-" ....................{ LINTING ~ ale : line              }....................
+" ....................{ LINTING ~ ale : line               }....................
 " Unconditionally enable ALE-informed syntax highlighting. See "20-theme" for
 " the definitions of all ALE-specific syntax groups.
 let g:ale_set_highlights = 1
 
-" ....................{ LINTING ~ ale : sign              }....................
+" Unconditionally disable ALE's "virtual text" feature (i.e., suffixing *EVERY*
+" line containing a linter failure by a fake language-specific comment
+" describing that failure). By default, ALE enables this feature. This feature:
+" * Constitutes code logorrhea.
+" * Disrupts fragile flow state.
+" * Harms the intelligibility of previously and currently authored code.
+"
+" Seriously. ALE should *NEVER* have enabled this feature by default.
+let g:ale_virtualtext_cursor = 'disabled'
+
+" ....................{ LINTING ~ ale : sign               }....................
 " Unconditionally disable ALE's usage of the sign gutter, which:
 " * Conflicts with that of other bundles -- usually, version control.
 " * Is well-known to impose significant performance penalties in ALE.
@@ -537,7 +546,7 @@ let g:ale_sign_column_always = 1
 let g:ale_sign_error   = '»'
 let g:ale_sign_warning = '–'
 
-" ....................{ LINTING ~ ale : speed             }....................
+" ....................{ LINTING ~ ale : speed              }....................
 " Maximum number of ALE-specific signs per buffer. Since signs are well-known
 " to impose significant performance penalties in ALE, instructing ALE to *NOT*
 " maintain an excessive number of signs is a simple (albeit effective) approach
@@ -575,13 +584,19 @@ if executable('perlcritic')
     let g:ale_linters['perl'] = ['perlcritic']
 endif
 
-" ....................{ LINTING ~ ale : lang : python     }....................
+" ....................{ LINTING ~ ale : lang : python      }....................
 " If Python 3 support is available...
 if g:our_is_python3
     "FIXME: Uncomment the following after ALE correctly supports "pyflakes".
     "For unknown reasons, the newly defined "pyflakes" linter fails to
     "highlight syntax errors or warnings -- despite correctly identifying those
     "errors and warnings in the status bar. *sigh*
+    "FIXME: Actually, what we *REALLY* want to do is entirely replace our
+    "existing usage of "pylint" with the Rust-based "ruff" Python linter, a
+    "hardcore @beartype-style linter claiming to be 10,000% faster than
+    ""pylint". And this claim is likely accurate, given how slow "pylint" is.
+    "See also:
+    "    https://github.com/charliermarsh/ruff
 
     " If the "pyflakes" linter is available, prefer linting Python with *ONLY*
     " this linter: the most minimalist (and thus efficient) Python linter.
